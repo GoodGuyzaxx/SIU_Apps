@@ -19,9 +19,15 @@ class UndanganResource extends Resource
 {
     protected static ?string $model = Undangan::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
     protected static string | BackedEnum | null $activeNavigationIcon = 'heroicon-o-document-text';
+
+    protected static ?string $navigationLabel = "Undangan";
+
+    protected static ?string $slug = 'undangan';
+
+    protected static ?string $breadcrumb = 'Undangan';
 
 //    protected static ?string $recordTitleAttribute = 'Undangan';
 

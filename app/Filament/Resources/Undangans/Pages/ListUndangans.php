@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Undangans\Pages;
 
 use App\Filament\Resources\Undangans\UndanganResource;
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
@@ -13,7 +14,11 @@ class ListUndangans extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateAction::make()
+            ->label('Tambah Undangan'),
+
         ];
     }
+
+    protected ?string $heading = "Undangan";
 }

@@ -9,6 +9,7 @@ use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Phiki\Phast\Text;
 
 class UndangansTable
 {
@@ -17,10 +18,16 @@ class UndangansTable
         return $table
             ->columns([
                 TextColumn::make('judul.mahasiswa.nama')
-                    ->label('Nama Mahasiswa'),
+                    ->label('Nama Mahasiswa')
+                    ->searchable(),
+
+                TextColumn::make('judul.mahasiswa.program_studi')
+                    ->label('Prodi')
+                    ->sortable(),
 
                 TextColumn::make('judul.judul')
-                    ->numeric()
+                    ->label('Judul')
+                    ->limit(20)
                     ->sortable(),
 
                 TextColumn::make('perihal')

@@ -2,10 +2,13 @@
 
 namespace App\Filament\Resources\Undangans\Schemas;
 
+use App\Models\Judul;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
 
 class UndanganForm
 {
@@ -13,9 +16,14 @@ class UndanganForm
     {
         return $schema
             ->components([
-                TextInput::make('id_judul')
-                    ->required()
-                    ->numeric(),
+                Select::make('id_judul')
+                    ->label('Judul')
+                    ->options(Judul::query()->with('mahasiswa')->get()->mapWithKeys(function ($judul) {
+                        $mahasiswaNama = $judul->mahasiswa ? $judul->mahasiswa->nama : 'Tidak ada mahasiswa';
+                        return [$judul->id => $judul->judul . ' - ' . $mahasiswaNama . ' - ' . $judul->mahasiswa->npm];
+                    }))
+                ->searchable(),
+
                 TextInput::make('nomor')
                     ->required(),
                 TextInput::make('perihal')
