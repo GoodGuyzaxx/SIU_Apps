@@ -6,6 +6,7 @@ use App\Models\Mahasiswa;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -17,17 +18,16 @@ class JudulsTable
         return $table
             ->columns([
                 TextColumn::make('mahasiswa.nama')
-                    ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('jenis')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('judul')
                     ->searchable(),
                 TextColumn::make('pembimbing_satu')
                     ->searchable(),
                 TextColumn::make('pembimbing_dua')
-                    ->searchable(),
-                TextColumn::make('penguji_satu')
-                    ->searchable(),
-                TextColumn::make('penguji_dua')
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -42,6 +42,7 @@ class JudulsTable
                 //
             ])
             ->recordActions([
+                ViewAction::make(),
                 EditAction::make(),
             ])
             ->toolbarActions([

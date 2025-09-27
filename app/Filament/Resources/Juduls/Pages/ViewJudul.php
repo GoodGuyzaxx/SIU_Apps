@@ -3,20 +3,17 @@
 namespace App\Filament\Resources\Juduls\Pages;
 
 use App\Filament\Resources\Juduls\JudulResource;
-use Filament\Actions\CreateAction;
-use Filament\Resources\Pages\ListRecords;
+use Filament\Actions\EditAction;
+use Filament\Resources\Pages\ViewRecord;
 
-class ListJuduls extends ListRecords
+class ViewJudul extends ViewRecord
 {
     protected static string $resource = JudulResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make()
-            ->label('Tambah Data Judul'),
+            EditAction::make(),
         ];
     }
-
-    protected ?string $heading = 'Judul';
 }

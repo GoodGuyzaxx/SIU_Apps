@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Juduls;
 use App\Filament\Resources\Juduls\Pages\CreateJudul;
 use App\Filament\Resources\Juduls\Pages\EditJudul;
 use App\Filament\Resources\Juduls\Pages\ListJuduls;
+use App\Filament\Resources\Juduls\Pages\ViewJudul;
 use App\Filament\Resources\Juduls\Schemas\JudulForm;
 use App\Filament\Resources\Juduls\Tables\JudulsTable;
 use App\Models\Judul;
@@ -18,9 +19,17 @@ class JudulResource extends Resource
 {
     protected static ?string $model = Judul::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $slug = 'judul';
 
-    protected static ?string $recordTitleAttribute = 'Judul';
+    protected static ?string $breadcrumb = 'Judul';
+
+
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-newspaper';
+
+    protected static ?string $navigationLabel = "Judul";
+
+
+//    protected static ?string $recordTitleAttribute = 'Judul';
 
     public static function form(Schema $schema): Schema
     {
@@ -44,6 +53,7 @@ class JudulResource extends Resource
         return [
             'index' => ListJuduls::route('/'),
             'create' => CreateJudul::route('/create'),
+            'view' => ViewJudul::route('/{record}'),
             'edit' => EditJudul::route('/{record}/edit'),
         ];
     }
