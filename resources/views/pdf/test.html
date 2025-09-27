@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surat Undangan Seminar</title>
+    <style>
+        @page {
+            size: 21.59cm 33.02cm; /* F4 size */
+            margin: 2cm 2cm 2cm 2cm;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            line-height: 1.4;
+            color: #000;
+            background: #fff;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 17.59cm; /* F4 width minus margins */
+            margin: 0 auto;
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #000;
+            padding-bottom: 15px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .logo-left, .logo-right {
+            width: 80px;
+            height: 80px;
+            flex-shrink: 0;
+        }
+
+        .logo-left img, .logo-right img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .header-text {
+            flex: 1;
+            padding: 0 20px;
+        }
+
+        .yayasan {
+            font-size: 11pt;
+            font-weight: bold;
+            color: #2c5530;
+            margin-bottom: 2px;
+        }
+
+        .universitas {
+            font-size: 16pt;
+            font-weight: bold;
+            color: #c41e3a;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .fakultas {
+            font-size: 12pt;
+            font-weight: bold;
+            color: #2c5530;
+            margin-bottom: 8px;
+        }
+
+        .sk-info {
+            font-size: 9pt;
+            color: #000;
+            margin-bottom: 5px;
+        }
+
+        .address {
+            font-size: 9pt;
+            color: #000;
+        }
+
+        /* Date */
+        .date {
+            text-align: right;
+            margin: 20px 0;
+            font-size: 12pt;
+        }
+
+        /* Letter content */
+        .letter-number {
+            margin-bottom: 5px;
+        }
+
+        .letter-subject {
+            margin-bottom: 20px;
+        }
+
+        .letter-number span, .letter-subject span {
+            display: inline-block;
+            width: 80px;
+        }
+
+        .kepada {
+            margin: 20px 0 10px 0;
+        }
+
+        .recipient {
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+
+        .greeting {
+            margin: 20px 0;
+            text-align: justify;
+            line-height: 1.6;
+        }
+
+        /* Student info table */
+        .student-info {
+            margin: 20px 0;
+        }
+
+        .info-row {
+            display: flex;
+            margin-bottom: 5px;
+            align-items: flex-start;
+        }
+
+        .info-label {
+            width: 120px;
+            flex-shrink: 0;
+        }
+
+        .info-colon {
+            width: 20px;
+            flex-shrink: 0;
+        }
+
+        .info-value {
+            flex: 1;
+        }
+
+        .highlighted-name {
+            background-color: #ffff00;
+            padding: 1px 3px;
+        }
+
+        /* Event details */
+        .event-details {
+            margin: 25px 0;
+        }
+
+        .event-title {
+            font-weight: bold;
+
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .schedule-info {
+            margin: 20px 0;
+        }
+
+        .closing {
+            margin: 30px 0 20px 0;
+            text-align: justify;
+        }
+
+        /* Signature section */
+        .signature {
+            margin-top: 50px;
+            text-align: end;
+        }
+
+        .signature-title {
+            margin-bottom: 60px;
+        }
+
+        .signature-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .signature-nrp {
+            font-size: 11pt;
+        }
+
+        /* Print specific styles */
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .container {
+                width: 100%;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <img src="">
+            <div class="logo-left">
+                <!-- Ganti dengan gambar logo kiri Anda -->
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iMzkiIHN0cm9rZT0iIzJjNTUzMCIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjx0ZXh0IHg9IjQwIiB5PSI0NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzJjNTUzMCIgZm9udC1zaXplPSIxNCIgZm9udC1mYW1pbHk9IkFyaWFsIj5MT0dPPC90ZXh0Pgo8L3N2Zz4K" alt="Logo Kiri">
+            </div>
+
+            <div class="header-text">
+                <div class="yayasan">YAYASAN UMEL MANDIRI</div>
+                <div class="universitas">UNIVERSITAS DOKTER HUSNI INGRATURI<br>UNINGGRAT PAPUA</div>
+                <div class="fakultas">FAKULTAS SAINS TEKNOLOGI DAN BISNIS</div>
+                <div class="sk-info">SK Kemenkumham Ristek Nomor : 262/E/O/2023 Tanggal 8 Maret 2023</div>
+                <div class="address">
+                    Jl. Raya Abepura, Kotaraja, Kota Jayapura – Papua (9967), 588763, HP: 081344495832<br>
+                    Laman : www.uninggratpapua.ac.id, E-mail : humas@uninggratpapua.ac.id
+                </div>
+            </div>
+
+            <div class="logo-right">
+                <!-- Ganti dengan gambar logo kanan Anda -->
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iMzkiIHN0cm9rZT0iI2M0MWUzYSIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjx0ZXh0IHg9IjQwIiB5PSI0NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2M0MWUzYSIgZm9udC1zaXplPSIxNCIgZm9udC1mYW1pbHk9IkFyaWFsIj5MT0dPPC90ZXh0Pgo8L3N2Zz4K" alt="Logo Kanan">
+            </div>
+        </div>
+    </div>
+
+    <!-- Date -->
+    <div class="date">
+        Jayapura, 10 September 2025
+    </div>
+
+    <!-- Letter Details -->
+    <div class="letter-number">
+        <span>Nomor</span> : B/07/KPS-IK/UND/2025
+    </div>
+    <div class="letter-subject">
+        <span>Perihal</span> : Undangan Seminar Hasil Penelitian Skripsi
+    </div>
+
+    <!-- Recipient -->
+    <div class="kepada">Kepada Yth :</div>
+    <div class="recipient">
+        Bapak/Ibu Pembimbing dan Penguji Skripsi<br>
+        Di<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tempat
+    </div>
+
+    <!-- Greeting -->
+    <div class="greeting">
+        Dengan hormat, bersama ini kami mengundang Bapak/Ibu untuk hadir pada Seminar Hasil Penelitian Skripsi mahasiswa Fakultas Sains Teknologi dan Bisnis Program Studi Ilmu Komputer Universitas Dokter Husni Ingratuari Papua dengan nama sebagai berikut :
+    </div>
+
+    <!-- Student Information -->
+    <div class="student-info">
+        <div class="info-row">
+            <span class="info-label">Nama</span>
+            <span class="info-colon">:</span>
+            <span class="info-value"><span class="highlighted-name">Dewantara</span></span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">NPM</span>
+            <span class="info-colon">:</span>
+            <span class="info-value">210301025</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Program Studi</span>
+            <span class="info-colon">:</span>
+            <span class="info-value">Ilmu Komputer</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Pembimbing</span>
+            <span class="info-colon">:</span>
+            <span class="info-value">1. Andi Gita Novianti, S.Kom., M.T.<br>2. Liza Angriani, S.P., M.Kom.</span>
+        </div>
+    </div>
+
+    <!-- Event Details -->
+    <div class="event-details">
+        <div class="info-row">
+            <span class="info-label">Judul</span>
+            <span class="info-colon">:</span>
+            <span class="info-value event-title">Pemanfaatan Teknologi Internet Of Things (IOT) dan Machine Learning Untuk Monitoring Pertumbuhan Tanaman Cabai Rawit.</span>
+        </div>
+
+        <div class="info-row">
+            <span class="info-label">Penguji</span>
+            <span class="info-colon">:</span>
+            <span class="info-value">1. Abd. Rachman Dayat, S.Kom., M.Kom.<br>2. Syari Rukmana Wahab, S.T., M.Kom.</span>
+        </div>
+    </div>
+
+    <!-- Schedule Information -->
+    <div class="schedule-info">
+        <div style="margin-bottom: 15px;"><strong>Yang Akan dilaksanakan Pada:</strong></div>
+        <div class="info-row">
+            <span class="info-label">Hari/Tanggal</span>
+            <span class="info-colon">:</span>
+            <span class="info-value">Jumat, 12 September 2025</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Waktu</span>
+            <span class="info-colon">:</span>
+            <span class="info-value">15.00 WIT</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Tempat</span>
+            <span class="info-colon">:</span>
+            <span class="info-value">Ruang Sidang Lantai 2</span>
+        </div>
+    </div>
+
+    <!-- Closing -->
+    <div class="closing">
+        Demikian Undangan ini kami sampaikan, Atas perhatian dan kehadirannya diucapkan terima kasih.
+    </div>
+
+    <!-- Signature -->
+    <div class="signature">
+        <div class="signature-title">Ketua Program Studi Ilmu Komputer</div>
+
+        <!-- Signature image placeholder - replace with actual signature -->
+        <div style="height: 60px; margin-bottom: 10px;">
+            <!-- Space for signature -->
+        </div>
+
+        <div class="signature-name">Surianti, S.Kom., M.Kom</div>
+        <div class="signature-nrp">NRP: 11.10.107</div>
+    </div>
+</div>
+</body>
+</html>
