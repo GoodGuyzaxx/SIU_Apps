@@ -2,10 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Undangan;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class UndanganController extends Controller
 {
+
+    public function getPDF($id) {
+        $data = Undangan::find($id);
+        $pdf = PDF::loadView('pdf.undangan_pdf', compact('data'));
+        $pdf->setPaper('F4', 'landscape');
+        return $pdf->stream();
+
+    }
     /**
      * Display a listing of the resource.
      */

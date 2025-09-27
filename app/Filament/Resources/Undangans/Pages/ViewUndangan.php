@@ -22,9 +22,7 @@ class ViewUndangan extends ViewRecord
             Action::make('Print')
                 ->icon('heroicon-o-printer')
                 ->color('success')
-                ->action(fn() => $this->redirect('https://tiktok.com'))
-
-
+                ->url(fn () => route('undangan.pdf', $dataId))
         ];
     }
 }
