@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('id_mahasiswa')->constrained('mahasiswa');
             $table->string('judul');
+            $table->string('jenis');
             $table->string('pembimbing_satu')->nullable();
             $table->string('pembimbing_dua')->nullable();
             $table->string('penguji_satu')->nullable();

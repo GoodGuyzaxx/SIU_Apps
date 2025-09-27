@@ -13,6 +13,7 @@ class Judul extends Model
     protected $fillable = [
         'id_mahasiswa',
         'judul',
+        'jenis',
         'pembimbing_satu',
         'pembimbing_dua',
         'penguji_satu',
