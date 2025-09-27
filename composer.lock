@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d06fce5a31d9da3c576b967652ed06de",
+    "content-hash": "134be6ef745a13620568d9f449db8544",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -1972,6 +1972,53 @@
                 }
             ],
             "time": "2025-08-22T14:27:06+00:00"
+        },
+        {
+            "name": "kanuni/filament-cards",
+            "version": "v0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/KanuniLab/filament-cards.git",
+                "reference": "e6e32976c12096a62582979ecf04635724388754"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/KanuniLab/filament-cards/zipball/e6e32976c12096a62582979ecf04635724388754",
+                "reference": "e6e32976c12096a62582979ecf04635724388754",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^3.2|^4.0",
+                "php": "^8.1"
+            },
+            "type": "filament-plugin",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Kanuni\\FilamentCards\\FilamentCardsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Kanuni\\FilamentCards\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "ISC"
+            ],
+            "authors": [
+                {
+                    "name": "Zvonimir Lokmer",
+                    "email": "lokmer@gmail.com"
+                }
+            ],
+            "support": {
+                "issues": "https://github.com/KanuniLab/filament-cards/issues",
+                "source": "https://github.com/KanuniLab/filament-cards/tree/v0.3"
+            },
+            "time": "2025-09-10T09:15:58+00:00"
         },
         {
             "name": "kirschbaum-development/eloquent-power-joins",
