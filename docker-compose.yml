@@ -3,9 +3,9 @@ services:
     php:
         # Build container dari Dockerfile yang sudah kita buat
         build:
-            context: ../../SIU_Apps                          # Build context adalah current directory
-            dockerfile: ../../SIU_Apps/docker/php/Dockerfile   # Path ke Dockerfile kita
-        container_name: laravel_php
+            context: ../../zaxx/SIU_Apps                          # Build context adalah current directory
+            dockerfile: ../../zaxx/SIU_Apps/docker/php/Dockerfile   # Path ke Dockerfile kita
+        container_name: laravel_php_sui_apps
         restart: unless-stopped               # Restart otomatis jika container crash
         working_dir: /var/www/html
 
@@ -28,7 +28,7 @@ services:
     nginx:
         # Menggunakan official Nginx image dengan Alpine Linux
         image: nginx:alpine
-        container_name: laravel_nginx
+        container_name: laravel_nginx_sui_apps
         restart: unless-stopped
 
         # Port mapping - map port 8080 di host ke port 80 di container
@@ -48,29 +48,7 @@ services:
         # Nginx membutuhkan PHP container untuk memproses PHP files
         depends_on:
             - php
-
-
-    # Redis Service - untuk caching dan session storage
-    redis:
-        # Redis 7 dengan Alpine Linux untuk ukuran yang minimal
-        image: redis:7-alpine
-        container_name: laravel_redis
-        restart: unless-stopped
-
-        ports:
-            - "6379:6379"
-
-        # Volume untuk persistence Redis data
-        volumes:
-            - redis_data:/data
-
-        networks:
-            - default_network
-
-        # Command untuk enable AOF (Append Only File) persistence
-        # Ini memastikan data Redis tidak hilang saat restart
-        command: redis-server --appendonly yes
-
+            - 
 # Networks definition
 # Bridge network memungkinkan containers berkomunikasi menggunakan nama service
 networks:
