@@ -28,6 +28,7 @@ class UndangansTable
                 TextColumn::make('judul.judul')
                     ->label('Judul')
                     ->limit(20)
+                    ->toggleable(true)
                     ->sortable(),
 
                 TextColumn::make('perihal')
