@@ -58,7 +58,7 @@ WORKDIR /var/www/html
 COPY ../../../../.. .
 
 # Install dependency PHP menggunakan composer
-RUN composer install --optimize-autoloader --no-interaction --no-progress
+RUN composer install  --no-interaction
 
 # Buat direktori yang dibutuhkan Laravel
 RUN mkdir -p /var/www/html/storage/logs \
@@ -78,7 +78,7 @@ RUN chown -R www-data:www-data /var/www/html \
 COPY docker/php/php.ini /usr/local/etc/php/conf.d/99-custom.ini
 
 # Expose port FPM
-EXPOSE 9000
+EXPOSE 9001
 
 # Jalankan PHP-FPM
 CMD ["php-fpm"]

@@ -43,6 +43,7 @@ services:
         # Nginx membutuhkan PHP container untuk memproses PHP files
         depends_on:
             - php
+
 # Networks definition
 # Bridge network memungkinkan containers berkomunikasi menggunakan nama service
 networks:
@@ -53,6 +54,4 @@ networks:
 # Named volumes ini dikelola oleh Docker dan persisten across container restarts
 volumes:
     mysql_data:
-        driver: local
-    redis_data:
         driver: local
