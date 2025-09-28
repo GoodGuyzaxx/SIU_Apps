@@ -19,11 +19,6 @@ services:
         networks:
             - default_network
 
-        # Dependencies memastikan urutan startup yang benar
-        # PHP container akan menunggu MySQL dan Redis ready sebelum start
-        depends_on:
-            - redis
-
     # Nginx Service - web server dan reverse proxy
     nginx:
         # Menggunakan official Nginx image dengan Alpine Linux
