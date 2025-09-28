@@ -25,12 +25,6 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->renderHook(PanelsRenderHook::HEAD_START, function () {
-                if (request()->routeIs('filament.*.auth.*')) {
-                    return "<meta http-equiv=\"Content-Security-Policy\" content=\"script-src 'self' 'unsafe-eval';\">";
-                }
-                return '';
-            })
             ->default()
             ->id('admin')
             ->path('admin')
