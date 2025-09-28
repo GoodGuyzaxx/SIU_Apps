@@ -3,8 +3,8 @@ services:
     php:
         # Build container dari Dockerfile yang sudah kita buat
         build:
-            context: ../../bus-tiket                          # Build context adalah current directory
-            dockerfile: ../../bus-tiket/docker/php/Dockerfile   # Path ke Dockerfile kita
+            context: ../../SIU_Apps                          # Build context adalah current directory
+            dockerfile: ../../SIU_Apps/docker/php/Dockerfile   # Path ke Dockerfile kita
         container_name: laravel_php
         restart: unless-stopped               # Restart otomatis jika container crash
         working_dir: /var/www/html
