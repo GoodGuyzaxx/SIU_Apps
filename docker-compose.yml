@@ -48,7 +48,6 @@ services:
         # Nginx membutuhkan PHP container untuk memproses PHP files
         depends_on:
             - php
-            - 
 # Networks definition
 # Bridge network memungkinkan containers berkomunikasi menggunakan nama service
 networks:
