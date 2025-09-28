@@ -78,7 +78,7 @@ RUN chown -R www-data:www-data /var/www/html \
 COPY docker/php/php.ini /usr/local/etc/php/conf.d/99-custom.ini
 
 # Expose port FPM
-EXPOSE 9001
+EXPOSE 9000
 
 # Jalankan PHP-FPM
 CMD ["php-fpm"]
