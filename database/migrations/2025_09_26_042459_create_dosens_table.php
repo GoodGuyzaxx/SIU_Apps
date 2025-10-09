@@ -14,8 +14,12 @@ return new class extends Migration
         Schema::create('dosen', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
-            $table->string('nidn');
-            $table->string('nrp');
+            $table->string('nidn')->nullable();
+            $table->string('nrp_nip')->nullable();
+            $table->string('inisial_dosen')->nullable();
+            $table->string('ttl')->nullable();
+            $table->string('nomor_hp')->nullable();
+            $table->string('email')->nullable();
             $table->timestamps();
         });
     }

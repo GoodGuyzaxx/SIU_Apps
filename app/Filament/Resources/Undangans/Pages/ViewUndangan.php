@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Undangans\Pages;
 
 use App\Filament\Resources\Undangans\UndanganResource;
+use App\Models\Undangan;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
@@ -16,13 +17,15 @@ class ViewUndangan extends ViewRecord
         $dataId = $this->record->id;
 
         return [
-
             EditAction::make(),
-
             Action::make('Print')
                 ->icon('heroicon-o-printer')
                 ->color('success')
+                ->hidden(auth()->user()->role != 'admin')
                 ->url(fn () => route('undangan.pdf', $dataId))
         ];
     }
+
+
 }
+

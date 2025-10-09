@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SuratKeputusan;
 use App\Models\Undangan;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -15,6 +16,17 @@ class UndanganController extends Controller
         $pdf->setPaper('F4', 'landscape');
         return $pdf->stream();
 
+    }
+
+    public function getSkPDF($id){
+        $data = SuratKeputusan::find($id);
+        $pdf = PDF::loadView('pdf.sk_pdf', compact('data'));
+//        $pdf->setPaper('A4', 'landscape');
+//        $pdf->setOption('dpi', 110);                // 96–150 cukup
+        $pdf->setOption('defaultFont', 'Times');    // fallback font
+        $pdf->setOption('isHtml5ParserEnabled', true);
+        $pdf->setOption('isRemoteEnabled', true);
+        return $pdf->stream();
     }
     /**
      * Display a listing of the resource.

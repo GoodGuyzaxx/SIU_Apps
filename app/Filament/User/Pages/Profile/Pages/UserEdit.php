@@ -1,0 +1,135 @@
+<?php
+
+namespace App\Filament\User\Pages\Profile\Pages;
+
+use App\Models\Mahasiswa;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
+use Filament\Pages\Page;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+
+
+class UserEdit extends Page implements  HasForms
+{
+    use InteractsWithForms;
+
+
+    protected string $view = 'filament.user.pages.profile.pages.user-edit';
+
+
+    public ?array $data = [];
+
+    protected ?string $heading = "Masukan Data";
+
+    protected static bool $shouldRegisterNavigation = false;
+
+    public function mount(): void {
+
+        $old = Mahasiswa::where('id_user',auth()->id())->first();
+        $this->form->fill([
+            'nama' => $old->nama,
+            'npm' => $old->npm,
+            'nomor_hp' => $old->nomor_hp,
+            'agama' => $old->agama,
+        ]);
+    }
+
+    public function form(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+//                Hidden::make('id_user')
+//                    ->default(auth()->id()),
+                Section::make()
+                    ->schema([
+                        // Grid untuk layout rapi
+                        Grid::make(2)
+                            ->schema([
+                                TextInput::make('nama')
+                                    ->label('Nama Lengkap')
+                                    ->placeholder('Ahmad Budiman')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->prefixIcon('heroicon-m-user')
+                                    ->columnSpan(2),
+
+                                TextInput::make('npm')
+                                    ->label('NPM')
+                                    ->placeholder('2023010001')
+                                    ->required()
+                                    ->unique(ignoreRecord: true)
+                                    ->numeric()
+                                    ->maxLength(255)
+                                    ->prefixIcon('heroicon-m-identification')
+                                    ->helperText('Nomor Pokok Mahasiswa')
+                                    ->columnSpan(1),
+
+                                TextInput::make('nomor_hp')
+                                    ->label('Nomor HP')
+                                    ->placeholder('81234567890')
+                                    ->required()
+                                    ->tel()
+                                    ->maxLength(15)
+                                    ->prefix('+62')
+                                    ->prefixIcon('heroicon-m-phone')
+                                    ->columnSpan(1),
+
+                                Select::make('agama')
+                                    ->label('Agama')
+                                    ->placeholder('Pilih agama')
+                                    ->required()
+                                    ->options([
+                                        'Islam' => 'Islam',
+                                        'Kristen' => 'Kristen',
+                                        'Katolik' => 'Katolik',
+                                        'Hindu' => 'Hindu',
+                                        'Buddha' => 'Buddha',
+                                        'Konghucu' => 'Konghucu',
+                                    ])
+                                    ->native(false)
+                                    ->searchable()
+                                    ->prefixIcon('heroicon-m-sparkles')
+                                    ->columnSpan(2),
+                            ]),
+                    ])
+                    ->heading('Ubah Data Mahasiswa')
+                    ->description('Pastikan semua data yang dimasukkan sudah benar')
+                    ->icon('heroicon-o-academic-cap')
+            ])
+            ->statePath('data');
+    }
+
+    public function create(): void
+    {
+
+        $data = $this->form->getState();
+
+        Mahasiswa::find($data);
+
+        Notification::make()
+            ->title("Data Berhasil Disimpan")
+            ->success()
+            ->send();
+
+    }
+
+    public function save(): void
+    {
+        $data = $this->form->getState();
+        $old = Mahasiswa::where('id_user',auth()->id())->first();
+        $old->update($data);
+
+        Notification::make()
+            ->title("Data Berhasil Disimpan")
+            ->success()
+            ->send();
+
+    }
+
+}

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class DosenSeeder extends Seeder
@@ -13,92 +14,282 @@ class DosenSeeder extends Seeder
      */
     public function run(): void
     {
-        //
-        // Daftar gelar akademik
-        $gelarDepan = ['Dr.', 'Prof.', 'Prof. Dr.', ''];
-        $gelarBelakang = ['S.Kom., M.Kom.', 'S.T., M.T.', 'S.E., M.M.', 'S.H., M.H.', 'S.Pd., M.Pd.',
-            'S.Si., M.Si.', 'S.Sos., M.A.', 'S.Psi., M.Psi.', 'S.Ked., M.Kes.', 'S.Farm., M.Farm.',
-            'S.Kom., M.T.', 'S.T., M.Kom.', 'S.E., M.Si.', 'S.Si., M.T.', 'S.Pd., M.A.',
-            'Ph.D.', 'M.Sc.', 'M.A.', 'M.Phil.', 'M.Eng.'];
-
-        // Daftar nama depan dosen
-        $namaDepan = [
-            'Ahmad', 'Bambang', 'Catur', 'Dedi', 'Eko', 'Farid', 'Gunawan', 'Hadi', 'Imam', 'Joko',
-            'Karim', 'Luthfi', 'Muhammad', 'Nur', 'Omar', 'Putu', 'Qasim', 'Rahmat', 'Sugeng', 'Teguh',
-            'Usman', 'Vino', 'Wahyu', 'Yoga', 'Zainul', 'Agus', 'Benny', 'Chandra', 'Darmawan', 'Eddy',
-            'Firman', 'Galih', 'Hendra', 'Indra', 'Jefri', 'Kevin', 'Lucky', 'Marvin', 'Nanda', 'Oscar',
-            'Pras', 'Qori', 'Ridwan', 'Syahrul', 'Taufik', 'Ucok', 'Victor', 'Wawan', 'Yosef', 'Zulfikar'
+        $dosen = [
+            [
+                'nama' => 'Assoc. Prof. Dr. H. M.H. Ingratubun, SE.,SH.,MM.,MH.,Mediator',
+                'nidn' => '12.161264.01',
+                'nrp_nip' => '04 05 014',
+                'inisial_dosen' => 'MHI',
+                'ttl' => 'Ohowait, 16 Desember 1966',
+                'nomor_hp' => null,
+                'email' => 'husni1964@ymail.com',
+            ],
+            [
+                'nama' => 'Assoc. Prof. Dr. Hj. Hernati, SH.,MM.,MH',
+                'nidn' => '12.190368.02',
+                'nrp_nip' => '03 08 010',
+                'inisial_dosen' => 'Hi',
+                'ttl' => 'Enrekang, 19 Maret 1968',
+                'nomor_hp' => '081344406666',
+                'email' => 'hernati_cenne@yahoo.co.id',
+            ],
+            [
+                'nama' => 'Assoc. Prof. Dr. Sri Iin Hastuti, SH.,MH',
+                'nidn' => '12.200374.01',
+                'nrp_nip' => '03 06 009',
+                'inisial_dosen' => 'SIH',
+                'ttl' => 'Jakarta, 20 Maret 1974',
+                'nomor_hp' => '081643226662',
+                'email' => 'sri.iinhartini@yahoo.co.id',
+            ],
+            [
+                'nama' => 'Dr. Salesius Jemaru, SH.,M.Hum',
+                'nidn' => '12.020474.02',
+                'nrp_nip' => '09 08 085',
+                'inisial_dosen' => 'SJ',
+                'ttl' => 'Todo, 2 April 1974',
+                'nomor_hp' => '081388788584/082199904917',
+                'email' => 'salesiusjemaru8@gmail.com',
+            ],
+            [
+                'nama' => 'Dr. Yohanis Sudiman Bakti, SH.,MH',
+                'nidn' => '12.180973.01',
+                'nrp_nip' => '05 04 030',
+                'inisial_dosen' => 'YSB',
+                'ttl' => 'Toraja, 18 September 1973',
+                'nomor_hp' => '081335044951/081148189',
+                'email' => 'yohanisbakti09@gmail.com',
+            ],
+            [
+                'nama' => 'Dr. H. Kajagi Kalman, SH.,MH',
+                'nidn' => '12.081068.01',
+                'nrp_nip' => '07 11 056',
+                'inisial_dosen' => 'KK',
+                'ttl' => 'Bandung, 8 Oktober 1968',
+                'nomor_hp' => '081148278',
+                'email' => null,
+            ],
+            [
+                'nama' => 'Dr. Yulianus Pabassing, SH.,MH',
+                'nidn' => '12.111068.01',
+                'nrp_nip' => '03 08 011',
+                'inisial_dosen' => 'YP',
+                'ttl' => 'Toraja, 11 Oktober 1968',
+                'nomor_hp' => '081344271236',
+                'email' => null,
+            ],
+            [
+                'nama' => 'Dr. Wilhelmus Kenyaan, SH.,MH',
+                'nidn' => '12.250673.01',
+                'nrp_nip' => '03 01 005',
+                'inisial_dosen' => 'WK',
+                'ttl' => 'Ambon, 26 Juni 1973',
+                'nomor_hp' => '085244781818',
+                'email' => 'willyrenyaan25@gmail.com',
+            ],
+            [
+                'nama' => 'Dr. Semy B.A. Launussa, SH.,MH',
+                'nidn' => '12.060968.01',
+                'nrp_nip' => '05 04 029',
+                'inisial_dosen' => 'SL',
+                'ttl' => 'Damer, 6 September 1968',
+                'nomor_hp' => '085244050609',
+                'email' => 'semylatu@gmail.com',
+            ],
+            [
+                'nama' => 'Dr. Roida Hutabalian, SH.,MH',
+                'nidn' => '12.121266.01',
+                'nrp_nip' => '05 04 026',
+                'inisial_dosen' => 'RH',
+                'ttl' => 'Hutaginjang, 12 Desember 1966',
+                'nomor_hp' => '081354076317',
+                'email' => 'roidahutabalian55@gmail.com',
+            ],
+            [
+                'nama' => 'Dr. Edy Purwito, S.Pd.,SH.,M.Hum',
+                'nidn' => '12.120264.01',
+                'nrp_nip' => '131807756',
+                'inisial_dosen' => 'EP',
+                'ttl' => 'Nguntoronadi, 12 Desember 1964',
+                'nomor_hp' => '081247048038',
+                'email' => 'purwitoedy64@gmail.com',
+            ],
+            [
+                'nama' => 'Assoc. Prof. Dr. Hj. Fitriyah Ingratubun, SH.,MH',
+                'nidn' => '12.140387.01',
+                'nrp_nip' => '09 08 084',
+                'inisial_dosen' => 'FI',
+                'ttl' => 'Sorong, 14 Maret 1987',
+                'nomor_hp' => '085299444467',
+                'email' => 'ingratubun14_fitri@yahoo.com',
+            ],
+            [
+                'nama' => 'Siska. S.D. Pongkorung, SH.,MH',
+                'nidn' => '12.140971.02',
+                'nrp_nip' => '06 05 001',
+                'inisial_dosen' => 'SP',
+                'ttl' => 'Minahasa, 14 September 1971',
+                'nomor_hp' => '085244592699',
+                'email' => 'siskasifinedevita@gmail.com',
+            ],
+            [
+                'nama' => 'Arman Koedoeboen, SH.,MH',
+                'nidn' => '12.170985.01',
+                'nrp_nip' => '09 12 082',
+                'inisial_dosen' => 'AK',
+                'ttl' => 'Ohowait, 17 September 1985',
+                'nomor_hp' => '081343414363',
+                'email' => 'armankoedoeboen@yahoo.com',
+            ],
+            [
+                'nama' => 'Dr. H. Baharudin S. Ingratubun, SE.,SH.,MM.,MH',
+                'nidn' => '14.271088.01',
+                'nrp_nip' => '14 11 127',
+                'inisial_dosen' => 'BSI',
+                'ttl' => 'Sorong, 27 Oktober 1988',
+                'nomor_hp' => '085399030240',
+                'email' => 'ingratubunbahar27@yahoo.co.id',
+            ],
+            [
+                'nama' => 'Dr. Samsul Tamher, SH.,MH',
+                'nidn' => '12.050581.01',
+                'nrp_nip' => '06 05 046',
+                'inisial_dosen' => 'ST',
+                'ttl' => 'Ohowait, 5 Mei 1981',
+                'nomor_hp' => '081248930405/081344190345',
+                'email' => 'samsultamhersamsul02046@gmail.com',
+            ],
+            [
+                'nama' => 'Muhamad Hafiz Ingsaputro, SH., MH',
+                'nidn' => null,
+                'nrp_nip' => '15 09 141',
+                'inisial_dosen' => 'MH',
+                'ttl' => 'Sorong, 21 April 1990',
+                'nomor_hp' => '085254432525',
+                'email' => 'mhvsaputra@gmail.com',
+            ],
+            [
+                'nama' => 'William Haustion Sinaga, SH.,MH',
+                'nidn' => null,
+                'nrp_nip' => null,
+                'inisial_dosen' => 'WHS',
+                'ttl' => null,
+                'nomor_hp' => '081344432175',
+                'email' => null,
+            ],
+            [
+                'nama' => 'Jumriah, S.H., M.Kn',
+                'nidn' => null,
+                'nrp_nip' => null,
+                'inisial_dosen' => 'JH',
+                'ttl' => null,
+                'nomor_hp' => '081240176515',
+                'email' => null,
+            ],
+            [
+                'nama' => 'Tri Yanuaria, S.H., M.Hum.',
+                'nidn' => null,
+                'nrp_nip' => null,
+                'inisial_dosen' => 'TY',
+                'ttl' => null,
+                'nomor_hp' => '081248319714',
+                'email' => null,
+            ],
+            [
+                'nama' => 'Natasya Auliya Husain, SH.,MH',
+                'nidn' => null,
+                'nrp_nip' => null,
+                'inisial_dosen' => 'NAH',
+                'ttl' => null,
+                'nomor_hp' => '081248310629',
+                'email' => null,
+            ],
+            [
+                'nama' => 'Taufik Irpan Awalluddin, SH.,MH',
+                'nidn' => null,
+                'nrp_nip' => null,
+                'inisial_dosen' => 'TIA',
+                'ttl' => null,
+                'nomor_hp' => '081248511234',
+                'email' => null,
+            ],
+            [
+                'nama' => 'Muhammad Toha Ingratubun, S.H., M.H.',
+                'nidn' => null,
+                'nrp_nip' => null,
+                'inisial_dosen' => 'MTI',
+                'ttl' => null,
+                'nomor_hp' => '081320999943',
+                'email' => null,
+            ],
+            [
+                'nama' => 'Fransiskus X. Watkat, S.H., M.Hum',
+                'nidn' => null,
+                'nrp_nip' => null,
+                'inisial_dosen' => 'FW',
+                'ttl' => null,
+                'nomor_hp' => '081344541777',
+                'email' => null,
+            ],
+            [
+                'nama' => 'Eren Arif Budiman, S.H.,M.H',
+                'nidn' => null,
+                'nrp_nip' => null,
+                'inisial_dosen' => 'EA',
+                'ttl' => null,
+                'nomor_hp' => null,
+                'email' => null,
+            ],
+            [
+                'nama' => 'Kompol (Purn) Jahja Rumra, S.H.,M.H',
+                'nidn' => null,
+                'nrp_nip' => null,
+                'inisial_dosen' => 'JR',
+                'ttl' => null,
+                'nomor_hp' => null,
+                'email' => null,
+            ],
+            [
+                'nama' => 'H-JA Dr. H. Tahtu Usman, SH.,MH',
+                'nidn' => null,
+                'nrp_nip' => null,
+                'inisial_dosen' => 'TU',
+                'ttl' => null,
+                'nomor_hp' => null,
+                'email' => null,
+            ],
+            [
+                'nama' => 'Natasya Auliya Husain, SH.,MH',
+                'nidn' => null,
+                'nrp_nip' => null,
+                'inisial_dosen' => 'NAH',
+                'ttl' => null,
+                'nomor_hp' => null,
+                'email' => null,
+            ],
+            [
+                'nama' => 'Arie Tri Hartantyo, SE.,MH',
+                'nidn' => null,
+                'nrp_nip' => null,
+                'inisial_dosen' => 'ATH',
+                'ttl' => null,
+                'nomor_hp' => null,
+                'email' => null,
+            ],
         ];
 
-        // Daftar nama belakang dosen
-        $namaBelakang = [
-            'Pratama', 'Wijaya', 'Santoso', 'Nugraha', 'Setiawan', 'Firmansyah', 'Budiman', 'Suryana',
-            'Hermawan', 'Gunawan', 'Ramadhan', 'Hakim', 'Rahman', 'Irawan', 'Adiputra', 'Maulana',
-            'Hidayat', 'Syahputra', 'Purwanto', 'Mahendra', 'Suryadi', 'Ardiansyah', 'Kurniawan',
-            'Handoko', 'Suharto', 'Prasetyo', 'Wibowo', 'Sutrisno', 'Hartono', 'Sumardi', 'Rustam',
-            'Syamsudin', 'Baharuddin', 'Hasanuddin', 'Syaifuddin', 'Jamaluddin', 'Khairuddin', 'Nasruddin',
-            'Salahuddin', 'Kamaruddin', 'Fachruddin', 'Nuruddin', 'Alauddin', 'Syamsuddin', 'Ainuddin',
-            'Akbar', 'Anwar', 'Ismail', 'Yusuf', 'Ibrahim'
-        ];
-
-        $data = [];
-        $usedNIDN = [];
-        $usedNRP = [];
-
-        // Generate 200 data dosen
-        for ($i = 1; $i <= 200; $i++) {
-            // Generate NIDN (Nomor Induk Dosen Nasional) - 10 digit
-            // Format: DDMMYYYY00 (tanggal lahir + nomor urut)
-            do {
-                $tanggal = str_pad(rand(1, 28), 2, '0', STR_PAD_LEFT);
-                $bulan = str_pad(rand(1, 12), 2, '0', STR_PAD_LEFT);
-                $tahun = rand(1960, 1985); // Tahun lahir dosen
-                $urut = str_pad(rand(1, 99), 2, '0', STR_PAD_LEFT);
-                $nidn = $tanggal . $bulan . $tahun . $urut;
-            } while (in_array($nidn, $usedNIDN));
-            $usedNIDN[] = $nidn;
-
-            // Generate NRP (Nomor Registrasi Pegawai) - 18 digit
-            // Format: YYYYMMDD + 10 digit unik
-            do {
-                $tahunMasuk = rand(1995, 2020);
-                $bulanMasuk = str_pad(rand(1, 12), 2, '0', STR_PAD_LEFT);
-                $tanggalMasuk = str_pad(rand(1, 28), 2, '0', STR_PAD_LEFT);
-                $nomorUnik = str_pad(rand(1000000000, 9999999999), 10, '0', STR_PAD_LEFT);
-                $nrp = $tahunMasuk . $bulanMasuk . $tanggalMasuk . $nomorUnik;
-            } while (in_array($nrp, $usedNRP));
-            $usedNRP[] = $nrp;
-
-            // Generate nama dengan gelar
-            $gelarDpn = $gelarDepan[array_rand($gelarDepan)];
-            $namaLengkap = $namaDepan[array_rand($namaDepan)] . ' ' . $namaBelakang[array_rand($namaBelakang)];
-            $gelarBlkg = $gelarBelakang[array_rand($gelarBelakang)];
-
-            // Gabungkan nama dengan gelar
-            $namaFinal = '';
-            if (!empty($gelarDpn)) {
-                $namaFinal = $gelarDpn . ' ';
-            }
-            $namaFinal .= $namaLengkap . ', ' . $gelarBlkg;
-
-            $data[] = [
-                'nama' => $namaFinal,
-                'nidn' => $nidn,
-                'nrp' => $nrp,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
-
-            // Insert data setiap 50 records untuk menghindari memory limit
-            if ($i % 50 == 0) {
-                DB::table('dosen')->insert($data);
-                $data = []; // Reset array
-            }
-        }
-
-        // Insert sisa data jika ada
-        if (!empty($data)) {
-            DB::table('dosen')->insert($data);
+        foreach ($dosen as $data) {
+            DB::table('dosen')->insert([
+                'nama' => $data['nama'],
+                'nidn' => $data['nidn'],
+                'nrp_nip' => $data['nrp_nip'],
+                'inisial_dosen' => $data['inisial_dosen'],
+                'ttl' => $data['ttl'],
+                'nomor_hp' => $data['nomor_hp'],
+                'email' => $data['email'],
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
         }
     }
 }

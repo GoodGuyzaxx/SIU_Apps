@@ -44,6 +44,11 @@ class DosenResource extends Resource
         ];
     }
 
+//    public static function canAccess(): bool
+//    {
+//        return str_ends_with(auth()->user()->role, 'admin');
+//    }
+
     public static function getPages(): array
     {
         return [
