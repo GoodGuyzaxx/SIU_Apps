@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\User\Pages\Auth\Login;
 use App\Filament\User\Pages\Profile\Pages\UserForm;
+use App\Http\Middleware\RedirectPanel;
 use App\Models\User;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -30,6 +31,7 @@ class UserPanelProvider extends PanelProvider
             ->id('user')
             ->path('user')
             ->login(Login::class)
+            ->brandLogo( fn() => view('filament.logo'))
             ->registration()
             ->viteTheme('resources/css/filament/user/theme.css')
             ->colors([
@@ -56,6 +58,7 @@ class UserPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                RedirectPanel::class
             ])
             ->authMiddleware([
                 Authenticate::class,
