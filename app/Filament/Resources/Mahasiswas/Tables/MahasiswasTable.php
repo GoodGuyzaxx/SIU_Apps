@@ -17,8 +17,8 @@ class MahasiswasTable
                 //
                 TextColumn::make('nama')->searchable(true),
                 TextColumn::make('npm')->searchable(true),
-                TextColumn::make('fakultas'),
-                TextColumn::make('program_studi'),
+                TextColumn::make('nomor_hp'),
+                TextColumn::make('agama'),
             ])
             ->filters([
                 //
