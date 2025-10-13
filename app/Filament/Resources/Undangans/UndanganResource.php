@@ -25,6 +25,8 @@ class UndanganResource extends Resource
 
     protected static ?string $navigationLabel = "Undangan";
 
+    protected static ?int $navigationSort = 5;
+
     protected static ?string $slug = 'undangan';
 
     protected static ?string $breadcrumb = 'Undangan';
