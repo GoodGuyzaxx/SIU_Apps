@@ -18,6 +18,7 @@ class UndanganController extends Controller
 
     }
 
+
     public function getSkPDF($id){
         $data = SuratKeputusan::find($id);
         $pdf = PDF::loadView('pdf.sk_pdf', compact('data'));

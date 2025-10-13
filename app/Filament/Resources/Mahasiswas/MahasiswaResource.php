@@ -24,6 +24,7 @@ class MahasiswaResource extends Resource
 //    protected static ?string $recordTitleAttribute = 'Mahasiswa';
 
     protected static ?string $breadcrumb = 'Mahasiswa';
+
     protected static string | UnitEnum | null $navigationGroup  = "Data Master";
     protected static ?string $navigationLabel = "Mahasiswa";
 
