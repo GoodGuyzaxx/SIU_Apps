@@ -21,10 +21,6 @@ class UndangansTable
                     ->label('Nama Mahasiswa')
                     ->searchable(),
 
-                TextColumn::make('judul.mahasiswa.program_studi')
-                    ->label('Prodi')
-                    ->sortable(),
-
                 TextColumn::make('judul.judul')
                     ->label('Judul')
                     ->limit(20)
