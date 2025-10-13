@@ -21,11 +21,31 @@ class DosensTable
 
                 TextColumn::make('nidn')
                     ->label('NIDN')
+                    ->default('-')
                     ->searchable(),
 
                 TextColumn::make('nrp')
                     ->label('NRP')
-                    ->searchable(),
+                    ->searchable()
+                    ->default('-'),
+
+                TextColumn::make('inisial_dosen')
+                    ->label('Inisial Dosen')
+                    ->searchable()
+                    ->default('-'),
+
+                TextColumn::make('nomor_hp')
+                    ->label('Nomor')
+                    ->searchable()
+                    ->default('-'),
+
+                TextColumn::make('email')
+                    ->label('Email')
+                    ->default('-'),
+
+                TextColumn::make('ttl')
+                    ->label('Tempat Tanggl Lahir')
+                    ->default('-'),
 
 
             ])
