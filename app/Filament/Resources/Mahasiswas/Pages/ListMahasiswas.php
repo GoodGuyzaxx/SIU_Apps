@@ -11,6 +11,7 @@ class ListMahasiswas extends ListRecords
 {
     protected static string $resource = MahasiswaResource::class;
 
+    protected ?string $heading = 'Mahasiswa';
     protected function getHeaderActions(): array
     {
         return [
@@ -19,6 +20,8 @@ class ListMahasiswas extends ListRecords
             ,
         ];
     }
+
+
 
 
 }
