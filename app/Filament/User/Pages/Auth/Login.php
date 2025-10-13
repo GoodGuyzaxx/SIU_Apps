@@ -16,15 +16,7 @@ class Login extends \Filament\Auth\Pages\Login
                 $this->getEmailFormComponent(),
                 $this->getPasswordFormComponent(),
                 $this->getRememberFormComponent(),
-                $this->getButton()
             ]);
 
-    }
-
-    protected function getButton(): Action{
-        return Action::make('Admin')
-            ->link()
-            ->label("Login Sebagai Admin")
-            ->url( fn () => url('admin/login'));
     }
 }
