@@ -20,6 +20,8 @@ class PengajuanResource extends Resource
 
     protected static ?string $slug = 'pengajuan';
 
+    protected static ?int $navigationSort = 1;
+
     protected static ?string $navigationLabel = "Pengajuan Judul";
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-book-open';

@@ -19,7 +19,11 @@ class SuratKeputusanResource extends Resource
 {
     protected static ?string $model = SuratKeputusan::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $navigationLabel = 'Surat Keputusan';
+
+    protected static ?int $navigationSort = 2;
+
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
     protected static ?string $recordTitleAttribute = 'SuratKeputusan';
 

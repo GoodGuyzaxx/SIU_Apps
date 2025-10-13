@@ -20,9 +20,9 @@ class JudulResource extends Resource
     protected static ?string $model = Judul::class;
 
     protected static ?string $slug = 'judul';
+    protected static ?int $navigationSort = 3;
 
     protected static ?string $breadcrumb = 'Judul';
-
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-newspaper';
 

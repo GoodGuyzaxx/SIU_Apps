@@ -5,8 +5,10 @@ namespace App\Filament\User\Pages;
 use App\Filament\Resources\Juduls\JudulResource;
 use App\Models\Judul;
 use App\Models\Mahasiswa;
+use App\Models\UsulanJudul;
 use BackedEnum;
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Auth;
 
 class LaporanPersetujuanSkrispi extends Page
 {
@@ -20,6 +22,22 @@ class LaporanPersetujuanSkrispi extends Page
 
 //    public ?Mahasiswa $mahasiswa = null;
     public ?Judul $record= null;
+
+    public function hideNav(): bool {
+        $id = Auth::user()->id;
+        $idMhs = Mahasiswa::where('id_user', $id)->first();
+        if ($idMhs != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        $instance = new static();
+        return $instance->hideNav();
+    }
 
     protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-document-check';
 
