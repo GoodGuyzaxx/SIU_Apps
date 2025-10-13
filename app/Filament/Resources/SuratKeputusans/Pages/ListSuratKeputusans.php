@@ -10,10 +10,13 @@ class ListSuratKeputusans extends ListRecords
 {
     protected static string $resource = SuratKeputusanResource::class;
 
+    protected ?string $heading = "Surat Keputusan";
+
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+//            CreateAction::make()
+//            ->label('Surat Keputusan'),
         ];
     }
 }
