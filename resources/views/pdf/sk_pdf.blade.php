@@ -6,23 +6,26 @@
     <title>Surat Keputusan Dosen Penguji</title>
     <style>
         @page {
-            size: 25.59cm 40cm;
-            margin: 0;
+            /*size: 21cm 33cm;*/
+            /*padding: 1cm;*/
+            size : 210mm 350mm;
         }
 
         body {
             font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
+            font-size: 10pt;
             text-align: justify;
             margin-top: 0;
-            margin-bottom: 1.8cm;
-            margin-left: 1.8cm;
-            margin-right: 1.8cm;
+            /*padding-left: 1cm;*/
+            /*padding-right: 1cm;*/
+            /*margin-bottom: 1.8cm;*/
+            /*margin-left: 1.8cm;*/
+            /*margin-right: 1.8cm;*/
             line-height: 1.3; /* Sedikit dilonggarkan kembali untuk readability */
         }
 
         .header h2 {
-            font-size: 15pt;
+            font-size: 12pt;
             font-weight: bold;
             margin: 0;
             padding: 0;
@@ -38,19 +41,19 @@
         .title {
             text-align: center;
             font-weight: bold;
-            font-size: 14pt;
+            font-size: 12pt;
             margin-bottom: 0;
         }
         .title-sub{
             text-align: center;
             font-weight: bold;
-            font-size: 14pt;
+            font-size: 12pt;
             margin-top: 0;
             margin-bottom: 0;
         }
         .sk-number {
             text-align: center;
-            font-size: 14pt;
+            font-size: 11pt;
             margin-top: 0;
             margin-bottom: 0;
         }
