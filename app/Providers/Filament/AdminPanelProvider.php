@@ -29,8 +29,9 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login()
-            ->breadcrumbs(false)
+            ->login(fn() => redirect()->route('filament.user.auth.login'))
+            ->brandLogo( fn() => view('filament.logo'))
+//            ->breadcrumbs(false)
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->colors([
                 'primary' => Color::Amber,
