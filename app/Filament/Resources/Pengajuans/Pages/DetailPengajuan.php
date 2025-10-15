@@ -91,6 +91,7 @@ class DetailPengajuan extends Page
     {
         $data = $this->approveForm->getState();
 //        dd($this->record->mahasiswa->id);
+//        dd($this->record->minat_kekuhusan);
         $this->record->update([
             'status'  => 'Disetujui',
             'catatan' => null,
@@ -98,6 +99,7 @@ class DetailPengajuan extends Page
 
         $dataJudul = Judul::create([
            'id_mahasiswa' => $this->record->mahasiswa->id,
+            'minat' => $this->record->minat_kekuhusan,
             'judul' => $this->judul,
             'jenis' => 'proposal',
             'pembimbing_satu' => $data['pembimbing_satu'],
