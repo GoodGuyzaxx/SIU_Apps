@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Undangans\Schemas;
 use App\Models\Judul;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Schemas\Schema;
@@ -28,11 +29,12 @@ class UndanganForm
                     ->required(),
                 TextInput::make('perihal')
                     ->required(),
+
                 DatePicker::make('tanggal_hari')
                     ->required(),
                 TimePicker::make('waktu')
                     ->required(),
-                TextInput::make('tempat')
+                Textarea::make('tempat')
                     ->required(),
             ]);
     }
