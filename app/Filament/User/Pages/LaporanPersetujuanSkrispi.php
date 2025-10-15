@@ -26,10 +26,16 @@ class LaporanPersetujuanSkrispi extends Page
     public function hideNav(): bool {
         $id = Auth::user()->id;
         $idMhs = Mahasiswa::where('id_user', $id)->first();
-        if ($idMhs != null) {
-            return true;
-        } else {
+
+        if ($idMhs === null) {
             return false;
+        } else {
+            $idJudul = Judul::where('id_mahasiswa', $idMhs->id)->first();
+            if ($idJudul != null) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
