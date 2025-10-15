@@ -354,7 +354,6 @@
             <li>Rektor Uningrat Papua (Sebagai Laporan);</li>
             <li>Dekan Fakultas Hukum Uningrat Papua;</li>
             <li>Saudara/i {{$data->judul->mahasiswa->nama}}</li>
-            <li>File</li>
         </ol>
     </div>
 </div>
