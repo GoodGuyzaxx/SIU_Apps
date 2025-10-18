@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Judul;
 use App\Models\SuratKeputusan;
 use App\Models\Undangan;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -28,6 +29,28 @@ class UndanganController extends Controller
         $pdf->setOption('isHtml5ParserEnabled', true);
         $pdf->setOption('isRemoteEnabled', true);
         return $pdf->stream();
+    }
+
+    public function getBeritaAcaraPdf($id,$jenis){
+        $data = Judul::find($id);
+        if ($jenis != 'proposal') {
+            $pdf = PDF::loadView('pdf.berita_acara_hasil_pdf', compact('data'));
+//        $pdf->setPaper('A4', 'landscape');
+//        $pdf->setOption('dpi', 110);                // 96–150 cukup
+            $pdf->setOption('defaultFont', 'Times');    // fallback font
+            $pdf->setOption('isHtml5ParserEnabled', true);
+            $pdf->setOption('isRemoteEnabled', true);
+            return $pdf->stream();
+        }
+        $pdf = PDF::loadView('pdf.berita_acara_proposal_pdf', compact('data'));
+//        $pdf->setPaper('A4', 'landscape');
+//        $pdf->setOption('dpi', 110);                // 96–150 cukup
+        $pdf->setOption('defaultFont', 'Times');    // fallback font
+        $pdf->setOption('isHtml5ParserEnabled', true);
+        $pdf->setOption('isRemoteEnabled', true);
+        return $pdf->stream();
+
+
     }
     /**
      * Display a listing of the resource.

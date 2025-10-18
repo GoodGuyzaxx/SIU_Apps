@@ -10,3 +10,5 @@ Route::get('/', function () {
 Route::get('/admin/undangan/pdf/{id}',[\App\Http\Controllers\UndanganController::class, 'getPDF'] )->name('undangan.pdf');
 
 Route::get('/admin/sk/pdf/{id}', [UndanganController::class, 'getSkPDF'] )->name('skPDF');
+
+Route::get('/admin/berita-acara/pdf/{jenis}/{id}', [UndanganController::class, 'getBeritaAcaraPdf'] )->name('beritaPDF');
