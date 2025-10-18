@@ -7,18 +7,12 @@ use App\Filament\Resources\Pengajuans\PengajuanResource;
 use App\Models\Dosen;
 use App\Models\Judul;
 use App\Models\SuratKeputusan;
-use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
-use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
-use Illuminate\Database\Eloquent\Model;
 
 class DetailPengajuan extends Page
 {
