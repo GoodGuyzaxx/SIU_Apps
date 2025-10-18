@@ -20,6 +20,7 @@ class UserForm extends Page implements  HasForms
 {
 
     use InteractsWithForms;
+
     protected string $view = 'filament.user.pages.profile.pages.user-form';
 
 
