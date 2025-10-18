@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Juduls\Schemas;
 use App\Models\Dosen;
 use App\Models\Mahasiswa;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use Kanuni\FilamentCards\CardItem;
@@ -30,7 +31,7 @@ class JudulForm
                         'skripsi' => 'Skripsi',
                     ]),
 
-                TextInput::make('judul')
+                Textarea::make('judul')
                     ->required(),
 
                 Select::make('pembimbing_satu')
@@ -52,7 +53,6 @@ class JudulForm
                     ->label('Pembimbing Kedua')
                     ->options(Dosen::query()->pluck('nama', 'nama'))
                     ->searchable(),
-
 
             ]);
     }
