@@ -21,8 +21,6 @@ class OnlyAdmin
             abort(403, 'Anda tidak memiliki hak akses!');
 
         }
-
-
         return $next($request);
     }
 }
