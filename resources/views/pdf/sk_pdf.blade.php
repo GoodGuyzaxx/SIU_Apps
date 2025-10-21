@@ -133,7 +133,7 @@
 
         .tembusan {
             margin-top: 25px;
-            font-size: 11pt;
+            font-size: 9pt;
         }
 
         .tembusan p {
@@ -148,7 +148,7 @@
             list-style-position: outside;
         }
         .tembusan ol li {
-            padding-bottom: 1px;
+
         }
 
         .header-image {
