@@ -19,8 +19,8 @@
         body {
             /*font-family: 'Times New Roman', Times, serif;*/
             font-family: Arial, Helvetica, sans-serif;
-            font-size: 11pt;
-            line-height: 1.2;
+            font-size: 10pt;
+            line-height: 1.5;
             margin-right: 50px;
             color: #000;
             background: #fff;
@@ -46,6 +46,7 @@
 
         /* Letter Details */
         .letter-header {
+            margin-left: 30px;
             margin-bottom: 5px;
         }
 
@@ -55,7 +56,7 @@
         }
 
         .letter-label {
-            width: 80px;
+            width: 70px;
             display: inline-block;
         }
 
@@ -96,7 +97,7 @@
 
         /* Student Info Table */
         .student-info {
-            margin: 20px 0 20px 80px;
+            /*margin: 20px 0 20px 80px;*/
         }
 
         .info-table {
@@ -163,8 +164,8 @@
 
         .signature-box {
             display: inline-block;
-            text-align: center;
             min-width: 250px;
+            text-align: left;
         }
 
         .signature-date {
@@ -218,7 +219,7 @@
         }
 
         .add-content-padding {
-            padding-left: 30px ;
+            padding-left: 70px ;
         }
     </style>
 </head>
@@ -297,14 +298,8 @@
                     <td class="info-colon">:</td>
                     <td>{{$data->judul->judul}}</td>
                 </tr>
-            </table>
-        </div>
-
-        <!-- Schedule -->
-        <div class="schedule-section">
-            <table class="schedule-table">
                 <tr>
-                    <td class="schedule-label">Pada hari, tanggal</td>
+                    <td class="info-label">Pada hari, tanggal</td>
                     <td class="info-colon">:</td>
                     <td>{{\Carbon\Carbon::parse($data->tanggal_hari)->isoFormat('dddd,d MMMM YYYY')}}</td>
                 </tr>
@@ -321,6 +316,27 @@
             </table>
         </div>
 
+{{--        <!-- Schedule -->--}}
+{{--        <div class="schedule-section">--}}
+{{--            <table class="schedule-table">--}}
+{{--                <tr>--}}
+{{--                    <td class="schedule-label">Pada hari, tanggal</td>--}}
+{{--                    <td class="info-colon">:</td>--}}
+{{--                    <td>{{\Carbon\Carbon::parse($data->tanggal_hari)->isoFormat('dddd,d MMMM YYYY')}}</td>--}}
+{{--                </tr>--}}
+{{--                <tr>--}}
+{{--                    <td class="schedule-label">Waktu</td>--}}
+{{--                    <td class="info-colon">:</td>--}}
+{{--                    <td>{{ \Illuminate\Support\Carbon::parse($data->waktu)->format('H.i').' WIT' ?? '-' }} s/d Selesai</td>--}}
+{{--                </tr>--}}
+{{--                <tr>--}}
+{{--                    <td class="schedule-label">Tempat</td>--}}
+{{--                    <td class="info-colon">:</td>--}}
+{{--                    <td>{{$data->tempat}}</td>--}}
+{{--                </tr>--}}
+{{--            </table>--}}
+{{--        </div>--}}
+
         <!-- Closing -->
         <div class="closing">
             Atas perhatian dan kehadirannya kami ucapkan terima kasih.
@@ -329,16 +345,16 @@
 
 
     <!-- Notes -->
-    <div class="notes-section">
-        <div class="notes-title"><strong>Catatan :</strong></div>
-        <ol class="notes-list">
-            <li>Mahasiswa Wajib Menggunakan Jas Almamater dan Dasi</li>
-            <li>Bapak/Ibu Dosen Wajib Menggunakan Jas Almamater UNINGRAT Papua Warna Merah</li>
-        </ol>
-    </div>
+{{--    <div class="notes-section">--}}
+{{--        <div class="notes-title"><strong>Catatan :</strong></div>--}}
+{{--        <ol class="notes-list">--}}
+{{--            <li>Mahasiswa Wajib Menggunakan Jas Almamater dan Dasi</li>--}}
+{{--            <li>Bapak/Ibu Dosen Wajib Menggunakan Jas Almamater UNINGRAT Papua Warna Merah</li>--}}
+{{--        </ol>--}}
+{{--    </div>--}}
 
     <!-- Signature -->
-    <div class="signature-section">
+    <div class="signature-section" style="margin-right: 20px">
         <div class="signature-box">
             <div class="signature-date">Jayapura, {{\Carbon\Carbon::parse($data->create_at)->translatedFormat('d F Y')}}</div>
             <div class="signature-role">a.n Dekan<br>Ketua Program Studi Ilmu Hukum</div>
@@ -348,7 +364,7 @@
     </div>
 
     <!-- Tembusan -->
-    <div class="tembusan-section">
+    <div class="tembusan-section" style="margin-left: 30px">
         <div class="tembusan-title" style="text-decoration: underline;"><strong>Tembusan Kepada Yth.</strong></div>
         <ol class="tembusan-list">
             <li>Rektor Uningrat Papua (Sebagai Laporan);</li>
