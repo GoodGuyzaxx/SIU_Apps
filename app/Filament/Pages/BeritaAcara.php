@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Models\Judul;
 use BackedEnum;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TimePicker;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -19,6 +20,8 @@ class BeritaAcara extends Page
     protected ?string $heading = 'Berita Acara';
 
     public ?string $id_judul = null;
+
+    public ?string $waktu = null;
 
     public ?string $jenis = null;
     protected static ?int $navigationSort = 6;
@@ -37,6 +40,13 @@ class BeritaAcara extends Page
                         ])
                         ->required()
                     ->statePath('jenis'),
+                    TimePicker::make('waktu')
+                        ->label('Waktu Ujian')
+                        ->required()
+                        ->seconds(false)
+                        ->statePath('waktu'),
+
+
                     Select::make('id_judul')
                         ->label('Mahasiswa')
                         ->options(Judul::query()->with('mahasiswa')->get()->mapWithKeys(function ($judul) {
@@ -54,6 +64,6 @@ class BeritaAcara extends Page
 
     public function cetak(): void {
         $data = $this->cetakForm->getState();
-       $this->redirect(route('beritaPDF',[$data['id_judul'],$data['jenis']]));
+       $this->redirect(route('beritaPDF',[$data['id_judul'],$data['jenis'],$data['waktu']]));
     }
 }
