@@ -26,6 +26,8 @@ class MahasiswaResource extends Resource
     protected static ?string $breadcrumb = 'Mahasiswa';
 
     protected static string | UnitEnum | null $navigationGroup  = "Data Master";
+
+    protected static ?int $navigationSort = 11;
     protected static ?string $navigationLabel = "Mahasiswa";
 
     public static function form(Schema $schema): Schema

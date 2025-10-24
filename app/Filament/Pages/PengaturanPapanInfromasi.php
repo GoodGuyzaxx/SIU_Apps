@@ -15,12 +15,16 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use App\Models\PapanInformasi;
+use UnitEnum;
 
 class PengaturanPapanInfromasi extends Page
 {
     protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-globe-alt';
     protected static ?string $navigationLabel = 'Papan Informasi Digital';
     protected string $view = 'filament.pages.papan-informasi';
+
+    protected static string | UnitEnum | null $navigationGroup = "Display & TV";
+    protected static ?int $navigationSort = 10;
 
     public ?string $urlYT = null;
     public ?array $data = [];

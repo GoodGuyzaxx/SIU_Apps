@@ -24,6 +24,7 @@ class DosenResource extends Resource
     protected static string | UnitEnum | null $navigationGroup = "Data Master";
 
     protected static ?string $navigationLabel = "Dosen";
+    protected static ?int $navigationSort = 11;
 
 //    protected static ?string $recordTitleAttribute = 'Dosenss';
 

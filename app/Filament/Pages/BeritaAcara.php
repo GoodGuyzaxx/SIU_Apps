@@ -9,6 +9,7 @@ use Filament\Forms\Components\TimePicker;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use UnitEnum;
 
 class BeritaAcara extends Page
 {
@@ -25,6 +26,8 @@ class BeritaAcara extends Page
 
     public ?string $jenis = null;
     protected static ?int $navigationSort = 6;
+
+    protected static string | UnitEnum | null $navigationGroup = 'Akademik';
 
 
     static public function cetakForm(Schema $scheme): Schema {

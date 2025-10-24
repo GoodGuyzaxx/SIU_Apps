@@ -14,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class UndanganResource extends Resource
 {
@@ -30,6 +31,8 @@ class UndanganResource extends Resource
     protected static ?string $slug = 'undangan';
 
     protected static ?string $breadcrumb = 'Undangan';
+
+    protected static string | UnitEnum | null $navigationGroup = 'Akademik';
 
 //    protected static ?string $recordTitleAttribute = 'Undangan';
 

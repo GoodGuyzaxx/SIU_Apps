@@ -14,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class JudulResource extends Resource
 {
@@ -27,6 +28,8 @@ class JudulResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-newspaper';
 
     protected static ?string $navigationLabel = "Judul";
+
+    protected static string | UnitEnum | null $navigationGroup = 'Akademik';
 
 
 //    protected static ?string $recordTitleAttribute = 'Judul';

@@ -13,6 +13,7 @@ use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class PengajuanResource extends Resource
 {
@@ -27,6 +28,8 @@ class PengajuanResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-book-open';
 
     protected static ?string $recordTitleAttribute = 'UsulanJudul';
+
+    protected static string | UnitEnum | null $navigationGroup = 'Akademik';
 
     public static function form(Schema $schema): Schema
     {
