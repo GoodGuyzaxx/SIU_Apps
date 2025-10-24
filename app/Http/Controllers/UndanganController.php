@@ -13,15 +13,28 @@ class UndanganController extends Controller
 
     public function getPDF($id) {
         $data = Undangan::find($id);
-        $pdf = PDF::loadView('pdf.undangan_pdf', compact('data'));
+        $pdf = PDF::loadView('pdf.undangan.undangan_pdf', compact('data'));
         $pdf->setPaper('F4', 'landscape');
         return $pdf->stream();
-
     }
+
+    public function getTtdPDF($id) {
+        $data = Undangan::find($id);
+        $pdf = PDF::loadView('pdf.undangan.undangan_ttd_pdf', compact('data'));
+        $pdf->setPaper('F4', 'landscape');
+        return $pdf->stream();
+    }
+
 
     public function getSkPDF($id){
         $data = SuratKeputusan::find($id);
-        $pdf = PDF::loadView('pdf.sk_pdf', compact('data'));
+        $pdf = PDF::loadView('pdf.sk.sk_pdf', compact('data'));
+        return $pdf->stream();
+    }
+
+    public function getTtdSkPDF($id){
+        $data = SuratKeputusan::find($id);
+        $pdf = PDF::loadView('pdf.sk.sk_ttd_pdf', compact('data'));
         return $pdf->stream();
     }
 
