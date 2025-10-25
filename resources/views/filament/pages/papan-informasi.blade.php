@@ -7,6 +7,6 @@
         color="success"
         icon="heroicon-o-check"
     >
-        Print
+        Simpan Data
     </x-filament::button>
 </x-filament-panels::page>

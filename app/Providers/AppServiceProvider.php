@@ -18,7 +18,6 @@ class AppServiceProvider extends ServiceProvider
         //
 
         $this->app->bind(LogoutResponseContract::class, LogoutResponse::class);
-
     }
 
     /**
@@ -27,9 +26,15 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
-        Carbon::setLocale('id');
-        if (env('APP_ENV') !== 'local' || str_contains(request()->getHost(), '.ngrok.io') || str_contains(request()->getHost(), '.ngrok-free.app')) { // Check for ngrok domain
-            URL::forceScheme('https');
+        Carbon::setLocale("id");
+        if (
+            env("APP_ENV") !== "local" ||
+            str_contains(request()->getHost(), ".ngrok.io") ||
+            str_contains(request()->getHost(), ".ngrok-free.app")
+        ) {
+            // Check for ngrok domain
+            URL::forceScheme("https");
         }
+        \Livewire\Livewire::forceAssetInjection();
     }
 }
