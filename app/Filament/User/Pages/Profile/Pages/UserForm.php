@@ -3,7 +3,6 @@
 namespace App\Filament\User\Pages\Profile\Pages;
 
 use App\Models\Mahasiswa;
-use Filament\Actions\Action;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -11,7 +10,6 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Filament\Schemas\Components\Form;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -27,6 +25,8 @@ class UserForm extends Page implements  HasForms
     public ?array $data = [];
 
     protected ?string $heading = "Masukan Data";
+
+
 
 //    public function getDefaultActionSuccessRedirectUrl(Action $action): ?string
 //    {
@@ -164,6 +164,8 @@ class UserForm extends Page implements  HasForms
             ->title("Data Berhasil Disimpan")
             ->success()
             ->send();
+
+        $this->redirect(route('filament.user.resources.pengajuan.index'));
 
     }
 }

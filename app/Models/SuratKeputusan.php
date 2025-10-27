@@ -11,9 +11,10 @@ class SuratKeputusan extends Model
     protected $table = 'surat_keputusan';
 
     protected $fillable = [
-      'id_judul',
-      'nomor_sk_penguji',
-      'nomor_sk_pembimbing',
+        'id_judul',
+        'nomor_sk_penguji',
+        'nomor_sk_pembimbing',
+        'signed'
     ];
 
 

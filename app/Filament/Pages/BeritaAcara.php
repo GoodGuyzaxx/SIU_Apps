@@ -29,6 +29,16 @@ class BeritaAcara extends Page
 
     protected static string | UnitEnum | null $navigationGroup = 'Akademik';
 
+    public static function canAccess(): bool
+    {
+        if (auth()->user()->role === 'admin'){
+            return true;
+        } elseif(auth()->user()->role === 'akademik'){
+            return true;
+        }
+        return false;
+    }
+
 
     static public function cetakForm(Schema $scheme): Schema {
         return  $scheme

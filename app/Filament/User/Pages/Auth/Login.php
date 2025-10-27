@@ -2,8 +2,6 @@
 
 namespace App\Filament\User\Pages\Auth;
 
-use Filament\Actions\Action;
-use Filament\Schemas\Components\Component;
 use Filament\Schemas\Schema;
 
 class Login extends \Filament\Auth\Pages\Login

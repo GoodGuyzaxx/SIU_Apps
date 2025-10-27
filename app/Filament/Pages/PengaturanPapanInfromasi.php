@@ -2,19 +2,19 @@
 
 namespace App\Filament\Pages;
 
-use App\Models\Judul;
+use App\Models\PapanInformasi;
 use App\Models\Undangan;
 use App\Models\UsulanJudul;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use App\Models\PapanInformasi;
 use UnitEnum;
 
 class PengaturanPapanInfromasi extends Page
@@ -28,6 +28,16 @@ class PengaturanPapanInfromasi extends Page
     protected static ?int $navigationSort = 10;
 
     public ?array $data = [];
+
+    public static function canAccess(): bool
+    {
+        if (auth()->user()->role === 'admin'){
+            return true;
+        } elseif(auth()->user()->role === 'akademik'){
+            return true;
+        }
+        return false;
+    }
 
     protected function getHeaderActions(): array
     {
@@ -49,6 +59,9 @@ class PengaturanPapanInfromasi extends Page
                         ->label("Masukan URL Youtube")
                         ->suffixIcon("heroicon-o-globe-alt")
                         ->url(),
+                    Textarea::make('running_text')
+                        ->label("Running Text")
+                        ->autosize(true),
                 ]),
                 Section::make("Informasi Jadwal Proposal")
                     ->description(
@@ -98,7 +111,7 @@ class PengaturanPapanInfromasi extends Page
     public function saveData()
     {
         $dataForm = $this->informasiForm->getState();
-        //        dd($dataForm);
+//                dd($dataForm);
 
         $dataProposal = Undangan::with("judul")
             ->whereHas("judul", function ($query) {
@@ -154,6 +167,7 @@ class PengaturanPapanInfromasi extends Page
         $papanInfromasi = PapanInformasi::where("id", 1)->first();
         $papanInfromasi->update([
             "yt_url" => $dataForm["yt_url"],
+            'running_text' => $dataForm['running_text'],
             "jadwal_proposal" => $dataProposal,
             "jadwal_skripsi" => $dataUjianAkhir,
             "pengajuan_judul" => $dataUsulan,

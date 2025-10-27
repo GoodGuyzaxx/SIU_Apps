@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('id_judul')->constrained('judul');
             $table->string('nomor_sk_penguji');
             $table->string('nomor_sk_pembimbing');
+            $table->string('signed')->nullable()->default('-');
             $table->timestamps();
         });
     }

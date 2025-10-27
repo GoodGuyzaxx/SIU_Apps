@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Mahasiswas\Schemas;
 
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Forms\Components\TextInput;
 
 class MahasiswaForm
 {

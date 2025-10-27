@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\SuratKeputusans\Schemas;
 
 use Filament\Forms\Components\TextInput;
-use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
 class SuratKeputusanForm

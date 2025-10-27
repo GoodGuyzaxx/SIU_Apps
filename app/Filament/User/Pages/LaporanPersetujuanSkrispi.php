@@ -2,10 +2,8 @@
 
 namespace App\Filament\User\Pages;
 
-use App\Filament\Resources\Juduls\JudulResource;
 use App\Models\Judul;
 use App\Models\Mahasiswa;
-use App\Models\UsulanJudul;
 use BackedEnum;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;

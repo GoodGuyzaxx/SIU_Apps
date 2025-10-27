@@ -13,7 +13,8 @@ class PapanInformasi extends Model
         'yt_url',
         'jadwal_proposal',
         'jadwal_skripsi',
-        'pengajuan_judul'
+        'pengajuan_judul',
+        'running_text',
     ];
 
     protected $casts = [

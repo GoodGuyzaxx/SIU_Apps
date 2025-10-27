@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('tanggal_hari');
             $table->time('waktu');
             $table->string('tempat');
+            $table->string('signed')->nullable()->default('-');
             $table->timestamps();
         });
     }

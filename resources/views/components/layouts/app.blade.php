@@ -3,21 +3,21 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite('resources/css/app.css')
     <title>{{ $title ?? 'Papan Informasi Digital' }}</title>
 
     <style>
         :root {
             --gap: .75rem;
-            --primary-gradient: linear-gradient(135deg, #dc2626, #ec4899, #dc2626);
-            --glass-bg: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,245,245,0.15), rgba(254,226,226,0.1));
+            --primary-gradient: linear-gradient(135deg, #1e293b, #475569, #334155);
+            --glass-bg: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(248,250,252,0.15), rgba(241,245,249,0.1));
         }
 
         body {
             animation: fadeIn .6s ease-out;
-            background: linear-gradient(-45deg, #dc2626, #ef4444, #fda4af, #ffffff, #fda4af, #ef4444, #dc2626);
+            background: linear-gradient(-45deg, #f8fafc, #e2e8f0, #cbd5e1, #f1f5f9, #e2e8f0, #cbd5e1, #f8fafc);
             background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
+            animation: gradientShift 20s ease infinite;
         }
 
         @keyframes fadeIn {
@@ -41,7 +41,6 @@
             display: inline-block;
             padding-left: 100%;
             animation: marquee 20s linear infinite;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         @keyframes marquee {
             0% { transform: translateX(0) }
@@ -55,7 +54,6 @@
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
         }
         .tv-sub { font-size: clamp(.75rem, .9vw + .35rem, 1rem); }
         .tv-cell { font-size: clamp(.8rem, .85vw + .3rem, 1rem); }
@@ -73,95 +71,88 @@
             gap: var(--gap);
         }
 
-        /* Enhanced Card design with 3D effect */
+        /* Enhanced Card design with minimal effect */
         .data-card {
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            background: rgba(255,255,255,0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
             box-shadow:
-                0 4px 6px -1px rgba(0, 0, 0, 0.1),
-                0 2px 4px -1px rgba(0, 0, 0, 0.06),
-                inset 0 1px 0 0 rgba(255,255,255,0.5);
+                0 2px 4px -1px rgba(0, 0, 0, 0.05),
+                0 1px 2px -1px rgba(0, 0, 0, 0.03);
         }
         .data-card:hover {
-            transform: translateY(-4px) scale(1.02);
-            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,240,240,0.8));
-            border-color: rgba(248,113,113,0.6);
+            transform: translateY(-2px);
+            background: rgba(255,255,255,0.95);
+            border-color: rgba(148, 163, 184, 0.6);
             box-shadow:
-                0 20px 25px -5px rgba(0, 0, 0, 0.15),
-                0 10px 10px -5px rgba(0, 0, 0, 0.04),
-                0 0 0 1px rgba(248,113,113,0.1),
-                inset 0 1px 0 0 rgba(255,255,255,0.8);
+                0 8px 16px -4px rgba(0, 0, 0, 0.08),
+                0 4px 8px -4px rgba(0, 0, 0, 0.04);
         }
 
         /* Enhanced Status badge */
-        @keyframes pulse-glow {
+        @keyframes pulse-minimal {
             0%, 100% {
                 opacity: 1;
-                box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
             }
             50% {
-                opacity: 0.9;
-                box-shadow: 0 0 15px rgba(34, 197, 94, 0.8);
+                opacity: 0.8;
             }
         }
         .badge-approved {
-            animation: pulse-glow 2s ease-in-out infinite;
-            background: linear-gradient(135deg, #10b981, #34d399);
+            animation: pulse-minimal 3s ease-in-out infinite;
+            background: linear-gradient(135deg, #059669, #10b981);
             color: white;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
 
         /* Enhanced Glass effect */
         .glass-effect {
             background: var(--glass-bg);
-            border: 1px solid rgba(255,255,255,0.4);
-            backdrop-filter: blur(16px) saturate(180%);
-            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.6);
+            backdrop-filter: blur(12px) saturate(160%);
+            -webkit-backdrop-filter: blur(12px) saturate(160%);
             box-shadow:
-                0 8px 32px 0 rgba(0, 0, 0, 0.18),
-                inset 0 1px 0 0 rgba(255,255,255,0.4),
-                inset 0 -1px 0 0 rgba(0,0,0,0.05);
+                0 4px 16px 0 rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 0 rgba(255,255,255,0.6);
         }
 
         /* Floating animation for headers */
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-3px); }
+            50% { transform: translateY(-2px); }
         }
         .floating {
-            animation: float 3s ease-in-out infinite;
+            animation: float 4s ease-in-out infinite;
         }
 
         /* Enhanced button styles */
         .btn-glass {
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
             transition: all 0.3s ease;
         }
         .btn-glass:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.9);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.05);
         }
 
         /* Custom scrollbar */
-        .scroll-track::-webkit-scrollbar { width: 6px; }
+        .scroll-track::-webkit-scrollbar { width: 4px; }
         .scroll-track::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.1);
-            border-radius: 3px;
+            background: rgba(241, 245, 249, 0.5);
+            border-radius: 2px;
         }
         .scroll-track::-webkit-scrollbar-thumb {
-            background: linear-gradient(to bottom, #dc2626, #ec4899);
-            border-radius: 3px;
+            background: linear-gradient(to bottom, #64748b, #475569);
+            border-radius: 2px;
         }
         .scroll-track::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(to bottom, #b91c1c, #db2777);
+            background: linear-gradient(to bottom, #475569, #334155);
         }
 
-        /* Shine effect on hover */
+        /* Subtle shine effect on hover */
         .shine-effect {
             position: relative;
             overflow: hidden;
@@ -176,7 +167,7 @@
             background: linear-gradient(
                 to bottom right,
                 rgba(255,255,255,0) 0%,
-                rgba(255,255,255,0.1) 50%,
+                rgba(255,255,255,0.05) 50%,
                 rgba(255,255,255,0) 100%
             );
             transform: rotate(30deg);
@@ -185,11 +176,11 @@
         }
         .shine-effect:hover::after {
             opacity: 1;
-            transform: rotate(30deg) translate(10%, 10%);
+            transform: rotate(30deg) translate(5%, 5%);
         }
     </style>
 </head>
-<body class="text-gray-900 h-screen overflow-hidden select-none">
+<body class="text-slate-800 h-screen overflow-hidden select-none">
 {{ $slot }}
 
 <script>

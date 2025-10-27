@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Pengajuans\Pages;
 
 use App\Filament\Resources\Pengajuans\PengajuanResource;
-use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListPengajuans extends ListRecords

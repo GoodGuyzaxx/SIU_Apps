@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class OnlyAdmin
@@ -16,11 +15,12 @@ class OnlyAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
+        $dataRole = ['admin', 'akademik', 'dekan', 'kaprodi'];
 
-        if (auth()->user() && auth()->user()->role !== 'admin' ) {
+        if (!auth()->check() || !in_array(auth()->user()->role, $dataRole)) {
             abort(403, 'Anda tidak memiliki hak akses!');
-
         }
+
         return $next($request);
     }
 }

@@ -17,6 +17,7 @@ class Undangan extends Model
         'tanggal_hari',
         'waktu',
         'tempat',
+        'signed'
     ];
 
     public function judul() : BelongsTo {

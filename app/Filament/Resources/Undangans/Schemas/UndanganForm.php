@@ -9,7 +9,6 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Str;
 
 class UndanganForm
 {
@@ -26,14 +25,19 @@ class UndanganForm
                 ->searchable(),
 
                 TextInput::make('nomor')
+                    ->label('Nomor Surat')
                     ->required(),
+
                 TextInput::make('perihal')
                     ->required(),
 
                 DatePicker::make('tanggal_hari')
                     ->required(),
+
                 TimePicker::make('waktu')
-                    ->required(),
+                    ->required()
+                    ->seconds(false),
+
                 Textarea::make('tempat')
                     ->required(),
             ]);

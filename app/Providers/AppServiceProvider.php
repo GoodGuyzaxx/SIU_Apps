@@ -4,9 +4,9 @@ namespace App\Providers;
 
 use App\Http\Responses\LogoutResponse;
 use Carbon\Carbon;
+use Filament\Auth\Http\Responses\Contracts\LogoutResponse as LogoutResponseContract;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
-use Filament\Auth\Http\Responses\Contracts\LogoutResponse as LogoutResponseContract;
 
 class AppServiceProvider extends ServiceProvider
 {

@@ -11,7 +11,6 @@ use App\Models\Mahasiswa;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use UnitEnum;
 
@@ -29,6 +28,16 @@ class MahasiswaResource extends Resource
 
     protected static ?int $navigationSort = 11;
     protected static ?string $navigationLabel = "Mahasiswa";
+
+    public static function canAccess(): bool
+    {
+        if (auth()->user()->role === 'admin'){
+            return true;
+        } elseif(auth()->user()->role === 'akademik'){
+            return true;
+        }
+        return false;
+    }
 
     public static function form(Schema $schema): Schema
     {
