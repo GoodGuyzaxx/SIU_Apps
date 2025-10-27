@@ -13,6 +13,9 @@ class Mahasiswa extends Model
         'id_user',
         'nama',
         'npm',
+        'program_studi',
+        'kelas',
+        'jenjang',
         'agama',
         'nomor_hp',
     ];

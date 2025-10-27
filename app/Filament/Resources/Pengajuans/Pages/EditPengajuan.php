@@ -10,10 +10,9 @@ class EditPengajuan extends EditRecord
 {
     protected static string $resource = PengajuanResource::class;
 
-    protected function getHeaderActions(): array
+    protected function getRedirectUrl(): string
     {
-        return [
-            DeleteAction::make(),
-        ];
+
+        return $this->getResource()::getUrl('detail',['record' => $this->getRecord()]);
     }
 }

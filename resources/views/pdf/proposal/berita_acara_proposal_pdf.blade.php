@@ -565,7 +565,7 @@
             </div>
             <div class="info-row">
                 <div class="info-label">Program Studi</div>
-                <div class="info-value">: {{ $data->prodi ?? '-' }}</div>
+                <div class="info-value">: {{ $data->mahasiswa->program_studi ?? '-' }}</div>
             </div>
             <div class="info-row">
                 <div class="info-label">Bagian Kekhususan</div>

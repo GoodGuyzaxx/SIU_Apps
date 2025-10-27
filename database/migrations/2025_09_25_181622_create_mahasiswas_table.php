@@ -16,6 +16,9 @@ return new class extends Migration
             $table->foreignId('id_user')->constrained('users', 'id');
             $table->string('nama');
             $table->string('npm');
+            $table->string('program_studi');
+            $table->string('jenjang');
+            $table->string('kelas')->default('-');
             $table->string('nomor_hp');
             $table->string('agama');
             $table->timestamps();

@@ -80,6 +80,52 @@ class UserForm extends Page implements  HasForms
                                     ->prefixIcon('heroicon-m-phone')
                                     ->columnSpan(1),
 
+                                Select::make('jenjang')
+                                    ->label('Jenjang')
+                                    ->placeholder('Pilih Jenjang')
+                                    ->native(false)
+                                    ->required()
+                                    ->prefixIcon('heroicon-o-academic-cap')
+                                    ->options([
+                                        'sarjana' => 'Sarjana / S1',
+                                        'magister' => 'Magister / S2',
+                                    ])
+                                    ->live(),
+
+                                Select::make('kelas')
+                                    ->label('Kelas')
+                                    ->placeholder('Pilih Kelas')
+                                    ->required()
+                                    ->native(false)
+                                    ->prefixIcon('heroicon-o-clock')
+                                    ->options([
+                                        'pagi' => 'Kelas Pagi',
+                                        'sore' => 'Kelas Sore',
+                                    ])
+                                    ->visible(fn ($get) => $get('jenjang') === 'sarjana'),
+
+                                Select::make('program_studi')
+                                    ->label('Program Studi')
+                                    ->placeholder('Pilih Program Studi')
+                                    ->native(false)
+                                    ->columnSpan(2)
+                                    ->required()
+                                    ->prefixIcon('heroicon-o-academic-cap')
+                                    ->options(
+                                        function ($get) {
+                                            if ($get('jenjang') == 'magister') {
+                                                return [
+                                                    'Magister Hukum' => 'Magister Hukum',
+                                                    'Kenotariatan' => 'Kenotariatan',
+                                                ];
+                                            }
+                                            return [
+                                              'Ilmu Hukum' => 'Ilmu Hukum',
+                                            ];
+                                        }
+                                    ),
+
+
                                 Select::make('agama')
                                     ->label('Agama')
                                     ->placeholder('Pilih agama')
@@ -96,6 +142,7 @@ class UserForm extends Page implements  HasForms
                                     ->searchable()
                                     ->prefixIcon('heroicon-m-sparkles')
                                     ->columnSpan(2),
+
                             ]),
                     ])
                     ->heading('Data Mahasiswa')
