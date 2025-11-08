@@ -15,7 +15,7 @@ const CACHE_PATTERNS = {
 // Install event - cache static assets
 self.addEventListener('install', event => {
   console.log('[SW] Installing service worker...');
-  
+
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
@@ -35,7 +35,7 @@ self.addEventListener('install', event => {
 // Activate event - clean up old caches
 self.addEventListener('activate', event => {
   console.log('[SW] Activating service worker...');
-  
+
   event.waitUntil(
     caches.keys()
       .then(cacheNames => {
@@ -58,12 +58,12 @@ self.addEventListener('activate', event => {
 // Fetch event - handle requests
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
-  
+
   // Skip non-GET requests
   if (event.request.method !== 'GET') {
     return;
   }
-  
+
   // Skip cross-origin requests
   if (url.origin !== location.origin) {
     return;
@@ -85,21 +85,21 @@ self.addEventListener('fetch', event => {
 async function handleAdminRequest(request) {
   try {
     const networkResponse = await fetch(request);
-    
+
     if (networkResponse.ok) {
       const cache = await caches.open(CACHE_NAME);
       cache.put(request, networkResponse.clone());
     }
-    
+
     return networkResponse;
   } catch (error) {
     console.log('[SW] Network failed for admin request:', request.url);
-    
+
     const cachedResponse = await caches.match(request);
     if (cachedResponse) {
       return cachedResponse;
     }
-    
+
     // If no cache, return offline page for navigation requests
     if (request.mode === 'navigate') {
       return caches.match(OFFLINE_URL) || new Response(
@@ -107,7 +107,7 @@ async function handleAdminRequest(request) {
         { headers: { 'Content-Type': 'text/html' } }
       );
     }
-    
+
     throw error;
   }
 }
@@ -115,19 +115,19 @@ async function handleAdminRequest(request) {
 // Handle asset requests (Cache First strategy)
 async function handleAssetRequest(request) {
   const cachedResponse = await caches.match(request);
-  
+
   if (cachedResponse) {
     return cachedResponse;
   }
-  
+
   try {
     const networkResponse = await fetch(request);
-    
+
     if (networkResponse.ok) {
       const cache = await caches.open(CACHE_NAME);
       cache.put(request, networkResponse.clone());
     }
-    
+
     return networkResponse;
   } catch (error) {
     console.log('[SW] Failed to fetch asset:', request.url);
@@ -138,19 +138,19 @@ async function handleAssetRequest(request) {
 // Handle image requests (Cache First strategy)
 async function handleImageRequest(request) {
   const cachedResponse = await caches.match(request);
-  
+
   if (cachedResponse) {
     return cachedResponse;
   }
-  
+
   try {
     const networkResponse = await fetch(request);
-    
+
     if (networkResponse.ok) {
       const cache = await caches.open(CACHE_NAME);
       cache.put(request, networkResponse.clone());
     }
-    
+
     return networkResponse;
   } catch (error) {
     console.log('[SW] Failed to fetch image:', request.url);
@@ -162,19 +162,19 @@ async function handleImageRequest(request) {
 // Handle font requests (Cache First strategy)
 async function handleFontRequest(request) {
   const cachedResponse = await caches.match(request);
-  
+
   if (cachedResponse) {
     return cachedResponse;
   }
-  
+
   try {
     const networkResponse = await fetch(request);
-    
+
     if (networkResponse.ok) {
       const cache = await caches.open(CACHE_NAME);
       cache.put(request, networkResponse.clone());
     }
-    
+
     return networkResponse;
   } catch (error) {
     console.log('[SW] Failed to fetch font:', request.url);
@@ -242,18 +242,18 @@ async function doBackgroundSync() {
 // Push notification handling (if needed)
 self.addEventListener('push', event => {
   console.log('[SW] Push notification received');
-  
+
   const options = {
     body: event.data ? event.data.text() : 'New notification',
-    icon: '/images/icons/icon-192x192.png',
-    badge: '/images/icons/icon-96x96.png',
+    icon: 'images/logo.png',
+    badge: 'images/logo.png',
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),
       primaryKey: 1
     }
   };
-  
+
   event.waitUntil(
     self.registration.showNotification('Admin Panel', options)
   );
@@ -262,9 +262,9 @@ self.addEventListener('push', event => {
 // Notification click handling
 self.addEventListener('notificationclick', event => {
   console.log('[SW] Notification clicked');
-  
+
   event.notification.close();
-  
+
   event.waitUntil(
     clients.openWindow('/admin')
   );

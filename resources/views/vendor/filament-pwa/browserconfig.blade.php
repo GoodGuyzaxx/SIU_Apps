@@ -2,9 +2,9 @@
 <browserconfig>
     <msapplication>
         <tile>
-            <square70x70logo src="{{ asset('images/icons/icon-70x70.png') }}"/>
-            <square150x150logo src="{{ asset('images/icons/icon-150x150.png') }}"/>
-            <square310x310logo src="{{ asset('images/icons/icon-310x310.png') }}"/>
+            <square70x70logo src="{{ asset('images/logo.png') }}"/>
+            <square150x150logo src="{{ asset('images/logo.png') }}"/>
+            <square310x310logo src="{{ asset('images/logo.png') }}"/>
             <TileColor>{{ $config['theme_color'] }}</TileColor>
         </tile>
     </msapplication>

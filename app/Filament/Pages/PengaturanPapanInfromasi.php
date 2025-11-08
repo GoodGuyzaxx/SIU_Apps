@@ -15,6 +15,7 @@ use Filament\Pages\Page;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\DB;
 use UnitEnum;
 
 class PengaturanPapanInfromasi extends Page
@@ -107,77 +108,164 @@ class PengaturanPapanInfromasi extends Page
             ->statePath("data");
     }
 
-    //     Function Save Data....
     public function saveData()
     {
         $dataForm = $this->informasiForm->getState();
-//                dd($dataForm);
 
-        $dataProposal = Undangan::with("judul")
-            ->whereHas("judul", function ($query) {
-                $query->where("jenis", "proposal");
-            })
-            ->whereBetween("tanggal_hari", [
-                $dataForm["tanggal_awal_proposal"],
-                $dataForm["tanggal_akhir_proposal"],
-            ])
-            ->get()
-            ->map(function ($item) {
-                return [
-                    "nama" => $item->judul->mahasiswa->nama ?? "-",
-                    "npm" => $item->judul->mahasiswa->npm ?? "-",
-                    "judul" => $item->judul->judul ?? "-",
-                    "tanggal_hari" => $item->tanggal_hari ?? "-",
-                    "waktu" => $item->waktu ?? "-",
-                ];
-            });
+        DB::transaction(function () use ($dataForm) {
+            $papanInformasi = PapanInformasi::findOrFail(1);
 
-        $dataUjianAkhir = Undangan::with("judul")
-            ->whereHas("judul", function ($query) {
-                $query->where("jenis", "skripsi");
-            })
-            ->whereBetween("tanggal_hari", [
-                $dataForm["tanggal_awal_skripsi"],
-                $dataForm["tanggal_akhir_skripsi"],
-            ])
-            ->get()
-            ->map(function ($item) {
-                return [
-                    "nama" => $item->judul->mahasiswa->nama ?? "-",
-                    "npm" => $item->judul->mahasiswa->npm ?? "-",
-                    "judul" => $item->judul->judul ?? "-",
-                    "tanggal_hari" => $item->tanggal_hari ?? "-",
-                    "waktu" => $item->waktu ?? "-",
-                ];
-            });
+            $payload = [];
 
-        $dataUsulan = UsulanJudul::with("mahasiswa")
-            ->whereMonth("created_at", $dataForm["tanggal_pengajuan"])
-            ->get()
-            ->map(function ($usulan) {
-                return [
-                    "nama" => $usulan->mahasiswa->nama,
-                    "npm" => $usulan->mahasiswa->npm,
-                    "status" => $usulan->status,
-                ];
-            });
+            $payload['yt_url'] = $dataForm['yt_url'] ?? $papanInformasi->yt_url;
+            $payload['running_text'] = $dataForm['running_text'] ?? $papanInformasi->running_text;
 
-        //        dd($dataUsulan);
+            $proposalRaw = Undangan::with('judul.mahasiswa')
+                ->whereHas('judul', fn ($q) => $q->where('jenis', 'proposal'))
+                ->whereBetween('tanggal_hari', [
+                    $dataForm['tanggal_awal_proposal'],
+                    $dataForm['tanggal_akhir_proposal'],
+                ])
+                ->get();
 
-        $papanInfromasi = PapanInformasi::where("id", 1)->first();
-        $papanInfromasi->update([
-            "yt_url" => $dataForm["yt_url"],
-            'running_text' => $dataForm['running_text'],
-            "jadwal_proposal" => $dataProposal,
-            "jadwal_skripsi" => $dataUjianAkhir,
-            "pengajuan_judul" => $dataUsulan,
-        ]);
+            if ($proposalRaw->isNotEmpty()) {
+                $payload['jadwal_proposal'] = $proposalRaw->map(function ($item) {
+                    return [
+                        'nama'         => $item->judul->mahasiswa->nama  ?? '-',
+                        'npm'          => $item->judul->mahasiswa->npm   ?? '-',
+                        'judul'        => $item->judul->judul            ?? '-',
+                        'tanggal_hari' => $item->tanggal_hari            ?? '-',
+                        'waktu'        => $item->waktu                   ?? '-',
+                    ];
+                })->values();
+            }
+            $skripsiRaw = Undangan::with('judul.mahasiswa')
+                ->whereHas('judul', fn ($q) => $q->where('jenis', 'skripsi'))
+                ->whereBetween('tanggal_hari', [
+                    $dataForm['tanggal_awal_skripsi'],
+                    $dataForm['tanggal_akhir_skripsi'],
+                ])
+                ->get();
 
-        Notification::make()
-            ->title("Data Berhasil Disimpan")
-            ->success()
-            ->send();
+            if ($skripsiRaw->isNotEmpty()) {
+                $payload['jadwal_skripsi'] = $skripsiRaw->map(function ($item) {
+                    return [
+                        'nama'         => $item->judul->mahasiswa->nama  ?? '-',
+                        'npm'          => $item->judul->mahasiswa->npm   ?? '-',
+                        'judul'        => $item->judul->judul            ?? '-',
+                        'tanggal_hari' => $item->tanggal_hari            ?? '-',
+                        'waktu'        => $item->waktu                   ?? '-',
+                    ];
+                })->values();
+            }
+
+
+            $usulanRaw = UsulanJudul::with('mahasiswa')
+                ->whereMonth('created_at', $dataForm['tanggal_pengajuan'])
+                ->get();
+
+            if ($usulanRaw->isNotEmpty()) {
+                $payload['pengajuan_judul'] = $usulanRaw->map(function ($u) {
+                    return [
+                        'nama'   => $u->mahasiswa->nama ?? '-',
+                        'npm'    => $u->mahasiswa->npm  ?? '-',
+                        'status' => $u->status          ?? '-',
+                    ];
+                })->values();
+            }
+
+            if (! empty($payload)) {
+                $papanInformasi->update($payload);
+                Notification::make()
+                    ->title('Data Berhasil Disimpan')
+                    ->body('Field yang diperbarui: ' . implode(', ', array_keys($payload)))
+                    ->success()
+                    ->send();
+            } else {
+
+                Notification::make()
+                    ->title('Tidak Ada Perubahan')
+                    ->body('Tidak ada data baru ditemukan pada rentang yang dipilih. Data lama tetap dipertahankan.')
+                    ->warning()
+                    ->send();
+            }
+        });
     }
+
+    //     Function Save Data....
+//    public function saveData()
+//    {
+//        $dataForm = $this->informasiForm->getState();
+////                dd($dataForm);
+//        $dataPapanInformasi = PapanInformasi::find('1');
+//
+//
+//        $dataProposal = Undangan::with("judul")
+//            ->whereHas("judul", function ($query) {
+//                $query->where("jenis", "proposal");
+//            })
+//            ->whereBetween("tanggal_hari", [
+//                $dataForm["tanggal_awal_proposal"],
+//                $dataForm["tanggal_akhir_proposal"],
+//            ])
+//            ->get()
+//            ->map(function ($item) {
+//                return [
+//                    "nama" => $item->judul->mahasiswa->nama ?? "-",
+//                    "npm" => $item->judul->mahasiswa->npm ?? "-",
+//                    "judul" => $item->judul->judul ?? "-",
+//                    "tanggal_hari" => $item->tanggal_hari ?? "-",
+//                    "waktu" => $item->waktu ?? "-",
+//                ];
+//            });
+//
+//
+//        $dataUjianAkhir = Undangan::with("judul")
+//            ->whereHas("judul", function ($query) {
+//                $query->where("jenis", "skripsi");
+//            })
+//            ->whereBetween("tanggal_hari", [
+//                $dataForm["tanggal_awal_skripsi"],
+//                $dataForm["tanggal_akhir_skripsi"],
+//            ])
+//            ->get()
+//            ->map(function ($item) {
+//                return [
+//                    "nama" => $item->judul->mahasiswa->nama ?? "-",
+//                    "npm" => $item->judul->mahasiswa->npm ?? "-",
+//                    "judul" => $item->judul->judul ?? "-",
+//                    "tanggal_hari" => $item->tanggal_hari ?? "-",
+//                    "waktu" => $item->waktu ?? "-",
+//                ];
+//            });
+//
+//        $dataUsulan = UsulanJudul::with("mahasiswa")
+//            ->whereMonth("created_at", $dataForm["tanggal_pengajuan"])
+//            ->get()
+//            ->map(function ($usulan) {
+//                return [
+//                    "nama" => $usulan->mahasiswa->nama,
+//                    "npm" => $usulan->mahasiswa->npm,
+//                    "status" => $usulan->status,
+//                ];
+//            });
+//
+////                dd($dataProposal);
+//
+//        $papanInfromasi = PapanInformasi::where("id", 1)->first();
+//        $papanInfromasi->update([
+//            "yt_url" => $dataForm["yt_url"],
+//            'running_text' => $dataForm['running_text'],
+//            "jadwal_proposal" => $dataProposal,
+//            "jadwal_skripsi" => $dataUjianAkhir,
+//            "pengajuan_judul" => $dataUsulan,
+//        ]);
+//
+//        Notification::make()
+//            ->title("Data Berhasil Disimpan")
+//            ->success()
+//            ->send();
+//    }
 
     //      Open Infromasi
 }

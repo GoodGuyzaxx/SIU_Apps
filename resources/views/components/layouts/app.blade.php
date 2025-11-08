@@ -184,6 +184,19 @@
 {{ $slot }}
 
 <script>
+
+    window.addEventListener('notify', (e) => {
+        const message = e.detail?.message ?? 'Berhasil!';
+        const el = document.createElement('div');
+        el.className = 'pointer-events-auto mx-auto max-w-sm rounded-xl bg-emerald-600 text-white text-sm px-4 py-2 shadow-lg mb-2';
+        el.textContent = message;
+
+        const root = document.getElementById('toast-root');
+        root.appendChild(el);
+
+        setTimeout(() => el.remove(), 2000);
+    });
+
     // Enhanced Clock with date formatting
     const clockEl = document.getElementById('clock');
     function fmt(n) { return n.toString().padStart(2, '0'); }

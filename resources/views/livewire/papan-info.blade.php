@@ -33,11 +33,17 @@
                       '/https?:\/\/youtu\.be\/([a-zA-Z0-9_-]+)/',
                       '/https?:\/\/www\.youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/',
                       '/https?:\/\/m\.youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/'
-                    ], 'https://www.youtube.com/embed/$1?autoplay=1', $youtubeUrl);
+                    ], 'https://www.youtube.com/embed/$1', $youtubeUrl);
                 @endphp
-                <div wire:poll.15s class="flex-1 overflow-hidden  border-2 border-red-300 bg-black shadow-inner">
-                    <iframe class="w-full h-full" src="{{ $embedUrl }}" title="YouTube video" frameborder="0"
-                            allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+                <div wire:poll.15s class="flex-1 overflow-hidden border-2 border-red-300 bg-black shadow-inner">
+                    <iframe
+                        class="w-full h-full"
+                        src="{{ $embedUrl }}?&autoplay=1"
+                        title="YouTube video"
+                        frameborder="0"
+                        allow="autoplay; encrypted-media; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
                 </div>
 
             </section>

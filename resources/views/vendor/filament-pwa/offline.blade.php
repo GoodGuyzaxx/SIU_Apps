@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ __('filament-pwa::pwa.offline_title') }} - {{ $config['name'] }}</title>
     <meta name="theme-color" content="{{ $config['theme_color'] }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/icons/icon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/logo.png') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -144,11 +144,11 @@
         function updateConnectionStatus() {
             const indicator = document.getElementById('status-indicator');
             const statusText = document.getElementById('status-text');
-            
+
             if (navigator.onLine) {
                 indicator.classList.add('online');
                 statusText.textContent = '{{ __('filament-pwa::pwa.online_status') }}';
-                
+
                 // Auto-reload after 2 seconds when back online
                 setTimeout(() => {
                     window.location.reload();
@@ -169,7 +169,7 @@
         // Periodic connection check
         setInterval(() => {
             // Try to fetch a small resource to verify connection
-            fetch('/manifest.json', { 
+            fetch('/manifest.json', {
                 method: 'HEAD',
                 cache: 'no-cache'
             }).then(() => {
