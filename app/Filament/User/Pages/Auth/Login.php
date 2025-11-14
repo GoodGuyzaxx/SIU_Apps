@@ -6,7 +6,6 @@ use Filament\Schemas\Schema;
 
 class Login extends \Filament\Auth\Pages\Login
 {
-
     public function form(Schema $schema): Schema
     {
         return $schema
@@ -15,6 +14,6 @@ class Login extends \Filament\Auth\Pages\Login
                 $this->getPasswordFormComponent(),
                 $this->getRememberFormComponent(),
             ]);
-
     }
 }
+
