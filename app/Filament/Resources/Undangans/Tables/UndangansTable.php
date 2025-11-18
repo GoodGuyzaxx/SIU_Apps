@@ -37,6 +37,7 @@ class UndangansTable
                     ->sortable(),
                 TextColumn::make('waktu')
                     ->time()
+                    ->dateTime("H:II")
                     ->sortable(),
             ])
             ->filters([

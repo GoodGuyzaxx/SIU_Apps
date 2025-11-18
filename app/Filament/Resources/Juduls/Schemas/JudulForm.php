@@ -32,6 +32,15 @@ class JudulForm
                 Textarea::make('judul')
                     ->required(),
 
+                Select::make('minat')
+                    ->label('Minat Kekuhusan')
+                    ->required()
+                    ->options([
+                        "HTN" => "🏛️ Hukum Tata Negara (HTN)",
+                        "Hukum Pidana" => "⚖️ Hukum Pidana",
+                        "Hukum Perdata" => "📄 Hukum Perdata",
+                    ]),
+
                 Select::make('pembimbing_satu')
                     ->label('Pembimbing Pertama')
                     ->options(Dosen::query()->pluck('nama', 'nama'))

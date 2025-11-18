@@ -78,6 +78,7 @@ class UserForm extends Page implements  HasForms
                                     ->maxLength(15)
                                     ->prefix('+62')
                                     ->prefixIcon('heroicon-m-phone')
+                                    ->helperText('Nomor HP Mahasiswa atau yang bisa dihubungi')
                                     ->columnSpan(1),
 
                                 Select::make('jenjang')
@@ -124,6 +125,14 @@ class UserForm extends Page implements  HasForms
                                             ];
                                         }
                                     ),
+
+                                TextInput::make('angkatan')
+                                    ->label('Angkatan')
+                                    ->placeholder('Contoh 2021')
+                                    ->columnSpan(2)
+                                    ->prefixIcon('heroicon-o-academic-cap')
+                                    ->required()
+                                    ->type('number'),
 
 
                                 Select::make('agama')

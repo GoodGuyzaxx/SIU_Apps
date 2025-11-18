@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\User\Pages\Auth\Login;
+use App\Filament\User\Pages\Auth\RegisterAuth;
 use App\Filament\User\Pages\Profile\Pages\UserForm;
 use App\Http\Middleware\RedirectPanel;
 use Filament\Http\Middleware\Authenticate;
@@ -33,7 +34,7 @@ class UserPanelProvider extends PanelProvider
             ->path('user')
             ->login(Login::class)
             ->brandLogo( fn() => view('filament.logo'))
-            ->registration()
+            ->registration(RegisterAuth::class)
             ->viteTheme('resources/css/filament/user/theme.css')
             ->colors([
                 'primary' => Color::Red,

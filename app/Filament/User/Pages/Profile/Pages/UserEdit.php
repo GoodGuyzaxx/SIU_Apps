@@ -33,10 +33,15 @@ class UserEdit extends Page implements  HasForms
 
         $old = Mahasiswa::where('id_user',auth()->id())->first();
         $this->form->fill([
+            'id_user' => auth()->id(),
             'nama' => $old->nama,
             'npm' => $old->npm,
             'nomor_hp' => $old->nomor_hp,
             'agama' => $old->agama,
+            'jenjang' => $old->jenjang,
+            'kelas' => $old->kelas,
+            'program_studi' => $old->program_studi,
+            'angkatan' => $old->angkatan,
         ]);
     }
 
@@ -45,7 +50,7 @@ class UserEdit extends Page implements  HasForms
         return $schema
             ->components([
                 Hidden::make('id_user')
-                    ->default(auth()->user()->id),
+                    ->default(auth()->id()),
                 Section::make()
                     ->schema([
                         // Grid untuk layout rapi
@@ -124,6 +129,14 @@ class UserEdit extends Page implements  HasForms
                                             ];
                                         }
                                     ),
+
+                                TextInput::make('angkatan')
+                                    ->label('Angkatan')
+                                    ->placeholder('Contoh 2021')
+                                    ->columnSpan(2)
+                                    ->prefixIcon('heroicon-o-academic-cap')
+                                    ->required()
+                                    ->type('number'),
 
 
                                 Select::make('agama')

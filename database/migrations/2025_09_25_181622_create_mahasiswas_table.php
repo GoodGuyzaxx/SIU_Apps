@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('kelas')->default('-');
             $table->string('nomor_hp');
             $table->string('agama');
+            $table->string('angkatan');
             $table->timestamps();
         });
     }

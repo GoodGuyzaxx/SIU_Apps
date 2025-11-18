@@ -18,6 +18,7 @@ class Mahasiswa extends Model
         'jenjang',
         'agama',
         'nomor_hp',
+        'angkatan'
     ];
 
     public function user(){
