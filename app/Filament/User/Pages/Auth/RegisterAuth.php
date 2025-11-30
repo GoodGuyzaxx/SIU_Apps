@@ -18,6 +18,7 @@ class RegisterAuth extends Register
         return $schema
             ->components([
                 $this->getNameFormComponent(),
+                $this->getUniqueIdFormComponent(),
                 $this->getEmailFormComponent(),
                 $this->getPasswordFormComponent(),
                 $this->getPasswordConfirmationFormComponent(),
@@ -31,6 +32,17 @@ class RegisterAuth extends Register
             ->required()
             ->maxLength(255)
             ->autofocus();
+    }
+
+    protected function getUniqueIdFormComponent(): Component
+    {
+        return TextInput::make('nrp/nidn/npm')
+            ->label('NPM (Nomor Pokok Mahasiswa)')
+            ->required()
+            ->maxLength(25)
+            ->minLength(5)
+            ->minValue(0)
+            ->numeric();
     }
 
     protected function getEmailFormComponent(): Component

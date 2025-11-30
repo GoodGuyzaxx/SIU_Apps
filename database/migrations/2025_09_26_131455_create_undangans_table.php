@@ -20,6 +20,8 @@ return new class extends Migration
             $table->time('waktu');
             $table->string('tempat');
             $table->string('signed')->nullable()->default('-');
+            $table->string('softcopy_file_path')->nullable();
+            $table->string('status_ujian')->default('dijadwalkan');
             $table->timestamps();
         });
     }

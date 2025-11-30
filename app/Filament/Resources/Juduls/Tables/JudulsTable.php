@@ -23,6 +23,7 @@ class JudulsTable
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('judul')
+                    ->limit(50)
                     ->searchable(),
                 TextColumn::make('pembimbing_satu')
                     ->searchable(),

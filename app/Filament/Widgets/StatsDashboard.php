@@ -12,7 +12,7 @@ class StatsDashboard extends StatsOverviewWidget
     protected static ?int $sort = 1;
     protected function getStats(): array
     {
-        $countPengajuan = UsulanJudul::count();
+        $countPengajuan = UsulanJudul::Where('status','Pengajuan')->get()->count();
         $countJudulProposal = Judul::where('jenis', 'proposal')->get()->count();
         $countJudulSkripsi = Judul::where('jenis', 'skripsi')->get()->count();
         return [

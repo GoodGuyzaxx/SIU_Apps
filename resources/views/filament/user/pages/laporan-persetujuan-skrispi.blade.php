@@ -18,6 +18,12 @@
 {{--            </div>--}}
 {{--        </div>--}}
 {{--    </div>--}}
+    @php
+        if ($record === null ) {
+            redirect()->route("filament.user.pages.dashboard");
+        }
+    @endphp
+
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
@@ -43,7 +49,7 @@
                             Judul Skripsi / Tugas Akhir
                         </label>
                         <div class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 rounded-lg p-5 border-l-4 border-primary-500 group-hover:border-primary-600 transition-colors">
-                            <p class="text-lg font-semibold text-gray-900 dark:text-white leading-relaxed">{{ $record->judul }}</p>
+                            <p class="text-lg font-semibold text-gray-900 dark:text-white leading-relaxed">{{ $record->judul ?? "-" }}</p>
                         </div>
                     </div>
                     <div class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
@@ -197,9 +203,8 @@
 
         <!-- Sidebar -->
         <div class="lg:col-span-1 space-y-6">
-
             <!-- Data Mahasiswa - Enhanced -->
-            <div class="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-all duration-300 sticky top-6">
+            <div class="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700  duration-300 top-6">
                 <div class="bg-gradient-to-r from-indigo-500 to-indigo-600 px-6 py-4">
                     <div class="flex items-center">
                         <div class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center mr-3">

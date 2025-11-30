@@ -25,6 +25,8 @@ class RedirectPanel
             return redirect()->to(Dashboard::getUrl(panel: 'admin'));
         } elseif (auth()->check() && auth()->user()->role === 'akademik'){
             return redirect()->to(Dashboard::getUrl(panel: 'admin'));
+        } elseif (auth()->check() && auth()->user()->role === 'dosen'){
+            return redirect()->to(Dashboard::getUrl(panel: 'dosen'));
         }
         return $next($request);
     }
