@@ -9,6 +9,7 @@ use Filament\Schemas\Schema;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
+use Illuminate\Validation\ValidationException;
 
 class Login extends \Filament\Auth\Pages\Login
 {
@@ -16,22 +17,23 @@ class Login extends \Filament\Auth\Pages\Login
     {
         return $schema
             ->components([
-                $this->getEmailFormComponent(),
+                $this->getCostumeLoginFormComponent(),
                 $this->getPasswordFormComponent(),
                 $this->getRememberFormComponent(),
             ]);
     }
 
-    protected function getEmailFormComponent(): Component
+    protected function getCostumeLoginFormComponent(): Component
     {
-        return TextInput::make('email')
-            ->label(__('Email Anda'))
-            ->email()
+        return TextInput::make('login')
+            ->label("Email Atau NPM/NRP")
+            ->required()
             ->required()
             ->autocomplete()
             ->autofocus()
             ->extraInputAttributes(['tabindex' => 1]);
     }
+
 
 
     protected function getPasswordFormComponent(): Component
@@ -63,6 +65,21 @@ class Login extends \Filament\Auth\Pages\Login
         return new HtmlString(__('Atau') . ' ' . '<a href="' . route('filament.user.auth.register') . '" class="font-medium text-primary-600 hover:text-primary-500">' . __('Buat Akun Anda') . '</a>');
     }
 
+    protected function getCredentialsFromFormData(#[SensitiveParameter] array $data): array
+    {
+        $login_type = filter_var($data['login'], FILTER_VALIDATE_EMAIL)? 'email' : 'nrp/nidn/npm';
+        return [
+            $login_type => $data['login'],
+            'password' => $data['password'],
+        ];
+    }
+
+    protected function throwFailureValidationException(): never
+    {
+        throw ValidationException::withMessages([
+            'data.login' => __('Data Yang Dimasukan Tidak Valid / Akun Tidak Ditemukan'),
+        ]);
+    }
 
     protected function getFooter(): ?Htmlable
     {
@@ -72,4 +89,3 @@ class Login extends \Filament\Auth\Pages\Login
     }
 
 }
-

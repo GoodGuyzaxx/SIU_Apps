@@ -39,6 +39,9 @@ class UndangansTable
                     ->time()
                     ->dateTime("H:II")
                     ->sortable(),
+                TextColumn::make('status_ujian')
+                    ->searchable(),
+
             ])
             ->filters([
                 //
