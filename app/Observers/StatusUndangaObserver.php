@@ -51,6 +51,15 @@ class StatusUndangaObserver
 
     private function checkAndUpdateStatusUjian($idUndangan)
     {
+
+        // Ambil undangan
+        $undangan = Undangan::find($idUndangan);
+
+        // Jangan update jika sudah gagal atau selesai
+        if (in_array($undangan->status_ujian, ['gagal_menjadwalkan_ujian', 'selesai'])) {
+            return;
+        }
+
         // Cek apakah semua dosen dengan id_undangan ini berstatus 'hadir'
         $totalDosen = StatusUndangan::where('id_undangan', $idUndangan)->count();
 

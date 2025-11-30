@@ -30,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
         //
         StatusUndangan::observe(StatusUndangaObserver::class);
         Carbon::setLocale("id");
+        \Livewire\Livewire::forceAssetInjection();
 //        if (
 //            env("APP_ENV") !== "local" ||
 //            str_contains(request()->getHost(), ".ngrok.io") ||
@@ -38,6 +39,5 @@ class AppServiceProvider extends ServiceProvider
 //            // Check for ngrok domain
 //            URL::forceScheme("https");
 //        }
-        \Livewire\Livewire::forceAssetInjection();
     }
 }
