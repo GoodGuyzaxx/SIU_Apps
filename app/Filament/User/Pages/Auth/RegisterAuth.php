@@ -2,6 +2,7 @@
 
 namespace App\Filament\User\Pages\Auth;
 
+use DiogoGPinto\AuthUIEnhancer\Pages\Auth\Concerns\HasCustomLayout;
 use Filament\Auth\Pages\Register;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Component;
@@ -13,6 +14,7 @@ use Illuminate\Validation\Rules\Password;
 
 class RegisterAuth extends Register
 {
+    use HasCustomLayout;
     public function form(Schema $schema): Schema
     {
         return $schema

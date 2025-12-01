@@ -6,6 +6,8 @@ use App\Filament\User\Pages\Auth\Login;
 use App\Filament\User\Pages\Auth\RegisterAuth;
 use App\Filament\User\Pages\Profile\Pages\UserForm;
 use App\Http\Middleware\RedirectPanel;
+use DiogoGPinto\AuthUIEnhancer\AuthUIEnhancerPlugin;
+use DiogoGPinto\AuthUIEnhancer\Pages\Auth\EmailVerification\AuthUiEnhancerEmailVerificationPrompt;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -33,8 +35,8 @@ class UserPanelProvider extends PanelProvider
             ->id('user')
             ->path('user')
             ->login(Login::class)
-            ->brandLogo( fn() => view('filament.logo'))
             ->registration(RegisterAuth::class)
+            ->brandLogo( fn() => view('filament.logo'))
             ->viteTheme('resources/css/filament/user/theme.css')
             ->colors([
                 'primary' => Color::Red,
@@ -65,11 +67,18 @@ class UserPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->renderHook(
-                PanelsRenderHook::HEAD_END,
-                function (): string {
-                    return Blade::render('@laravelPWA');
-                }
-            );
+            ->plugins([
+                AuthUIEnhancerPlugin::make()
+                    ->mobileFormPanelPosition('bottom')
+                    ->formPanelWidth('40%')
+                    ->formPanelPosition('left')
+                    ->emptyPanelBackgroundImageUrl(asset('images/bg.jpg'))
+            ]);
+//            ->renderHook(
+//                PanelsRenderHook::HEAD_END,
+//                function (): string {
+//                    return Blade::render('@laravelPWA');
+//                }
+//            );
     }
 }

@@ -74,10 +74,12 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([Authenticate::class])
             ->renderHook(
-                PanelsRenderHook::HEAD_END,
-                function (): string {
-                    return Blade::render('@laravelPWA');
-                }
+                PanelsRenderHook::FOOTER,
+                fn () => view('costumeFooter'),
+//                PanelsRenderHook::HEAD_END,
+//                function (): string {
+//                    return Blade::render('@laravelPWA');
+//                },
             );
     }
 }

@@ -8,6 +8,7 @@
     "require": {
         "php": "^8.2",
         "barryvdh/laravel-dompdf": "^3.1",
+        "diogogpinto/filament-auth-ui-enhancer": "^2.0",
         "filament/filament": "^4.0",
         "kanuni/filament-cards": "^0.3.0",
         "laravel/framework": "^12.0",
