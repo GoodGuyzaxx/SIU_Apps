@@ -12,6 +12,7 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -30,6 +31,7 @@ class DosenPanelProvider extends PanelProvider
             ->path('dosen')
             ->viteTheme('resources/css/filament/dosen/theme.css')
             ->login(fn() => redirect()->route("filament.user.auth.login"))
+            ->brandLogo( fn() => view('filament.logo'))
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -57,6 +59,10 @@ class DosenPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->renderHook(
+                PanelsRenderHook::FOOTER,
+                fn () => view('costumeFooter'),
+            );
     }
 }

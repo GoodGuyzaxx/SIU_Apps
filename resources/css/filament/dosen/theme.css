@@ -2,3 +2,5 @@
 
 @source '../../../../app/Filament/Dosen/**/*';
 @source '../../../../resources/views/filament/dosen/**/*';
+@source '../../../../app/Filament';
+@source '../../../../resources/views/filament';
