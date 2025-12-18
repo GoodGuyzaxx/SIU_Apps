@@ -82,7 +82,7 @@ class DetailUndangan extends Page
                              TextInput::make('waktu')
                              ->label('Waktu')
                              ->disabled()
-                             ->placeholder(Carbon::createFromFormat('h:i:s', $this->statusUndangan->undangan->waktu)->toTimeString('minute')),
+                             ->placeholder(Carbon::parse($this->statusUndangan->undangan->waktu)->format('H:i')),
 
                              TextArea::make('tempat')
                              ->label('Tempat Dilaksanakan')
