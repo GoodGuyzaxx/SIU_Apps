@@ -41,14 +41,55 @@ class KonfirmasiUjian extends Page
 
     public static function shouldRegisterNavigation(): bool
     {
-        return true;
+        $user = auth()->user();
+
+        if (! $user) {
+            return false;
+        }
+
+        $mahasiswa = Mahasiswa::where('id_user', $user->id)->first();
+
+        if (! $mahasiswa) {
+            return false;
+        }
+
+        $judul = Judul::where('id_mahasiswa', $mahasiswa->id)->first();
+
+        if (! $judul) {
+            return false;
+        }
+
+        return Undangan::where('id_judul', $judul->id)->exists();
     }
 
     public function mount(): void
     {
         $idMahasiswa = Mahasiswa::where('id_user', auth()->user()->id)->first();
+
+        if (! $idMahasiswa) {
+            Notification::make()
+                ->title('Silakan Lengkapi Data Profile Terlebih Dahulu')
+                ->warning()
+                ->send();
+            $this->redirect(route('filament.user.pages.user-setting'));
+            return;
+        }
+
         $dataJudul = Judul::where('id_mahasiswa', $idMahasiswa->id)->first();
+
+        if (! $dataJudul) {
+            Notification::make()->title('Data Judul tidak ditemukan')->danger()->send();
+            $this->redirect(filament()->getHomeUrl());
+            return;
+        }
+
         $dataUndangan = Undangan::where('id_judul', $dataJudul->id)->first();
+
+        if (! $dataUndangan) {
+            Notification::make()->title('Data Undangan tidak ditemukan')->danger()->send();
+            $this->redirect(filament()->getHomeUrl());
+            return;
+        }
 
         $this->undangan = $dataUndangan;
 
