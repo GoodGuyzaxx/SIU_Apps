@@ -26,6 +26,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\Size;
 use Filament\Support\Enums\TextSize;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Storage;
 use function PHPUnit\Framework\matches;
 
@@ -41,6 +42,17 @@ class DetailUndangan extends Page
 
     public ?object $undangan = null;
 
+
+    protected function getHeaderActions(): array
+    {
+        return[
+            Action::make('Previwe')
+                ->label('Lihat Undangan')
+                ->color('success')
+                ->icon('heroicon-o-eye')
+                ->url(route('undangan.pdf', $this->undangan->id))
+        ];
+    }
 
     public function mount():void
     {
@@ -262,6 +274,9 @@ class DetailUndangan extends Page
                             ->modalSubmitActionLabel('Ya,Saya Bersedia')
                             ->visible(function () {
                                 return $this->statusUndangan->status_konfirmasi !== 'Hadir' && $this->statusUndangan->status_konfirmasi !== 'Tidak Hadir';
+                            })
+                            ->hidden(function (){
+                                return $this->undangan->status_ujian === 'gagal_menjadwalkan_ujian';
                             })
                             ->action(function () {
                                 $this->statusUndangan->status_konfirmasi = 'Hadir';
