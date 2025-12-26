@@ -47,16 +47,30 @@ class CheckUndanganStatus extends Command
         foreach ($undanganList as $undangan) {
             // Hitung total dosen dan yang sudah hadir
             $totalDosen = StatusUndangan::where('id_undangan', $undangan->id)->count();
+            $dosenList = StatusUndangan::where('id_undangan', $undangan->id)->get();
 
             $dosenHadir = StatusUndangan::where('id_undangan', $undangan->id)
                 ->where('status_konfirmasi', 'hadir')
                 ->count();
 
+
             // Jika tidak semua dosen hadir, ubah status menjadi gagal
             if ($totalDosen > 0 && $dosenHadir < $totalDosen) {
-                $undangan->update(['status_ujian' => 'gagal_menjadwalkan_ujian']);
+                $undangan->update([
+                    'status_ujian' => 'gagal_menjadwalkan_ujian',
+                ]);
 
                 $this->warn("Undangan ID {$undangan->id} status changed to gagal_menjadwalkan_ujian");
+            }
+
+            foreach ($dosenList as $statusUndangan){
+                if ($statusUndangan->status_konfirmasi == 'belum dikonfirmasi'){
+                    $statusUndangan->update([
+                        'alasan_penolakan' => 'Dosen Tidak Memberikan Response'
+                    ]);
+
+                    $this->warn("Undangan ID {$undangan->id} catatan penolakan diupdate");
+                }
             }
         }
 
