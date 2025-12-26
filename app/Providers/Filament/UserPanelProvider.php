@@ -73,6 +73,7 @@ class UserPanelProvider extends PanelProvider
                     ->formPanelWidth('40%')
                     ->formPanelPosition('left')
                     ->emptyPanelBackgroundImageUrl(asset('images/bg.jpg'))
+                    ->showEmptyPanelOnMobile(false)
             ])
             ->renderHook(
                 PanelsRenderHook::FOOTER,
