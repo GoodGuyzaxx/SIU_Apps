@@ -53,7 +53,7 @@ class UndanganForm
                     ->columns(2),
 
                 // Section 3: Jadwal Ujian
-                Section::make('Jadwal Ujian')
+                Section::make('Jadwal Ujian Dan Status Ujian')
                     ->schema([
                         DatePicker::make('tanggal_hari')
                             ->label('Tanggal')
@@ -75,6 +75,18 @@ class UndanganForm
                             ->rows(3)
                             ->placeholder('Contoh: Ruang Sidang 1, Gedung FMIPA')
                             ->columnSpanFull(),
+
+                        Select::make('status_ujian')
+                            ->label('Status Ujian')
+                            ->helperText('Opsional')
+                            ->default('dijadwalkan')
+                            ->columnSpanFull()
+                            ->options([
+                                'dijadwalkan' => 'Di Jadwalkan',
+                                'draft_uploaded' => 'Draft Diupload',
+                                'ready_to_exam' => 'Siap Ujian',
+                                'selesai' => 'Selesai'
+                            ])
                     ])
                     ->columns(2),
 
