@@ -40,7 +40,21 @@ class UndangansTable
                     ->dateTime("H:II")
                     ->sortable(),
                 TextColumn::make('status_ujian')
-                    ->searchable(),
+                    ->searchable()
+                    ->formatStateUsing(function ($state):string {
+                        if ($state == 'dijadwalkan'){
+                            return 'Di Jadwalkan';
+                        } elseif ($state == 'draft_uploaded') {
+                            return 'Draft Diupload';
+                        } elseif ($state == 'ready_to_exam'){
+                            return 'Ujian Siap Dilaksanakan';
+                        } elseif ($state == 'selesai'){
+                            return 'Ujian Selesai';
+                        }elseif ($state == 'gagal_menjadwalkan_ujian'){
+                            return 'Gagal Menjadwalakan Ujian';
+                        }
+                        return $state;
+                    }),
 
             ])
             ->filters([
