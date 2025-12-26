@@ -29,7 +29,8 @@ class UndangansTable
                             return 'Draft Diupload';
                         } elseif ($state == 'ready_to_exam'){
                             return 'Ujian Siap Dilaksanakan';
-                        }
+                        }elseif ($state == 'gagal_menjadwalkan_ujian')
+                            return 'Gagal Menjadwalkan Ujian';
                         return $state;
                     }),
                 TextColumn::make('Status')
