@@ -177,7 +177,7 @@ class KonfirmasiUjian extends Page
     public function infoStatusUndangan(Schema $schema): Schema
     {
         $sections = [];
-
+        $firstData =$this->status[0];
         foreach ($this->status as $status) {
 
             // Mapping nama section berdasarkan role di tabel
@@ -217,9 +217,28 @@ class KonfirmasiUjian extends Page
         return $schema->components([
             Section::make('Status Undangan')
                 ->schema([
+                    TextEntry::make('status')
+                        ->label('Status Ujian')
+                        ->weight(FontWeight::Bold)
+                        ->size(TextSize::Large)
+                        ->default($firstData->undangan->status_ujian)
+                        ->formatStateUsing(function ($state):string {
+                            if ($state == 'dijadwalkan'){
+                                return 'Di Jadwalkan';
+                            } elseif ($state == 'draft_uploaded') {
+                                return 'Draft Diupload';
+                            } elseif ($state == 'ready_to_exam'){
+                                return 'Ujian Siap Dilaksanakan';
+                            } elseif ($state == 'selesai'){
+                                return 'Ujian Selesai';
+                            }elseif ($state == 'gagal_menjadwalkan_ujian'){
+                                return 'Gagal Menjadwalakan Ujian';
+                            }
+                            return $state;
+                        }),
                     Grid::make(4)
-                        ->schema($sections),
-                ]),
+                        ->schema($sections)
+                ])
         ]);
 
     }
