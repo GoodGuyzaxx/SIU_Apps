@@ -36,6 +36,8 @@ class UserPanelProvider extends PanelProvider
             ->path('user')
             ->login(Login::class)
             ->registration(RegisterAuth::class)
+            ->passwordReset()
+            ->emailVerification()
             ->brandLogo( fn() => view('filament.logo'))
             ->viteTheme('resources/css/filament/user/theme.css')
             ->colors([
