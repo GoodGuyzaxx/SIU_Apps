@@ -44,7 +44,11 @@ class RegisterAuth extends Register
             ->maxLength(25)
             ->minLength(5)
             ->minValue(0)
-            ->numeric();
+            ->unique($this->getUserModel())
+            ->numeric()
+            ->validationMessages([
+                'unique' => 'NPM (Nomor Pokok Mahasiswa) Sudah Terdaftar',
+            ]);
     }
 
     protected function getEmailFormComponent(): Component
@@ -54,7 +58,10 @@ class RegisterAuth extends Register
             ->email()
             ->required()
             ->maxLength(255)
-            ->unique($this->getUserModel());
+            ->unique($this->getUserModel())
+            ->validationMessages([
+                'unique' => 'Email Sudah Sudah Terdaftar',
+            ]);;
     }
 
 
