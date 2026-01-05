@@ -2,11 +2,10 @@
 
 namespace App\Filament\User\Resources\Undangans\Tables;
 
-use App\Models\Judul;
-use App\Models\Mahasiswa;
+
+use App\Filament\User\Resources\Undangans\Pages\DetailUndangan;
+use App\Models\Undangan;
 use Filament\Actions\Action;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -53,6 +52,11 @@ class UndangansTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->recordActions([
+                Action::make('Detail')
+                    ->label('Detail')
+                    ->color('success')
+                    ->icon('heroicon-o-eye')
+                    ->url(fn (Undangan $record) => DetailUndangan::getUrl([$record->id])),
              ]);
     }
 }

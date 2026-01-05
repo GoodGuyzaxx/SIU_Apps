@@ -60,7 +60,7 @@ class MahasiswaResource extends Resource
     {
         return [
             'index' => ListMahasiswas::route('/'),
-            'create' => CreateMahasiswa::route('/create'),
+//            'create' => CreateMahasiswa::route('/create'),
             'edit' => EditMahasiswa::route('/{record}/edit'),
         ];
     }

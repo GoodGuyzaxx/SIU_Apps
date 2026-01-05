@@ -29,9 +29,12 @@ use Filament\Support\Enums\TextSize;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Storage;
 use function PHPUnit\Framework\matches;
+use Filament\Resources\Pages\Concerns\InteractsWithRecord;
+
 
 class DetailUndangan extends Page
 {
+    use InteractsWithRecord;
     protected static string $resource = UndanganResource::class;
 
     protected string $view = 'filament.dosen.resources.undangans.pages.detail-undangan';
@@ -54,20 +57,22 @@ class DetailUndangan extends Page
         ];
     }
 
-    public function mount():void
+    public function mount(int | string $record): void
     {
+        $this->record = $this->resolveRecord($record);
         $this->idDosen = auth()->user();
-        $this->statusUndangan = StatusUndangan::where('id_dosen', $this->idDosen->id)->first();
-        $this->undangan = Undangan::find($this->statusUndangan->id_undangan);
+        $this->statusUndangan = StatusUndangan::where('id_dosen', $this->idDosen->id)->get();
+        $this->undangan = $this->record;
+//        dd($this->undangan->statusUndangan);
     }
 
 
     public function infoUndangan(Schema $schema): Schema
     {
         return $schema
-            ->record($this->statusUndangan->undangan)
+            ->record($this->undangan)
             ->components([
-                Section::make('Undangan '. $this->statusUndangan->undangan->judul->jenis)
+                Section::make('Undangan '. $this->undangan->judul->jenis)
                  ->schema([
                      Grid::make()
                      ->schema([
@@ -76,12 +81,12 @@ class DetailUndangan extends Page
                              TextInput::make('nomor')
                              ->label('Nomor Surat')
                              ->disabled()
-                             ->placeholder($this->statusUndangan->undangan->nomor),
+                             ->placeholder($this->undangan->nomor),
 
                              TextInput::make('perihal')
                                  ->label('Perihal Undangan')
                                  ->disabled()
-                                 ->placeholder($this->statusUndangan->undangan->perihal),
+                                 ->placeholder($this->undangan->perihal),
 
                          ]),
                          Section::make('Jadwal Ujian')
@@ -89,17 +94,17 @@ class DetailUndangan extends Page
                              TextInput::make('tanggal_hari')
                              ->label('Tanggal')
                              ->disabled()
-                             ->placeholder(Carbon::createFromFormat('Y-m-d', $this->statusUndangan->undangan->tanggal_hari)->format('d/m/Y')),
+                             ->placeholder(Carbon::createFromFormat('Y-m-d', $this->undangan->tanggal_hari)->format('d/m/Y')),
 
                              TextInput::make('waktu')
                              ->label('Waktu')
                              ->disabled()
-                             ->placeholder(Carbon::parse($this->statusUndangan->undangan->waktu)->format('H:i')),
+                             ->placeholder(Carbon::parse($this->undangan->waktu)->format('H:i')),
 
                              TextArea::make('tempat')
                              ->label('Tempat Dilaksanakan')
                              ->disabled()
-                             ->placeholder($this->statusUndangan->undangan->tempat),
+                             ->placeholder($this->undangan->tempat),
 
                          ])
 
@@ -110,7 +115,7 @@ class DetailUndangan extends Page
 
     public function infoJudulAndMahasiswa(Schema $schema): Schema {
 //        dd($this->statusUndangan->undangan->softcopy_file_path);
-        return $schema->record($this->undangan)->components([
+        return $schema->record($this->record)->components([
             Section::make('Detail Judul dan Data Mahasiswa/i')
                 ->schema([
                     Grid::make(2)
@@ -118,12 +123,12 @@ class DetailUndangan extends Page
                         TextEntry::make('judul.mahasiswa.nama')
                             ->label('Nama Mahasiswa/i')
                             ->disabled()
-                            ->placeholder($this->statusUndangan->undangan->judul->mahasiswa->nama),
+                            ->placeholder($this->undangan->judul->mahasiswa->nama),
 
                         TextEntry::make('judul.mahasiswa.npm')
                             ->label('NPM (Nomor Pokok Mahasiswa)')
                             ->disabled()
-                            ->placeholder($this->statusUndangan->undangan->judul->mahasiswa->npm),
+                            ->placeholder($this->undangan->judul->mahasiswa->npm),
 
                         TextEntry::make('judul.judul')
                             ->label('Judul')
@@ -168,15 +173,11 @@ class DetailUndangan extends Page
         // Dosen yang sedang login
         $currentDosenId = auth()->user()->id ?? null;
 
-        // Status untuk dosen yang login (Status Saya)
         $statusSaya = $dataStatus->firstWhere('id_dosen', $currentDosenId);
 
         $sections = [];
 
-        /*
-         * SECTION: STATUS SAYA
-         * ------------------------------------------------------------------
-         */
+
         if ($statusSaya) {
             $labelRole = match($statusSaya->role){
                 'pembimbing_satu', 'pembimbing1' => 'Pembimbing 1',
@@ -210,20 +211,12 @@ class DetailUndangan extends Page
                 ]);
         }
 
-        /*
-         * SECTION: PEMBIMBING & PENGUJI (DOSEN 2–4)
-         * ------------------------------------------------------------------
-         * Di-generate dari collection $dataStatus,
-         * selain dosen yang login.
-         */
+
         $dataLain = $dataStatus->filter(function ($item) use ($currentDosenId) {
             return $item->id_dosen !== $currentDosenId;
         });
 
         foreach ($dataLain as $status) {
-
-            // Mapping nama section berdasarkan role di tabel
-            // Sesuaikan dengan value sebenarnya di database kamu
             $label = match ($status->role) {
                 'pembimbing_satu', 'pembimbing1' => 'Pembimbing 1',
                 'pembimbing_dua', 'pembimbing2' => 'Pembimbing 2',
@@ -273,15 +266,15 @@ class DetailUndangan extends Page
                             ->modalCancelActionLabel('Batal')
                             ->modalSubmitActionLabel('Ya,Saya Bersedia')
                             ->visible(function () {
-                                return $this->statusUndangan->status_konfirmasi !== 'Hadir' && $this->statusUndangan->status_konfirmasi !== 'Tidak Hadir';
+                                return $this->undangan->statusUndangan->status_konfirmasi !== 'Hadir' && $this->undangan->statusUndangan->status_konfirmasi !== 'Tidak Hadir';
                             })
                             ->hidden(function (){
                                 return $this->undangan->status_ujian === 'gagal_menjadwalkan_ujian';
                             })
                             ->action(function () {
-                                $this->statusUndangan->status_konfirmasi = 'Hadir';
-                                $this->statusUndangan->confirmed_at =Carbon::now();
-                                $this->statusUndangan->save();
+                                $this->undangan->statusUndangan->status_konfirmasi = 'Hadir';
+                                $this->undangan->statusUndangan->confirmed_at =Carbon::now();
+                                $this->undangan->statusUndangan->save();
                                 Notification::make()
                                     ->title('Berhasil Konfirmasi Kehadiran')
                                     ->success()

@@ -12,14 +12,14 @@ class ListMahasiswas extends ListRecords
     protected static string $resource = MahasiswaResource::class;
 
     protected ?string $heading = 'Mahasiswa';
-    protected function getHeaderActions(): array
-    {
-        return [
-            CreateAction::make()
-                ->label('Tambah Mahasiswa')
-            ,
-        ];
-    }
+//    protected function getHeaderActions(): array
+//    {
+//        return [
+//            CreateAction::make()
+//                ->label('Tambah Mahasiswa')
+//            ,
+//        ];
+//    }
 
 
 

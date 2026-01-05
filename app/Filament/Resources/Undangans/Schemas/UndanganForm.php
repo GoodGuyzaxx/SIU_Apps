@@ -73,7 +73,7 @@ class UndanganForm
                             ->label('Tempat Ujian')
                             ->required()
                             ->rows(3)
-                            ->placeholder('Contoh: Ruang Sidang 1, Gedung FMIPA')
+                            ->placeholder('Contoh: Ruang Pasca Sarjana')
                             ->columnSpanFull(),
 
                         Select::make('status_ujian')

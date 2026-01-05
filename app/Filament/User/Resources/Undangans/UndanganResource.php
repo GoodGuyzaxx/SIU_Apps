@@ -3,10 +3,12 @@
 namespace App\Filament\User\Resources\Undangans;
 
 use App\Filament\User\Resources\Undangans\Pages\CreateUndangan;
+use App\Filament\User\Resources\Undangans\Pages\DetailUndangan;
 use App\Filament\User\Resources\Undangans\Pages\EditUndangan;
 use App\Filament\User\Resources\Undangans\Pages\ListUndangans;
 use App\Filament\User\Resources\Undangans\Schemas\UndanganForm;
 use App\Filament\User\Resources\Undangans\Tables\UndangansTable;
+use App\Models\Mahasiswa;
 use App\Models\Undangan;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -27,6 +29,13 @@ class UndanganResource extends Resource
     protected static ?string $slug = "undangan";
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-envelope';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        $dataMhs = Mahasiswa::find(auth()->id());
+
+        return $dataMhs === null;
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -49,6 +58,7 @@ class UndanganResource extends Resource
     {
         return [
             'index' => ListUndangans::route('/'),
+            'detail' => DetailUndangan::route('/{record}/detail'),
 //            'create' => CreateUndangan::route('/create'),
 //            'edit' => EditUndangan::route('/{record}/edit'),
         ];

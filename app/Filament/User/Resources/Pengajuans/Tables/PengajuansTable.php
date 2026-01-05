@@ -71,8 +71,6 @@ class PengajuansTable
             )
             ->defaultSort('created_at', 'desc')
             ->recordActions([
-//                ViewAction::make(),
-//                EditAction::make(),
             Action::make('Detail')
                 ->label('Detail')
                 ->color('success')
@@ -87,33 +85,4 @@ class PengajuansTable
 
             ]);
     }
-
-//    public static function configure(Table $table): Table
-//    {
-//        return $table
-//            ->columns([
-//                //
-//                TextColumn::make('mahasiswa.nama')
-//                    ->label('Nama Mahasiswa')
-//                    ->searchable(),
-//
-//                TextColumn::make("mahasiswa.npm")
-//                    ->label('NPM')
-//                    ->searchable(),
-//
-//                TextColumn::make('status')
-//                    ->label('Status Pengajuan')
-//                    ->searchable(),
-//            ])
-//            ->filters([
-//            ])
-//            ->recordActions([
-//                DeleteBulkAction::make()
-//            ])
-//            ->toolbarActions([
-//                BulkActionGroup::make([
-//                    DeleteBulkAction::make(),
-//                ]),
-//            ]);
-//    }
 }
