@@ -19,15 +19,12 @@ class JudulsTable
                 TextColumn::make('mahasiswa.nama')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('jenis')
-                    ->sortable()
-                    ->searchable(),
                 TextColumn::make('judul')
                     ->limit(50)
                     ->searchable(),
-                TextColumn::make('pembimbing_satu')
+                TextColumn::make('pembimbingSatu.nama')
                     ->searchable(),
-                TextColumn::make('pembimbing_dua')
+                TextColumn::make('pembimbingDua.nama')
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()

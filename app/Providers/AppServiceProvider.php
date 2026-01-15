@@ -31,13 +31,13 @@ class AppServiceProvider extends ServiceProvider
         StatusUndangan::observe(StatusUndangaObserver::class);
         Carbon::setLocale("id");
         \Livewire\Livewire::forceAssetInjection();
-//        if (
-//            env("APP_ENV") !== "local" ||
-//            str_contains(request()->getHost(), ".ngrok.io") ||
-//            str_contains(request()->getHost(), ".ngrok-free.app")
-//        ) {
-//            // Check for ngrok domain
-//            URL::forceScheme("https");
-//        }
+       if (
+           env("APP_ENV") !== "local" ||
+           str_contains(request()->getHost(), ".ngrok.io") ||
+           str_contains(request()->getHost(), ".ngrok-free.app")
+       ) {
+           // Check for ngrok domain
+           URL::forceScheme("https");
+       }
     }
 }

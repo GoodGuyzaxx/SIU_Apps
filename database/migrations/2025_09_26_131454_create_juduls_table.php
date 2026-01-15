@@ -15,12 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('id_mahasiswa')->constrained('mahasiswa');
             $table->string('minat');
-            $table->string('judul');
-            $table->string('jenis');
-            $table->string('pembimbing_satu')->nullable();
-            $table->string('pembimbing_dua')->nullable();
-            $table->string('penguji_satu')->nullable();
-            $table->string('penguji_dua')->nullable();
+            $table->text('judul');
+            $table->foreignId('pembimbing_satu')->nullable()->constrained('dosen');
+            $table->foreignId('pembimbing_dua')->nullable()->constrained('dosen');
+            $table->foreignId('penguji_satu')->nullable()->constrained('dosen');
+            $table->foreignId('penguji_dua')->nullable()->constrained('dosen');
             $table->timestamps();
         });
     }

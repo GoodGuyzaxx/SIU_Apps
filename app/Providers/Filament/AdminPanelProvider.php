@@ -33,6 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->id("admin")
             ->path("admin")
             ->globalSearch(false)
+            ->topNavigation()
             ->databaseNotifications()
             ->databaseNotificationsPolling('15s')
             ->login(fn() => redirect()->route("filament.user.auth.login"))

@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             UserSeeder::class,
-            DosenSeeder::class,
+//            DosenSeeder::class,
         ]);
 
         DB::table('papan_informasi')->insert([

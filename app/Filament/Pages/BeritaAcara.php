@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Models\Judul;
+use App\Models\Undangan;
 use BackedEnum;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TimePicker;
@@ -58,13 +59,10 @@ class BeritaAcara extends Page
                         ->required()
                         ->seconds(false)
                         ->statePath('waktu'),
-
-
                     Select::make('id_judul')
                         ->label('Mahasiswa')
-                        ->options(Judul::query()->with('mahasiswa')->get()->mapWithKeys(function ($judul) {
-                            $mahasiswaNama = $judul->mahasiswa ? $judul->mahasiswa->nama : 'Tidak ada mahasiswa';
-                            return [$judul->id => $mahasiswaNama . ' - ' . $judul->mahasiswa->npm . ' - ' . $judul->judul];
+                        ->options(Undangan::query()->get()->mapWithKeys(function ($undangan) {
+                            return [$undangan->id => $undangan->judul->judul . ' - ' . $undangan->judul->mahasiswa->nama . ' - ' . $undangan->judul->mahasiswa->npm];
                         }))
                         ->required()
                         ->loadingMessage('Sedang Mencari')

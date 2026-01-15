@@ -26,6 +26,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'role',
         'password',
+        'email_verified_at',
     ];
 
     /**
@@ -53,6 +54,11 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function mahasiswa(): HasOne {
         return $this->hasOne(Mahasiswa::class, 'id_user');
+    }
+
+    public function dosen(): HasOne
+    {
+        return $this->hasOne(Dosen::class, 'id_user');
     }
 
 //    public function canAccessPanel(Panel $panel): bool

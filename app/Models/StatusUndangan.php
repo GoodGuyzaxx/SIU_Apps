@@ -23,8 +23,8 @@ class StatusUndangan extends Model
         return $this->belongsTo(Undangan::class, 'id_undangan');
     }
 
-    public function user(): BelongsTo {
-        return $this->belongsTo(User::class, 'id_dosen');
+    public function dosen(): BelongsTo {
+        return $this->belongsTo(dosen::class, 'id_dosen');
 
     }
 

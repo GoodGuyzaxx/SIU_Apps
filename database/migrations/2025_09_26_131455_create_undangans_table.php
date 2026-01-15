@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('undangan', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_judul')->constrained('judul');
+            $table->foreignId('id_judul')->constrained('judul')->cascadeOnDelete();
             $table->string('nomor');
             $table->string('perihal');
             $table->date('tanggal_hari');
             $table->time('waktu');
             $table->string('tempat');
+            $table->string('meeting_id')->nullable();
+            $table->string('passcode')->nullable();
             $table->string('signed')->nullable()->default('-');
             $table->string('softcopy_file_path')->nullable();
             $table->string('status_ujian')->default('dijadwalkan');

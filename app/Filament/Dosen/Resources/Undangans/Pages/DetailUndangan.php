@@ -166,12 +166,12 @@ class DetailUndangan extends Page
     public function infoStatusUndangan(Schema $schema): Schema
     {
         // Ambil semua status undangan untuk undangan ini
-        $dataStatus = StatusUndangan::with('user')
+        $dataStatus = StatusUndangan::with('dosen')
             ->where('id_undangan', $this->undangan->id)
             ->get();
 
         // Dosen yang sedang login
-        $currentDosenId = auth()->user()->id ?? null;
+        $currentDosenId = auth()->user()->dosen->id ?? null;
 
         $statusSaya = $dataStatus->firstWhere('id_dosen', $currentDosenId);
 

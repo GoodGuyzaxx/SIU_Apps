@@ -10,13 +10,15 @@ class ListDosens extends ListRecords
 {
     protected static string $resource = DosenResource::class;
 
-    protected function getHeaderActions(): array
-    {
-        return [
-            CreateAction::make()
-            ->label("Tambah Data Dosen"),
-        ];
-    }
+    protected ?string $heading = "Data Dosen";
+
+//    protected function getHeaderActions(): array
+//    {
+//        return [
+//            CreateAction::make()
+//            ->label("Tambah Data Dosen"),
+//        ];
+//    }
 
 
 }

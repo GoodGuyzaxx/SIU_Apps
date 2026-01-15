@@ -31,6 +31,7 @@ class UndangansTable
 
                 TextColumn::make('perihal')
                     ->searchable()
+                    ->toggleable()
                     ->limit(20),
                 TextColumn::make('tanggal_hari')
                     ->date()
@@ -88,16 +89,22 @@ class UndangansTable
                     ->hidden(function (Undangan $record): bool {
                         return $record->signed !== "-";
                     }),
-                EditAction::make(),
+                Action::make('Print')
+                    ->icon('heroicon-o-printer')
+                    ->color('success')
+                    ->url(fn (Undangan $record) => route('undangan.pdf', $record->id))
+                    ->openUrlInNewTab(true),
+                Action::make('Print Dengan Tanda Tangan')
+                    ->icon('heroicon-o-printer')
+                    ->color('success')
+                    ->hidden(function (Undangan $record): bool {
+                        return $record->signed == '-';
+                    })
+                    ->url(fn (Undangan $record) => route('undangan.ttd.pdf', $record->id))
+                    ->openUrlInNewTab(),
                 ActionGroup::make([
                     ViewAction::make(),
-                    Action::make('Print Dengan Tanda Tangan')
-                        ->icon('heroicon-o-printer')
-                        ->color('success')
-                        ->hidden(function (Undangan $record): bool {
-                            return $record->signed == '-';
-                        })
-                        ->url(fn (Undangan $record) => route('undangan.ttd.pdf', $record->id)),
+                    EditAction::make(),
                 ])
             ])
             ->toolbarActions([

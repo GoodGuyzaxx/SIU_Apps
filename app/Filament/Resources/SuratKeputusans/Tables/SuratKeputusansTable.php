@@ -70,17 +70,23 @@ class SuratKeputusansTable
                         return $record->signed !== "-";
                     }),
 
-                EditAction::make(),
+                Action::make('Print')
+                    ->icon('heroicon-o-printer')
+                    ->color('success')
+                    ->url(fn (SuratKeputusan $record) => route('skPDF', $record->id))
+                    ->openUrlInNewTab(),
+                Action::make('Print Dengan Tanda Tangan')
+                    ->icon('heroicon-o-printer')
+                    ->color('success')
+                    ->hidden(function (SuratKeputusan $record): bool {
+                        return $record->signed == '-';
+                    })
+                    ->url(fn (SuratKeputusan $record) => route('skttdPDF', $record->id))
+                    ->openUrlInNewTab(),
                 ActionGroup::make([
                     ViewAction::make(),
                     DeleteAction::make(),
-                    Action::make('Print Dengan Tanda Tangan')
-                        ->icon('heroicon-o-printer')
-                        ->color('success')
-                        ->hidden(function (SuratKeputusan $record): bool {
-                            return $record->signed == '-';
-                        })
-                        ->url(fn (SuratKeputusan $record) => route('skttdPDF', $record->id)),
+                    EditAction::make(),
                 ])
             ])
             ->toolbarActions([

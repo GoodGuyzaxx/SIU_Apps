@@ -3,6 +3,9 @@
 namespace App\Filament\Resources\Pengajuans\Schemas;
 
 use App\Models\Mahasiswa;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
@@ -15,6 +18,41 @@ class PengajuanForm
         $dataId = Mahasiswa::where("id_user", auth()->id())->first();
 
         return $schema->components([
+            Section::make()
+                ->schema([
+                    Select::make("id_mahasiswa")
+                        ->label('Pilih Mahasiswa')
+                        ->prefixIcon('heroicon-o-user')
+                        ->required()
+                        ->native(false)
+                        ->options(Mahasiswa::query()->get()->mapWithKeys(function ($mahasiswa) {
+                            return [$mahasiswa->id => $mahasiswa->nama . ' - '. $mahasiswa->npm];
+                        }))
+                        ->searchable(),
+                    Grid::make(1)
+                        ->schema([
+                            Select::make("minat_kekuhusan")
+                                ->label("Minat Kekhususan")
+                                ->placeholder("Pilih bidang hukum yang Anda minati...")
+                                ->required()
+                                ->options([
+                                    "HTN" => "Hukum Tata Negara (HTN)",
+                                    "Hukum Pidana" => "Hukum Pidana",
+                                    "Hukum Perdata" => "Hukum Perdata",
+                                ])
+                                ->native(false)
+                                ->searchable()
+                                ->prefixIcon("heroicon-o-academic-cap")
+                                ->suffixIcon("heroicon-m-chevron-down")
+                                ->helperText("Pilih satu bidang kekhususan yang paling sesuai dengan minat penelitian Anda")
+                                ->live()
+                                ->columnSpanFull(),
+                        ])
+                ])
+                ->heading("Peminatan Hukum Data Mahasiswa")
+                ->icon("heroicon-o-academic-cap")
+                ->extraAttributes(["class" => "p-6 border-l-4 border-l-primary-500 bg-white dark:bg-gray-800 shadow-sm"])
+                ->columnSpanFull(),
             // Card 2: Usulan Judul - Enhanced Visual Hierarchy
             Section::make()
                 ->schema([

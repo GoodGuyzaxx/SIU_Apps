@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Filament\Resources\UserAccounts\Schemas;
+use Faker\Provider\Text;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
@@ -13,6 +15,7 @@ class UserAccountForm
 {
     public static function configure(Schema $schema): Schema
     {
+        $now = Carbon::now();
         return $schema
             ->components([
                 Section::make('Informasi Akun')
@@ -23,7 +26,7 @@ class UserAccountForm
                     ->columns(2)
                     ->schema([
                         Hidden::make('email_verified_at')
-                            ->default(Carbon::now()),
+                            ->default($now),
                         TextInput::make('name')
                             ->label('Nama Lengkap')
                             ->placeholder('Masukkan nama lengkap')
@@ -80,6 +83,57 @@ class UserAccountForm
                             ])
                             ->columnSpanFull(),
                     ]),
+
+                // Dosen Section
+                Section::make('Data Doesn')
+                    ->description('Informasi Lengkap Data Dosen')
+                    ->icon('heroicon-o-academic-cap')
+                    ->disabled(fn ($get) => $get('role') != 'dosen')
+                    ->hidden(fn ($get) => $get('role') != 'dosen')
+                    ->relationship('dosen')
+                    ->columnSpanFull()
+                    ->columns(2)
+                    ->schema([
+                        TextInput::make('nama')
+                            ->label('Nama Dosen Lengkap Dengna Gelar')
+                            ->required()
+                            ->prefixIcon('heroicon-m-user')
+                            ->maxLength(255),
+
+                        TextInput::make('nidn')
+                            ->label('NIDN')
+                            ->required()
+                            ->prefixIcon('heroicon-m-identification')
+                            ->maxLength(50)
+                            ->numeric(),
+
+                        TextInput::make('nrp_nip')
+                            ->label('NRP / NIP')
+                            ->required()
+                            ->prefixIcon('heroicon-m-identification')
+                            ->maxLength(50)
+                            ->numeric(),
+
+                        TextInput::make('inisial_dosen')
+                            ->label('Inisial Dosen')
+                            ->prefixIcon('heroicon-m-user')
+                            ->maxLength(10)
+                            ->placeholder('Contoh: JDS'),
+
+                        TextInput::make('ttl')
+                            ->label('Tempat, Tanggal Lahir')
+                            ->prefixIcon('heroicon-m-identification')
+                            ->placeholder('Contoh: Jayapura, 17 Agustus 1980')
+                            ->maxLength(255),
+
+                        TextInput::make('nomor_hp')
+                            ->label('Nomor HP')
+                            ->tel()
+                            ->maxLength(20)
+                            ->prefixIcon('heroicon-m-phone')
+                            ->placeholder('Contoh: 08123456789'),
+                    ])
+                ,
 
                 Section::make('Data Mahasiswa')
                     ->description('Informasi lengkap data mahasiswa')

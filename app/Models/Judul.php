@@ -21,8 +21,25 @@ class Judul extends Model
         'penguji_dua',
     ];
 
+
     public function mahasiswa(): BelongsTo {
         return $this->belongsTo(Mahasiswa::class, 'id_mahasiswa');
+    }
+
+    public function pembimbingSatu(): BelongsTo {
+        return $this->belongsTo(Dosen::class, 'pembimbing_satu');
+    }
+
+    public function pembimbingDua(): BelongsTo {
+        return $this->belongsTo(Dosen::class, 'pembimbing_dua');
+    }
+
+    public function pengujiSatu(): BelongsTo {
+        return $this->belongsTo(Dosen::class, 'penguji_satu');
+    }
+
+    public function pengujiDua(): BelongsTo {
+        return $this->belongsTo(Dosen::class, 'penguji_dua');
     }
 
 }

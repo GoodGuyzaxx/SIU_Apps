@@ -9,6 +9,8 @@ class CreateJudul extends CreateRecord
 {
     protected static string $resource = JudulResource::class;
 
+    protected static bool $canCreateAnother = false;
+
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');

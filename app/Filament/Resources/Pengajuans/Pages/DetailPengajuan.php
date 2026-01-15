@@ -48,33 +48,30 @@ class DetailPengajuan extends Page
 
     static public function approveForm(Schema $schema): Schema
     {
-        $dataDosen = Dosen::all();
-
         return $schema
             ->components([
                 Select::make('pembimbing_satu')
                     ->label('Pembimbing Pertama')
                     ->required()
-                    ->options(Dosen::query()->pluck('nama', 'nama'))
+                    ->options(Dosen::query()->pluck('nama', 'id'))
                     ->searchable(),
 
                 Select::make('pembimbing_dua')
                     ->label('Pembimbing Kedua')
                     ->required()
-                    ->options(Dosen::query()->pluck('nama', 'nama'))
+                    ->options(Dosen::query()->pluck('nama', 'id'))
                     ->searchable(),
 
                 Select::make('penguji_satu')
                     ->label('Penguji Pertama')
                     ->required()
-                    ->options(Dosen::query()->pluck('nama', 'nama'))
+                    ->options(Dosen::query()->pluck('nama', 'id'))
                     ->searchable(),
-
 
                 Select::make('penguji_dua')
                     ->label('Pembimbing Kedua')
                     ->required()
-                    ->options(Dosen::query()->pluck('nama', 'nama'))
+                    ->options(Dosen::query()->pluck('nama', 'id'))
                     ->searchable()
 
             ])
@@ -84,8 +81,6 @@ class DetailPengajuan extends Page
     public function approve(): void
     {
         $data = $this->approveForm->getState();
-//        dd($this->record->mahasiswa->id);
-//        dd($this->record->minat_kekuhusan);
         $this->record->update([
             'status'  => 'Disetujui',
             'catatan' => null,
@@ -95,7 +90,6 @@ class DetailPengajuan extends Page
            'id_mahasiswa' => $this->record->mahasiswa->id,
             'minat' => $this->record->minat_kekuhusan,
             'judul' => $this->judul,
-            'jenis' => 'proposal',
             'pembimbing_satu' => $data['pembimbing_satu'],
             'pembimbing_dua' => $data['pembimbing_dua'],
             'penguji_satu' => $data['penguji_satu'],

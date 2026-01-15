@@ -42,12 +42,6 @@ class DosenForm
                 ->tel()
                 ->maxLength(20)
                 ->placeholder('Contoh: 08123456789'),
-
-            TextInput::make('email')
-                ->label('Email')
-                ->email()
-                ->maxLength(255)
-                ->placeholder('contoh@email.com'),
         ]);
     }
 }

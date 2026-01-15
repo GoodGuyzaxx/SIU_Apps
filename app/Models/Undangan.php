@@ -18,6 +18,8 @@ class Undangan extends Model
         'tanggal_hari',
         'waktu',
         'tempat',
+        'meeting_id',
+        'passcode',
         'signed',
         'softcopy_file_path',
         'status_ujian'

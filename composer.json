@@ -13,7 +13,8 @@
         "kanuni/filament-cards": "^0.3.0",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
-        "silviolleite/laravelpwa": "^2.0"
+        "silviolleite/laravelpwa": "^2.0",
+        "spatie/laravel-pdf": "^1.8"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

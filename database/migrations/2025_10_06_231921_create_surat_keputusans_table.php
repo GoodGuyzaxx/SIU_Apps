@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('surat_keputusan', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_judul')->constrained('judul');
+            $table->foreignId('id_judul')->constrained('judul')->cascadeOnDelete();
             $table->string('nomor_sk_penguji');
             $table->string('nomor_sk_pembimbing');
             $table->string('signed')->nullable()->default('-');

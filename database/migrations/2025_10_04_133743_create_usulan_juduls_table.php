@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('id_mahasiswa')->constrained('mahasiswa')->cascadeOnDelete();
             $table->string('minat_kekuhusan');
-            $table->string('judul_satu');
-            $table->string('judul_dua');
-            $table->string('judul_tiga');
+            $table->text('judul_satu');
+            $table->text('judul_dua');
+            $table->text('judul_tiga');
             $table->string('status')->default('Pengajuan');
             $table->text('catatan')->nullable();
             $table->timestamps();

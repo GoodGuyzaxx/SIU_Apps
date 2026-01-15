@@ -3,6 +3,7 @@
 namespace App\Filament\Dosen\Resources\Undangans\Tables;
 
 use App\Filament\Dosen\Resources\Undangans\Pages\DetailUndangan;
+use App\Models\Dosen;
 use App\Models\Undangan;
 use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
@@ -36,7 +37,7 @@ class UndangansTable
                 TextColumn::make('Status')
                     ->label('Status Konfirmasi')
                     ->default(function (Undangan $record): string {
-                        return $record->statusUndangan->where('id_dosen', auth()->user()->id)->first()->status_konfirmasi;
+                        return $record->statusUndangan->where('id_dosen', auth()->user()->dosen->id)->first()->status_konfirmasi;
                     })
 
             ])
@@ -45,7 +46,7 @@ class UndangansTable
             ])
             ->modifyQueryUsing(function ($query) {
                 return $query->whereHas('statusUndangan', function ($query) {
-                    $query->where('id_dosen', auth()->user()->id);
+                    $query->where('id_dosen', auth()->user()->dosen->id);
                 })->where('status_ujian', '!=', 'dijadwalkan');
             })
             ->heading('Daftar Undangan Saya')

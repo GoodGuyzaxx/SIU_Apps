@@ -24,8 +24,8 @@ class DosensTable
                     ->default('-')
                     ->searchable(),
 
-                TextColumn::make('nrp')
-                    ->label('NRP')
+                TextColumn::make('nrp_nip')
+                    ->label('NRP/NIP')
                     ->searchable()
                     ->default('-'),
 
@@ -39,7 +39,7 @@ class DosensTable
                     ->searchable()
                     ->default('-'),
 
-                TextColumn::make('email')
+                TextColumn::make('user.email')
                     ->label('Email')
                     ->default('-'),
 

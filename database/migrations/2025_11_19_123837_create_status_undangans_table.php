@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('status_undangan', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_undangan')->constrained('undangan')->cascadeOnDelete();
-            $table->foreignId('id_dosen')->constrained('users');
+            $table->foreignId('id_dosen')->constrained('dosen')->cascadeOnDelete();
             $table->string('role');
             $table->string('status_konfirmasi')->default('belum dikonfirmasi');
             $table->string('alasan_penolakan')->nullable();
