@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Berita Acara dan Penilaian Ujian Skripsi {{$data->mahasiswa->nama}}</title>
+    <title>Berita Acara dan Penilaian Tutup Skripsi {{$data->judul->mahasiswa->nama ?? '-'}}</title>
     <style>
-        @page {
-            size: A4;
-        }
+        /*@page {*/
+        /*    size: A4;*/
+        /*}*/
 
         body {
-            font-family: 'Times New Roman', Times, serif;
+            font-family: Arial, Helvetica, sans-serif;
             font-size: 11pt;
             text-align: justify;
             margin: 0;
@@ -40,7 +40,8 @@
 
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-top: -5px;
+            margin-bottom: 10px;
         }
 
         .header h1 {
@@ -88,7 +89,7 @@
 
         .tim-penguji p {
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
         .info-table {
@@ -112,7 +113,7 @@
 
         .hasil-section {
             margin-left: 30px;
-            margin-top: 15px;
+            margin-top: 10px;
         }
 
         .hasil-section table {
@@ -139,6 +140,7 @@
         .bobot-table {
             margin-left: 40px;
             border-collapse: collapse;
+            width: 100%;
         }
 
         .bobot-table td {
@@ -150,12 +152,23 @@
         }
 
         .bobot-table td:nth-child(2) {
-            width: 165px;
+            width: 100px;
+        }
+
+        .bobot-table td:nth-child(3) {
+            width: 150px;
+        }
+
+        .bobot-table td:nth-child(4) {
+            width: 30px;
+        }
+        .bobot-table td:nth-child(5) {
+            width: 100px;
         }
 
         .footer-text {
-            margin-top: 15px;
-            margin-bottom: 15px;
+            margin-top: 10px;
+            margin-bottom: 10px;
         }
 
         .signature-table {
@@ -211,7 +224,7 @@
         }
 
         .mahasiswa-section {
-            margin-top: 15px;
+            margin-top: 5px;
         }
 
         .mahasiswa-section p {
@@ -373,7 +386,7 @@
         }
 
         .keterangan-table td {
-            padding: 3px 10px 3px 0;
+
             vertical-align: top;
         }
 
@@ -382,7 +395,19 @@
         }
 
         .keterangan-table td:nth-child(2) {
-            width: 80px;
+            width: 120px;
+        }
+
+        .keterangan-table td:nth-child(3) {
+            width: 150px;
+        }
+
+        .keterangan-table td:nth-child(4) {
+            width: 30px;
+        }
+
+        .keterangan-table td:nth-child(5) {
+            width: 120px;
         }
 
         .tanggal {
@@ -447,6 +472,7 @@
             margin-left: 30px;
             margin-right: 30px;
             font-size: 12pt;
+            page-break-after: always;
         }
 
         .info-label-koreksi {
@@ -512,27 +538,21 @@
             margin: 0;
         }
 
-        /*========== PAGE ABSENSI ==========*/
-        .last-page{
-            page-break-after: avoid;
-        }
-
-
         /* Print-specific styles */
-        @media print {
-            html, body {
-                background-color: white;
-            }
+        /*@media print {*/
+        /*    html, body {*/
+        /*        background-color: white;*/
+        /*    }*/
 
-            .container {
-                box-shadow: none;
-            }
+        /*    .container {*/
+        /*        box-shadow: none;*/
+        /*    }*/
 
-            .page-berita-acara {
-                page-break-after: always;
-            }
+        /*    .page-berita-acara {*/
+        /*        page-break-after: always;*/
+        /*    }*/
 
-        }
+        /*}*/
     </style>
 </head>
 <body>
@@ -552,8 +572,8 @@
                 <strong>{{ \Carbon\Carbon::now()->isoFormat("dddd") }}</strong>
                 tanggal <strong>{{ \Carbon\Carbon::now()->isoFormat("D") }}</strong>
                 bulan <strong>{{ \Carbon\Carbon::now()->isoFormat("MMMM") }}</strong>
-                tahun <strong>{{ strtoupper($tahun ?? 'DUA RIBU DUA PULUH LIMA') }}</strong>
-                pukul <strong>{{ $waktu ?? '-' }} WIT</strong>
+                tahun <strong>{{  strtoupper($tahun ?? 'DUA RIBU DUA PULUH LIMA') }}</strong>
+                pukul <strong>{{ \Carbon\Carbon::parse($data->waktu)->format('H:i') ?? '-' }} WIT</strong>
                 sampai dengan selesai dilaksanakannya ujian strata satu ( S1 ) Program studi
                 Ilmu Hukum terhadap mahasiswa:
             </p>
@@ -562,19 +582,19 @@
         <div class="info-section">
             <div class="info-row">
                 <div class="info-label">Nama</div>
-                <div class="info-value">: {{ $data->mahasiswa->nama ?? '-' }}</div>
+                <div class="info-value">: {{ $data->judul->mahasiswa->nama ?? '-' }}</div>
             </div>
             <div class="info-row">
                 <div class="info-label">Nomor Pokok Mahasiswa</div>
-                <div class="info-value">: {{ $data->mahasiswa->npm ?? '-' }}</div>
+                <div class="info-value">: {{ $data->judul->mahasiswa->npm ?? '-' }}</div>
             </div>
             <div class="info-row">
                 <div class="info-label">Program Studi</div>
-                <div class="info-value">: {{ $data->mahasiswa->program_studi ?? '-' }}</div>
+                <div class="info-value">: {{ $data->judul->mahasiswa->program_studi ?? '-' }}</div>
             </div>
             <div class="info-row">
                 <div class="info-label">Bagian Kekhususan</div>
-                <div class="info-value">: {{ $data->minat ?? '-' }}</div>
+                <div class="info-value">: {{ $data->judul->minat ?? '-' }}</div>
             </div>
         </div>
 
@@ -584,22 +604,22 @@
                 <tr>
                     <td>Ketua</td>
                     <td>:</td>
-                    <td>{{ $data->pembimbing_satu ?? '-' }}</td>
+                    <td>{{ $data->judul->pembimbingSatu->nama ?? '-' }}</td>
                 </tr>
                 <tr>
                     <td>Sekretaris</td>
                     <td>:</td>
-                    <td>{{ $data->pembimbing_dua ?? '-' }}</td>
+                    <td>{{ $data->judul->pembimbingDua->nama ?? '-' }}</td>
                 </tr>
                 <tr>
                     <td>Anggota</td>
                     <td>:</td>
-                    <td>{{ $data->penguji_satu ?? '-' }}</td>
+                    <td>{{ $data->judul->pengujiSatu->nama ?? '-' }}</td>
                 </tr>
                 <tr>
                     <td>Anggota</td>
                     <td>:</td>
-                    <td>{{ $data->penguji_dua ?? '-' }}</td>
+                    <td>{{ $data->judul->pengujiDua->nama?? '-' }}</td>
                 </tr>
             </table>
         </div>
@@ -627,22 +647,39 @@
                 <tr>
                     <td>1.</td>
                     <td>Nilai A</td>
-                    <td>Skor 85-100</td>
+                    <td>Skor 81-100</td>
+                    <td>6.</td>
+                    <td>Nilai C +</td>
+                    <td>Skor 61-64</td>
                 </tr>
                 <tr>
                     <td>2.</td>
-                    <td>Nilai B</td>
-                    <td>Skor 70-84</td>
+                    <td>Nilai A -</td>
+                    <td>Skor 78-80</td>
+                    <td>7.</td>
+                    <td>Nilai C -</td>
+                    <td>Skor 56-60</td>
                 </tr>
                 <tr>
                     <td>3.</td>
-                    <td>Nilai C</td>
-                    <td>Skor 60-69</td>
+                    <td>Nilai B +</td>
+                    <td>Skor 75-77</td>
+                    <td>8.</td>
+                    <td>Nilai D</td>
+                    <td>Skor 40-45</td>
                 </tr>
                 <tr>
                     <td>4.</td>
-                    <td>Nilai D</td>
-                    <td>Skor 0-49</td>
+                    <td>Nilai B</td>
+                    <td>Skor 71-74</td>
+                    <td>9.</td>
+                    <td>Nilai E -</td>
+                    <td>Skor 0-39</td>
+                </tr>
+                <tr>
+                    <td>5.</td>
+                    <td>Nilai B -</td>
+                    <td>Skor 65-70</td>
                 </tr>
             </table>
         </div>
@@ -664,22 +701,22 @@
             <tbody>
             <tr>
                 <td>Ketua</td>
-                <td>: {{$data->pembimbing_satu ?? '-'}}</td>
+                <td>: {{$data->judul->pembimbingSatu->nama ?? '-'}}</td>
                 <td>.......................................................</td>
             </tr>
             <tr>
                 <td>Anggota</td>
-                <td>: {{$data->pembimbing_dua ?? '-'}}</td>
+                <td>: {{$data->judul->pembimbingDua->nama ?? '-'}}</td>
                 <td>.......................................................</td>
             </tr>
             <tr>
                 <td>Anggota</td>
-                <td>: {{$data->penguji_satu ?? '-'}}</td>
+                <td>: {{$data->judul->pengujiSatu->nama ?? '-'}}</td>
                 <td>.......................................................</td>
             </tr>
             <tr>
                 <td>Anggota</td>
-                <td>: {{$data->penguji_dua ?? '-'}}</td>
+                <td>: {{$data->judul->pengujiDua->nama ?? '-'}}</td>
                 <td>.......................................................</td>
             </tr>
             <tr>
@@ -695,7 +732,7 @@
             <table class="signature-table-mahasiswa">
                 <tbody>
                 <tr>
-                    <td>{{ $data->mahasiswa->nama ?? '-'}}</td>
+                    <td>{{ $data->judul->mahasiswa->nama ?? '-'}}</td>
                     <td>.......................................................</td>
                 </tr>
                 </tbody>
@@ -711,191 +748,7 @@
             <h2>PENILAIAN UJIAN</h2>
             <h2>TUTUP SKRIPSI</h2>
             <h3>FAKULTAS HUKUM UNINGRAT PAPUA</h3>
-            <h3>TAHUN AKADEMIK {{Carbon\Carbon::now()->subYear()->isoFormat('YYYY')}}/{{Carbon\Carbon::now()->startOfYear()->isoFormat('YYYY')}}</h3>
-            <h3>DOSEN PEMBIMBING I</h3>
-        </div>
-
-        <div class="nilai-table">
-            <table>
-                <thead>
-                <tr>
-                    <th rowspan="2" class="col-no">No</th>
-                    <th rowspan="2" class="col-nama">Nama</th>
-                    <th rowspan="2" class="col-kriteria">KRITERIA PENILAIAN</th>
-                    <th colspan="2">BOBOT PENILAIAN</th>
-                </tr>
-                <tr>
-                    <th class="col-skor">Skor</th>
-                    <th class="col-nilai">Nilai</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td rowspan="4">1</td>
-                    <td rowspan="4"><strong>{{ $data->mahasiswa->nama ?? 'Dewantara' }}</strong>
-                        <br> {{ $data->mahasiswa->npm ?? '210301025' }} <br> {{ $data->minat ?? 'Pidana' }}</td>
-                    <td class="text-left">Aktualisasi</td>
-                    <td></td>
-                    <td rowspan="4"></td>
-                </tr>
-                <tr>
-                    <td class="text-left">Teknik Penulisan</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="text-left">Kemampuan Berdiskusi</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="text-left">Penguasaan Materi</td>
-                    <td></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="keterangan-section">
-            <p>Keterangan:</p>
-            <p class="subtitle">Bobot Penilaian</p>
-            <table class="keterangan-table">
-                <tr>
-                    <td>1.</td>
-                    <td>Nilai A</td>
-                    <td>Skor 85-100</td>
-                </tr>
-                <tr>
-                    <td>2.</td>
-                    <td>Nilai B</td>
-                    <td>Skor 70-84</td>
-                </tr>
-                <tr>
-                    <td>3.</td>
-                    <td>Nilai C</td>
-                    <td>Skor 50-69</td>
-                </tr>
-                <tr>
-                    <td>4.</td>
-                    <td>Nilai D</td>
-                    <td>Skor 0-49</td>
-                </tr>
-            </table>
-        </div>
-
-        <div class="tanggal">
-            <p>Jayapura, {{\Carbon\Carbon::now()->isoFormat("D MMMM YYYY")}}</p>
-        </div>
-
-        <div class="dosen-section">
-            <p>Dosen Penguji</p>
-            <div class="dosen-signature">
-                <!-- Tempat untuk QR Code atau Tanda Tangan Digital -->
-            </div>
-            <span class="nama-dosen">{{ $data->pembimbing_satu ?? 'Nama Dosen, S.H., M.H.' }}</span>
-        </div>
-    </div>
-</div>
-
-
-<!-- ========== HALAMAN 3: PENILAIAN 2 ========== -->
-<div class="page-penilaian-dua">
-    <div class="container">
-        <div class="heading">
-            <h2>PENILAIAN UJIAN</h2>
-            <h2>TUTUP SKRIPSI</h2>
-            <h3>FAKULTAS HUKUM UNINGRAT PAPUA</h3>
-            <h3>TAHUN AKADEMIK {{Carbon\Carbon::now()->subYear()->isoFormat('YYYY')}}/{{Carbon\Carbon::now()->startOfYear()->isoFormat('YYYY')}}</h3>
-            <h3>DOSEN PEMBIMBING II</h3>
-        </div>
-
-        <div class="nilai-table">
-            <table>
-                <thead>
-                <tr>
-                    <th rowspan="2" class="col-no">No</th>
-                    <th rowspan="2" class="col-nama">Nama</th>
-                    <th rowspan="2" class="col-kriteria">KRITERIA PENILAIAN</th>
-                    <th colspan="2">BOBOT PENILAIAN</th>
-                </tr>
-                <tr>
-                    <th class="col-skor">Skor</th>
-                    <th class="col-nilai">Nilai</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td rowspan="4">1</td>
-                    <td rowspan="4"><strong>{{ $data->mahasiswa->nama ?? 'Dewantara' }}</strong>
-                        <br> {{ $data->mahasiswa->npm ?? '210301025' }} <br> {{ $data->minat ?? 'Pidana' }}</td>
-                    <td class="text-left">Aktualisasi</td>
-                    <td></td>
-                    <td rowspan="4"></td>
-                </tr>
-                <tr>
-                    <td class="text-left">Teknik Penulisan</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="text-left">Kemampuan Berdiskusi</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="text-left">Penguasaan Materi</td>
-                    <td></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="keterangan-section">
-            <p>Keterangan:</p>
-            <p class="subtitle">Bobot Penilaian</p>
-            <table class="keterangan-table">
-                <tr>
-                    <td>1.</td>
-                    <td>Nilai A</td>
-                    <td>Skor 85-100</td>
-                </tr>
-                <tr>
-                    <td>2.</td>
-                    <td>Nilai B</td>
-                    <td>Skor 70-84</td>
-                </tr>
-                <tr>
-                    <td>3.</td>
-                    <td>Nilai C</td>
-                    <td>Skor 50-69</td>
-                </tr>
-                <tr>
-                    <td>4.</td>
-                    <td>Nilai D</td>
-                    <td>Skor 0-49</td>
-                </tr>
-            </table>
-        </div>
-
-        <div class="tanggal">
-            <p>Jayapura, {{\Carbon\Carbon::now()->isoFormat("D MMMM YYYY")}}</p>
-        </div>
-
-        <div class="dosen-section">
-            <p>Dosen Penguji</p>
-            <div class="dosen-signature">
-                <!-- Tempat untuk QR Code atau Tanda Tangan Digital -->
-            </div>
-            <span class="nama-dosen">{{ $data->pembimbing_dua ?? 'Nama Dosen, S.H., M.H.' }}</span>
-        </div>
-    </div>
-</div>
-
-
-<!-- ========== HALAMAN 4: PENILAIAN 3 ========== -->
-<div class="page-penilaian-tiga">
-    <div class="container">
-        <div class="heading">
-            <h2>PENILAIAN UJIAN</h2>
-            <h2>PROPOSAL SKRIPSI</h2>
-            <h3>FAKULTAS HUKUM UNINGRAT PAPUA</h3>
-            <h3>TAHUN AKADEMIK {{Carbon\Carbon::now()->subYear()->isoFormat('YYYY')}}/{{Carbon\Carbon::now()->startOfYear()->isoFormat('YYYY')}}</h3>
+            <h3>TAHUN AKADEMIK {{\Carbon\Carbon::now()->subYear()->startOfYear()->isoFormat('Y')}}/{{\Carbon\Carbon::now()->startOfYear()->isoFormat('Y')}}</h3>
             <h3>DOSEN PENGUJI I</h3>
         </div>
 
@@ -916,8 +769,8 @@
                 <tbody>
                 <tr>
                     <td rowspan="4">1</td>
-                    <td rowspan="4"><strong>{{ $data->mahasiswa->nama ?? 'Dewantara' }}</strong>
-                        <br> {{ $data->mahasiswa->npm ?? '210301025' }} <br> {{ $data->minat ?? 'Pidana' }}</td>
+                    <td rowspan="4"><strong>{{ $data->judul->mahasiswa->nama ?? 'Dewantara' }}</strong>
+                        <br> {{ $data->judulmahasiswa->npm ?? '210301025' }} <br> {{ $data->judul->minat ?? 'Pidana' }}</td>
                     <td class="text-left">Aktualisasi</td>
                     <td></td>
                     <td rowspan="4"></td>
@@ -945,22 +798,39 @@
                 <tr>
                     <td>1.</td>
                     <td>Nilai A</td>
-                    <td>Skor 85-100</td>
+                    <td>Skor 81-100</td>
+                    <td>6.</td>
+                    <td>Nilai C +</td>
+                    <td>Skor 61-64</td>
                 </tr>
                 <tr>
                     <td>2.</td>
-                    <td>Nilai B</td>
-                    <td>Skor 70-84</td>
+                    <td>Nilai A -</td>
+                    <td>Skor 78-80</td>
+                    <td>7.</td>
+                    <td>Nilai C -</td>
+                    <td>Skor 56-60</td>
                 </tr>
                 <tr>
                     <td>3.</td>
-                    <td>Nilai C</td>
-                    <td>Skor 50-69</td>
+                    <td>Nilai B +</td>
+                    <td>Skor 75-77</td>
+                    <td>8.</td>
+                    <td>Nilai D</td>
+                    <td>Skor 40-45</td>
                 </tr>
                 <tr>
                     <td>4.</td>
-                    <td>Nilai D</td>
-                    <td>Skor 0-49</td>
+                    <td>Nilai B</td>
+                    <td>Skor 71-74</td>
+                    <td>9.</td>
+                    <td>Nilai E -</td>
+                    <td>Skor 0-39</td>
+                </tr>
+                <tr>
+                    <td>5.</td>
+                    <td>Nilai B -</td>
+                    <td>Skor 65-70</td>
                 </tr>
             </table>
         </div>
@@ -974,20 +844,20 @@
             <div class="dosen-signature">
                 <!-- Tempat untuk QR Code atau Tanda Tangan Digital -->
             </div>
-            <span class="nama-dosen">{{ $data->penguji_satu ?? 'Nama Dosen, S.H., M.H.' }}</span>
+            <span class="nama-dosen">{{ $data->judul->pembimbingSatu->nama ?? 'Nama Dosen, S.H., M.H.' }}</span>
         </div>
     </div>
 </div>
 
 
-<!-- ========== HALAMAN 5: PENILAIAN 4 ========== -->
-<div class="page-penilaian-empat">
+<!-- ========== HALAMAN 3: PENILAIAN 2 ========== -->
+<div class="page-penilaian-dua">
     <div class="container">
         <div class="heading">
             <h2>PENILAIAN UJIAN</h2>
-            <h2>PROPOSAL SKRIPSI</h2>
+            <h2>TUTUP SKRIPSI</h2>
             <h3>FAKULTAS HUKUM UNINGRAT PAPUA</h3>
-            <h3>TAHUN AKADEMIK {{Carbon\Carbon::now()->subYear()->isoFormat('YYYY')}}/{{Carbon\Carbon::now()->startOfYear()->isoFormat('YYYY')}}</h3>
+            <h3>TAHUN AKADEMIK {{\Carbon\Carbon::now()->subYear()->startOfYear()->isoFormat('Y')}}/{{\Carbon\Carbon::now()->startOfYear()->isoFormat('Y')}}</h3>
             <h3>DOSEN PENGUJI II</h3>
         </div>
 
@@ -1008,8 +878,8 @@
                 <tbody>
                 <tr>
                     <td rowspan="4">1</td>
-                    <td rowspan="4"><strong>{{ $data->mahasiswa->nama ?? 'Dewantara' }}</strong>
-                        <br> {{ $data->mahasiswa->npm ?? '210301025' }} <br> {{ $data->minat ?? 'Pidana' }}</td>
+                    <td rowspan="4"><strong>{{ $data->judul->mahasiswa->nama ?? 'Dewantara' }}</strong>
+                        <br> {{ $data->judul->mahasiswa->npm ?? '210301025' }} <br> {{ $data->judul->minat ?? 'Pidana' }}</td>
                     <td class="text-left">Aktualisasi</td>
                     <td></td>
                     <td rowspan="4"></td>
@@ -1037,22 +907,257 @@
                 <tr>
                     <td>1.</td>
                     <td>Nilai A</td>
-                    <td>Skor 85-100</td>
+                    <td>Skor 81-100</td>
+                    <td>6.</td>
+                    <td>Nilai C +</td>
+                    <td>Skor 61-64</td>
                 </tr>
                 <tr>
                     <td>2.</td>
-                    <td>Nilai B</td>
-                    <td>Skor 70-84</td>
+                    <td>Nilai A -</td>
+                    <td>Skor 78-80</td>
+                    <td>7.</td>
+                    <td>Nilai C -</td>
+                    <td>Skor 56-60</td>
                 </tr>
                 <tr>
                     <td>3.</td>
-                    <td>Nilai C</td>
-                    <td>Skor 50-69</td>
+                    <td>Nilai B +</td>
+                    <td>Skor 75-77</td>
+                    <td>8.</td>
+                    <td>Nilai D</td>
+                    <td>Skor 40-45</td>
                 </tr>
                 <tr>
                     <td>4.</td>
+                    <td>Nilai B</td>
+                    <td>Skor 71-74</td>
+                    <td>9.</td>
+                    <td>Nilai E -</td>
+                    <td>Skor 0-39</td>
+                </tr>
+                <tr>
+                    <td>5.</td>
+                    <td>Nilai B -</td>
+                    <td>Skor 65-70</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="tanggal">
+            <p>Jayapura, {{\Carbon\Carbon::now()->isoFormat("D MMMM YYYY")}}</p>
+        </div>
+
+        <div class="dosen-section">
+            <p>Dosen Penguji</p>
+            <div class="dosen-signature">
+                <!-- Tempat untuk QR Code atau Tanda Tangan Digital -->
+            </div>
+            <span class="nama-dosen">{{ $data->judul->pembimbingDua->nama ?? 'Nama Dosen, S.H., M.H.' }}</span>
+        </div>
+    </div>
+</div>
+
+
+<!-- ========== HALAMAN 4: PENILAIAN 3 ========== -->
+<div class="page-penilaian-tiga">
+    <div class="container">
+        <div class="heading">
+            <h2>PENILAIAN UJIAN</h2>
+            <h2>TUTUP SKRIPSI</h2>
+            <h3>FAKULTAS HUKUM UNINGRAT PAPUA</h3>
+            <h3>TAHUN AKADEMIK {{\Carbon\Carbon::now()->subYear()->startOfYear()->isoFormat('Y')}}/{{\Carbon\Carbon::now()->startOfYear()->isoFormat('Y')}}</h3>
+            <h3>DOSEN PENGUJI III</h3>
+        </div>
+
+        <div class="nilai-table">
+            <table>
+                <thead>
+                <tr>
+                    <th rowspan="2" class="col-no">No</th>
+                    <th rowspan="2" class="col-nama">Nama</th>
+                    <th rowspan="2" class="col-kriteria">KRITERIA PENILAIAN</th>
+                    <th colspan="2">BOBOT PENILAIAN</th>
+                </tr>
+                <tr>
+                    <th class="col-skor">Skor</th>
+                    <th class="col-nilai">Nilai</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td rowspan="4">1</td>
+                    <td rowspan="4"><strong>{{ $data->judul->mahasiswa->nama ?? 'Dewantara' }}</strong>
+                        <br> {{ $data->judul->mahasiswa->npm ?? '210301025' }} <br> {{ $data->judul->minat ?? 'Pidana' }}</td>
+                    <td class="text-left">Aktualisasi</td>
+                    <td></td>
+                    <td rowspan="4"></td>
+                </tr>
+                <tr>
+                    <td class="text-left">Teknik Penulisan</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="text-left">Kemampuan Berdiskusi</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="text-left">Penguasaan Materi</td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="keterangan-section">
+            <p>Keterangan:</p>
+            <p class="subtitle">Bobot Penilaian</p>
+            <table class="keterangan-table">
+                <tr>
+                    <td>1.</td>
+                    <td>Nilai A</td>
+                    <td>Skor 81-100</td>
+                    <td>6.</td>
+                    <td>Nilai C +</td>
+                    <td>Skor 61-64</td>
+                </tr>
+                <tr>
+                    <td>2.</td>
+                    <td>Nilai A -</td>
+                    <td>Skor 78-80</td>
+                    <td>7.</td>
+                    <td>Nilai C -</td>
+                    <td>Skor 56-60</td>
+                </tr>
+                <tr>
+                    <td>3.</td>
+                    <td>Nilai B +</td>
+                    <td>Skor 75-77</td>
+                    <td>8.</td>
                     <td>Nilai D</td>
-                    <td>Skor 0-49</td>
+                    <td>Skor 40-45</td>
+                </tr>
+                <tr>
+                    <td>4.</td>
+                    <td>Nilai B</td>
+                    <td>Skor 71-74</td>
+                    <td>9.</td>
+                    <td>Nilai E -</td>
+                    <td>Skor 0-39</td>
+                </tr>
+                <tr>
+                    <td>5.</td>
+                    <td>Nilai B -</td>
+                    <td>Skor 65-70</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="tanggal">
+            <p>Jayapura, {{\Carbon\Carbon::now()->isoFormat("D MMMM YYYY")}}</p>
+        </div>
+
+        <div class="dosen-section">
+            <p>Dosen Penguji</p>
+            <div class="dosen-signature">
+                <!-- Tempat untuk QR Code atau Tanda Tangan Digital -->
+            </div>
+            <span class="nama-dosen">{{ $data->judul->pengujiSatu->nama ?? 'Nama Dosen, S.H., M.H.' }}</span>
+        </div>
+    </div>
+</div>
+
+
+<!-- ========== HALAMAN 5: PENILAIAN 4 ========== -->
+<div class="page-penilaian-empat">
+    <div class="container">
+        <div class="heading">
+            <h2>PENILAIAN UJIAN</h2>
+            <h2>TUTUP SKRIPSI</h2>
+            <h3>FAKULTAS HUKUM UNINGRAT PAPUA</h3>
+            <h3>TAHUN AKADEMIK {{\Carbon\Carbon::now()->subYear()->startOfYear()->isoFormat('Y')}}/{{\Carbon\Carbon::now()->startOfYear()->isoFormat('Y')}}</h3>
+            <h3>DOSEN PENGUJI IV</h3>
+        </div>
+
+        <div class="nilai-table">
+            <table>
+                <thead>
+                <tr>
+                    <th rowspan="2" class="col-no">No</th>
+                    <th rowspan="2" class="col-nama">Nama</th>
+                    <th rowspan="2" class="col-kriteria">KRITERIA PENILAIAN</th>
+                    <th colspan="2">BOBOT PENILAIAN</th>
+                </tr>
+                <tr>
+                    <th class="col-skor">Skor</th>
+                    <th class="col-nilai">Nilai</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td rowspan="4">1</td>
+                    <td rowspan="4"><strong>{{ $data->judul->mahasiswa->nama ?? 'Dewantara' }}</strong>
+                        <br> {{ $data->judul->mahasiswa->npm ?? '210301025' }} <br> {{ $data->judul->minat ?? 'Pidana' }}</td>
+                    <td class="text-left">Aktualisasi</td>
+                    <td></td>
+                    <td rowspan="4"></td>
+                </tr>
+                <tr>
+                    <td class="text-left">Teknik Penulisan</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="text-left">Kemampuan Berdiskusi</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="text-left">Penguasaan Materi</td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="keterangan-section">
+            <p>Keterangan:</p>
+            <p class="subtitle">Bobot Penilaian</p>
+            <table class="keterangan-table">
+                <tr>
+                    <td>1.</td>
+                    <td>Nilai A</td>
+                    <td>Skor 81-100</td>
+                    <td>6.</td>
+                    <td>Nilai C +</td>
+                    <td>Skor 61-64</td>
+                </tr>
+                <tr>
+                    <td>2.</td>
+                    <td>Nilai A -</td>
+                    <td>Skor 78-80</td>
+                    <td>7.</td>
+                    <td>Nilai C -</td>
+                    <td>Skor 56-60</td>
+                </tr>
+                <tr>
+                    <td>3.</td>
+                    <td>Nilai B +</td>
+                    <td>Skor 75-77</td>
+                    <td>8.</td>
+                    <td>Nilai D</td>
+                    <td>Skor 40-45</td>
+                </tr>
+                <tr>
+                    <td>4.</td>
+                    <td>Nilai B</td>
+                    <td>Skor 71-74</td>
+                    <td>9.</td>
+                    <td>Nilai E -</td>
+                    <td>Skor 0-39</td>
+                </tr>
+                <tr>
+                    <td>5.</td>
+                    <td>Nilai B -</td>
+                    <td>Skor 65-70</td>
                 </tr>
             </table>
         </div>
@@ -1065,7 +1170,7 @@
             <p>Dosen Penguji</p>
             <div class="dosen-signature">
             </div>
-            <span class="nama-dosen">{{ $data->penguji_dua ?? 'Nama Dosen, S.H., M.H.' }}</span>
+            <span class="nama-dosen">{{ $data->judul->pengujiDua->nama ?? 'Nama Dosen, S.H., M.H.' }}</span>
         </div>
     </div>
 </div>
@@ -1077,7 +1182,7 @@
             <h2>REKAP NILAI UJIAN</h2>
             <h2>TUTUP SKRIPSI</h2>
             <h3>FAKULTAS HUKUM UNINGRAT PAPUA</h3>
-            <h3>TAHUN AKADEMIK {{Carbon\Carbon::now()->subYear()->isoFormat('YYYY')}}/{{Carbon\Carbon::now()->startOfYear()->isoFormat('YYYY')}}</h3>
+            <h3>TAHUN AKADEMIK {{\Carbon\Carbon::now()->subYear()->startOfYear()->isoFormat('Y')}}/{{\Carbon\Carbon::now()->startOfYear()->isoFormat('Y')}}</h3>
         </div>
         <div class="nilai-table">
             <table>
@@ -1085,20 +1190,22 @@
                 <tr>
                     <th rowspan="2">NO</th>
                     <th rowspan="2">NAMA</th>
-                    <th colspan="4">NILAI MASING-MASING TIM PENGUJI</th>
+                    <th colspan="5">NILAI MASING-MASING TIM PENGUJI</th>
                     <th rowspan="2">NILAI</th>
                 </tr>
                 <tr>
-                    <th>{{$inisialDosen[0]->inisial_dosen}}</th>
-                    <th>{{$inisialDosen[1]->inisial_dosen}}</th>
-                    <th>{{$inisialDosen[2]->inisial_dosen}}</th>
-                    <th>{{$inisialDosen[3]->inisial_dosen}}</th>
+                    <th>{{$data->judul->pembimbingSatu->inisial_dosen ?? '-'}}</th>
+                    <th>{{$data->judul->pembimbingDua->inisial_dosen ?? '-'}}</th>
+                    <th>{{$data->judul->pengujiSatu->inisial_dosen ?? '-'}}</th>
+                    <th>{{$data->judul->pengujiDua->inisial_dosen ?? '-'}}</th>
+                    <th>&nbsp;</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
                     <td>1</td>
-                    <td><strong>Dewantara</strong> <br> 210301025 <br> Pidana</td>
+                    <td style="width: 150px"><strong>{{$data->judul->mahasiswa->nama ?? '-'}}</strong> <br> {{$data->judul->mahasiswa->npm ?? '-'}} <br> {{$data->judul->minat ?? '-'}}</td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -1115,22 +1222,39 @@
                 <tr>
                     <td>1.</td>
                     <td>Nilai A</td>
-                    <td>Skor 85-100</td>
+                    <td>Skor 81-100</td>
+                    <td>6.</td>
+                    <td>Nilai C +</td>
+                    <td>Skor 61-64</td>
                 </tr>
                 <tr>
                     <td>2.</td>
-                    <td>Nilai B</td>
-                    <td>Skor 70-84</td>
+                    <td>Nilai A -</td>
+                    <td>Skor 78-80</td>
+                    <td>7.</td>
+                    <td>Nilai C -</td>
+                    <td>Skor 56-60</td>
                 </tr>
                 <tr>
                     <td>3.</td>
-                    <td>Nilai C</td>
-                    <td>Skor 50-69</td>
+                    <td>Nilai B +</td>
+                    <td>Skor 75-77</td>
+                    <td>8.</td>
+                    <td>Nilai D</td>
+                    <td>Skor 40-45</td>
                 </tr>
                 <tr>
                     <td>4.</td>
-                    <td>Nilai D</td>
-                    <td>Skor 0-49</td>
+                    <td>Nilai B</td>
+                    <td>Skor 71-74</td>
+                    <td>9.</td>
+                    <td>Nilai E -</td>
+                    <td>Skor 0-39</td>
+                </tr>
+                <tr>
+                    <td>5.</td>
+                    <td>Nilai B -</td>
+                    <td>Skor 65-70</td>
                 </tr>
             </table>
         </div>
@@ -1144,7 +1268,7 @@
             <div class="dosen-signature">
 
             </div>
-            <span class="nama-dosen">{{ $data->pembimbing_satu ?? 'Nama Dosen, S.H., M.H.' }}</span>
+            <span class="nama-dosen">{{ $data->judul->pembimbingSatu->nama ?? 'Nama Dosen, S.H., M.H.' }}</span>
         </div>
     </div>
 </div>
@@ -1160,12 +1284,12 @@
         <table>
             <tr>
                 <td>NAMA</td>
-                <td>: {{$data->mahasiswa->nama}}</td>
+                <td>: {{$data->judul->mahasiswa->nama ?? '-'}}</td>
 
             </tr>
             <tr>
                 <td>NPM</td>
-                <td>: {{$data->mahasiswa->npm}}</td>
+                <td>: {{$data->judul->mahasiswa->npm?? '-'}}</td>
 
             </tr>
             <tr>
@@ -1173,7 +1297,7 @@
                 <td>:</td>
             </tr>
         </table>
-        <p class="info-judul-koreksi">{{$data->judul}}</p>
+        <p class="info-judul-koreksi">{{$data->judul->judul?? '-'}}</p>
     </div>
 
     <div class="saran-label-koreksi">
@@ -1202,7 +1326,7 @@
         <div style="margin-bottom: 20px; margin-top:40px ">
 
         </div>
-        <span class="nama-dosen">{{ $data->pembimbing_satu ?? 'Nama Dosen, S.H., M.H.' }}</span>
+        <span class="nama-dosen">{{ $data->judul->pembimbingSatu->nama ?? 'Nama Dosen, S.H., M.H.' }}</span>
     </div>
 </div>
 
@@ -1217,12 +1341,12 @@
         <table>
             <tr>
                 <td>NAMA</td>
-                <td>: {{$data->mahasiswa->nama}}</td>
+                <td>: {{$data->judul->mahasiswa->nama?? '-'}}</td>
 
             </tr>
             <tr>
                 <td>NPM</td>
-                <td>: {{$data->mahasiswa->npm}}</td>
+                <td>: {{$data->judul->mahasiswa->npm?? '-'}}</td>
 
             </tr>
             <tr>
@@ -1230,7 +1354,7 @@
                 <td>:</td>
             </tr>
         </table>
-        <p class="info-judul-koreksi">{{$data->judul}}</p>
+        <p class="info-judul-koreksi">{{$data->judul->judul?? '-'}}</p>
     </div>
 
     <div class="saran-label-koreksi">
@@ -1259,7 +1383,7 @@
         <div style="margin-bottom: 20px; margin-top:40px ">
 
         </div>
-        <span class="nama-dosen">{{ $data->pembimbing_dua ?? 'Nama Dosen, S.H., M.H.' }}</span>
+        <span class="nama-dosen">{{ $data->judul->pembimbingDua->nama ?? 'Nama Dosen, S.H., M.H.' }}</span>
     </div>
 </div>
 
@@ -1274,12 +1398,12 @@
         <table>
             <tr>
                 <td>NAMA</td>
-                <td>: {{$data->mahasiswa->nama}}</td>
+                <td>: {{$data->judul->mahasiswa->nama?? '-'}}</td>
 
             </tr>
             <tr>
                 <td>NPM</td>
-                <td>: {{$data->mahasiswa->npm}}</td>
+                <td>: {{$data->judul->mahasiswa->npm?? '-'}}</td>
 
             </tr>
             <tr>
@@ -1287,7 +1411,7 @@
                 <td>:</td>
             </tr>
         </table>
-        <p class="info-judul-koreksi">{{$data->judul}}</p>
+        <p class="info-judul-koreksi">{{$data->judul->judul?? '-'}}</p>
     </div>
 
     <div class="saran-label-koreksi">
@@ -1316,7 +1440,7 @@
         <div style="margin-bottom: 20px; margin-top:40px ">
 
         </div>
-        <span class="nama-dosen">{{ $data->penguji_satu ?? 'Nama Dosen, S.H., M.H.' }}</span>
+        <span class="nama-dosen">{{ $data->judul->pengujiSatu->nama ?? 'Nama Dosen, S.H., M.H.' }}</span>
     </div>
 </div>
 
@@ -1331,12 +1455,12 @@
         <table>
             <tr>
                 <td>NAMA</td>
-                <td>: {{$data->mahasiswa->nama}}</td>
+                <td>: {{$data->judul->mahasiswa->nama?? '-'}}</td>
 
             </tr>
             <tr>
                 <td>NPM</td>
-                <td>: {{$data->mahasiswa->npm}}</td>
+                <td>: {{$data->judul->mahasiswa->npm?? '-'}}</td>
 
             </tr>
             <tr>
@@ -1344,7 +1468,7 @@
                 <td>:</td>
             </tr>
         </table>
-        <p class="info-judul-koreksi">{{$data->judul}}</p>
+        <p class="info-judul-koreksi">{{$data->judul->judul?? '-'}}</p>
     </div>
 
     <div class="saran-label-koreksi">
@@ -1373,17 +1497,18 @@
         <div style="margin-bottom: 20px; margin-top:40px ">
 
         </div>
-        <span class="nama-dosen">{{ $data->penguji_dua ?? 'Nama Dosen, S.H., M.H.' }}</span>
+        <span class="nama-dosen">{{ $data->judul->pengujiDua->nama ?? 'Nama Dosen, S.H., M.H.' }}</span>
     </div>
 </div>
 
 
 <!-- ========== HALAMAN 12: ABSENSI ========== -->
 @include('pdf.hasil.absensi')
+@pageBreak
 
 <!-- ========== HALAMAN 13: ABSENSI ========== -->
-<div class="last-page">
-    @include('pdf.hasil.absensi')
-</div>
+@include('pdf.hasil.absensi')
+
+
 </body>
 </html>

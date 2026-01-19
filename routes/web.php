@@ -16,6 +16,6 @@ Route::get('/dokumen/sk/pdf/{id}', [UndanganController::class, 'getSkPDF'] )->na
 
 Route::get('/dokumen/sk/pdf/ttd/{id}', [UndanganController::class, 'getTtdSkPDF'] )->name('skttdPDF');
 
-Route::get('/admin/berita-acara/pdf/{id}/{jenis}/{waktu}', [UndanganController::class, 'getBeritaAcaraPdf'] )->name('beritaPDF');
+Route::get('/admin/berita-acara/pdf/{id}/{jenis}', [UndanganController::class, 'getBeritaAcaraPdf'] )->name('beritaPDF');
 
 Route::get('mobile/info', \App\Livewire\PapanInfoMobileSetting::class)->name('info.mobile');

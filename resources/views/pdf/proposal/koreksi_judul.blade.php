@@ -94,12 +94,12 @@
                     NAMA
                 </td>
                 <td>
-                    : {{$data->mahasiswa->nama}}
+                    : {{$data->judul->mahasiswa->nama?? '-'}}
                 </td>
             </tr>
             <tr>
                 <td>NPM</td>
-                <td>: {{$data->mahasiswa->npm}}</td>
+                <td>: {{$data->judul->mahasiswa->npm?? '-'}}</td>
             </tr>
         </table>
     </div>
@@ -113,7 +113,7 @@
             </tr>
             <tr>
                 <td class="col-judul">
-                    {{$data->judul}}
+                    {{$data->judul->judul?? '-'}}
                 </td>
             </tr>
         </table>
@@ -143,7 +143,7 @@
         <div class="dosen-signature">
 
         </div>
-        <span class="nama-dosen">{{ $data->pembimbing_satu ?? 'Nama Dosen, S.H., M.H.' }}</span>
+        <span class="nama-dosen">{{ $data->judul->pembimbingSatu->nama ?? 'Nama Dosen, S.H., M.H.' }}</span>
     </div>
 
 </div>

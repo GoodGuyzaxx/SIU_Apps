@@ -154,8 +154,8 @@
             </thead>
             <tbody>
             <tr>
-                <td>{{$data->mahasiswa->nama}} <br> {{$data->mahasiswa->npm}} <br> PIDANA</td>
-                <td>{{$data->judul}}</td>
+                <td>{{$data->judul->mahasiswa->nama}} <br> {{$data->judul->mahasiswa->npm}} <br> PIDANA</td>
+                <td>{{$data->judul->judul}}</td>
                 <td></td>
             </tr>
             </tbody>
@@ -175,8 +175,8 @@
                 <td>2</td>
             </tr>
             <tr>
-                <td class="col-nama">{{$data->pembimbing_satu}}</td>
-                <td class="col-nama">{{$data->pembimbing_dua}}</td>
+                <td class="col-nama">{{$data->judul->pembimbingSatu->nama}}</td>
+                <td class="col-nama">{{$data->judul->pembimbingDua->nama}}</td>
             </tr>
             <tr>
                 <td class="col-ttd">TANDA TANGAN</td>
@@ -199,8 +199,8 @@
                 <td>2</td>
             </tr>
             <tr>
-                <td class="col-nama">{{$data->pembimbing_satu}}</td>
-                <td class="col-nama">{{$data->pembimbing_dua}}</td>
+                <td class="col-nama">{{$data->judul->pembimbingSatu->nama}}</td>
+                <td class="col-nama">{{$data->judul->pembimbingDua->nama}}</td>
             </tr>
             <tr>
                 <td class="col-ttd">TANDA TANGAN</td>
@@ -211,8 +211,8 @@
                 <td>4</td>
             </tr>
             <tr>
-                <td class="col-nama">{{$data->penguji_satu}}</td>
-                <td class="col-nama">{{$data->penguji_dua}}</td>
+                <td class="col-nama">{{$data->judul->pengujiSatu->nama}}</td>
+                <td class="col-nama">{{$data->judul->pengujiDua->nama}}</td>
             </tr>
             <tr>
                 <td class="col-ttd">TANDA TANGAN</td>

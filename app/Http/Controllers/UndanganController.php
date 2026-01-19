@@ -47,16 +47,21 @@ class UndanganController extends Controller
             ->name('Surat Keputusan Mahasiswa '.$data->judul->mahasiswa->nama.' '.$data->judul->mahasiswa->npm.'.pdf');;
     }
 
-    public function getBeritaAcaraPdf($id,$jenis,$waktu){
-        $data = Judul::find($id);
-        $dosenList = array($data->pembimbing_satu,$data->pembimbing_dua,$data->penguji_satu,$data->penguji_dua);
-        $inisialDosen = Dosen::whereIn('nama',$dosenList)->get();
+    public function getBeritaAcaraPdf($id,$jenis){
+        $data = Undangan::find($id);
+//        $dosenList = array($data->pembimbing_satu,$data->pembimbing_dua,$data->penguji_satu,$data->penguji_dua);
+//        $inisialDosen = Dosen::whereIn('nama',$dosenList)->get();
         if ($jenis != 'proposal') {
-            $pdf = DomPdf::loadView('pdf.hasil.berita_acara_hasil_pdf', compact('data','waktu','inisialDosen'));
-            return $pdf->stream();
+//            $pdf = DomPdf::loadView('pdf.hasil.berita_acara_hasil_pdf', compact('data'));
+            return pdf()
+                ->view('pdf.hasil.berita_acara_hasil_pdf', compact('data'))
+                ->format(Format::A4)
+                ->name('Berita Acara Proposal '.$data->judul->mahasiswa->nama.' '.$data->judul->mahasiswa->npm.'.pdf');
         }
-        $pdf = DomPdf::loadView('pdf.proposal.berita_acara_proposal_pdf', compact('data','waktu','inisialDosen'));
-        return $pdf->stream();
+        return pdf()
+            ->view('pdf.proposal.berita_acara_proposal_pdf', compact('data'))
+            ->format(Format::A4)
+            ->name('Berita Acara Proposal '.$data->judul->mahasiswa->nama.' '.$data->judul->mahasiswa->npm.'.pdf');
 
 
     }

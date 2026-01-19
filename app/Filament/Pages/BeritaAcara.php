@@ -48,17 +48,13 @@ class BeritaAcara extends Page
                 ->schema([
                     Select::make('jenis')
                         ->label('Jenis Berita Acara')
+                        ->native(false)
                         ->options([
                             'proposal' => 'Proposal',
                             'hasil' => 'Seminar Hasil',
                         ])
                         ->required()
                     ->statePath('jenis'),
-                    TimePicker::make('waktu')
-                        ->label('Waktu Ujian')
-                        ->required()
-                        ->seconds(false)
-                        ->statePath('waktu'),
                     Select::make('id_judul')
                         ->label('Mahasiswa')
                         ->options(Undangan::query()->get()->mapWithKeys(function ($undangan) {
@@ -75,6 +71,6 @@ class BeritaAcara extends Page
 
     public function cetak(): void {
         $data = $this->cetakForm->getState();
-       $this->redirect(route('beritaPDF',[$data['id_judul'],$data['jenis'],$data['waktu']]));
+       $this->redirect(route('beritaPDF',[$data['id_judul'],$data['jenis']]));
     }
 }
