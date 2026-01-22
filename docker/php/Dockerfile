@@ -1,5 +1,7 @@
 FROM php:8.3-fpm-alpine
 
+RUN apk update && apk upgrade --no-cache
+
 # Install system dependencies untuk Laravel dan extensions PHP
 RUN apk add --no-cache \
     git \
@@ -48,6 +50,23 @@ RUN apk add --no-cache --virtual .build-deps-xlswriter \
     && docker-php-ext-enable xlswriter \
     && apk del .build-deps-xlswriter
 
+# Install For PDF Support
+RUN apk add --no-cache \
+    chromium \
+    nss \
+    freetype \
+    freetype-dev \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont \
+    npm
+
+#Install Font
+RUN apk --no-cache add msttcorefonts-installer fontconfig && \
+    update-ms-fonts && \
+    fc-cache -f
+
+
 # Salin Composer dari image resmi
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -73,6 +92,10 @@ RUN chown -R www-data:www-data /var/www/html \
     && find /var/www/html/storage -type d -exec chmod 775 {} \; \
     && find /var/www/html/bootstrap/cache -type f -exec chmod 664 {} \; \
     && find /var/www/html/bootstrap/cache -type d -exec chmod 775 {} \;
+
+RUN npm install --production
+
+RUN npm install -g puppeteer
 
 # Optional: Salin konfigurasi PHP custom
 COPY docker/php/php.ini /usr/local/etc/php/conf.d/99-custom.ini

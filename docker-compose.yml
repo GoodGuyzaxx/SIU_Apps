@@ -1,7 +1,7 @@
 services:
-    # PHP Service - ini adalah jantung aplikasi Laravel kita
     php:
-        # Build container dari Dockerfile yang sudah kita buat
+#        cap_add:
+#            - SYS_ADMIN
         build:
             context: ../SIU_Apps                          # Build context adalah current directory
             dockerfile: ../SIU_Apps/docker/php/Dockerfile   # Path ke Dockerfile kita
@@ -44,14 +44,10 @@ services:
         depends_on:
             - php
 
-# Networks definition
-# Bridge network memungkinkan containers berkomunikasi menggunakan nama service
 networks:
     default_network:
         external: true
 
-# Volumes definition untuk data persistence
-# Named volumes ini dikelola oleh Docker dan persisten across container restarts
 volumes:
     mysql_data:
         driver: local

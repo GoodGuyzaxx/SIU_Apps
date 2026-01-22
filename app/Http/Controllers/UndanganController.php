@@ -7,6 +7,7 @@ use App\Models\Judul;
 use App\Models\SuratKeputusan;
 use App\Models\Undangan;
 use Barryvdh\DomPDF\Facade\Pdf as DomPdf;
+use Spatie\Browsershot\Browsershot;
 use Spatie\LaravelPdf\Enums\Format;
 use Spatie\LaravelPdf\Facades\Pdf;
 use function Spatie\LaravelPdf\Support\pdf as pdf;
@@ -17,6 +18,16 @@ class UndanganController extends Controller
     public function getPDF($id) {
         $data = Undangan::find($id);
         return pdf()
+            ->withBrowsershot(function (Browsershot $browsershot){
+                $browsershot
+                    ->noSandbox()
+                    ->addChromiumArguments([
+                        '--no-sandbox',
+                        '--disable-setuid-sandbox',
+                        '--ignore-certificate-errors',
+                        '--disable-web-security'
+                    ]);
+            })
             ->view('pdf.undangan.undangan_pdf', compact('data'))
             ->format(Format::A4)
             ->name($data->perihal.' '.$data->judul->mahasiswa->nama.' '.$data->judul->mahasiswa->npm.'.pdf');
@@ -25,6 +36,16 @@ class UndanganController extends Controller
     public function getTtdPDF($id) {
         $data = Undangan::find($id);
         return pdf()
+            ->withBrowsershot(function (Browsershot $browsershot){
+                $browsershot
+                    ->noSandbox()
+                    ->addChromiumArguments([
+                        '--no-sandbox',
+                        '--disable-setuid-sandbox',
+                        '--ignore-certificate-errors',
+                        '--disable-web-security'
+                    ]);
+            })
             ->view('pdf.undangan.undangan_ttd_pdf', compact('data'))
             ->format(Format::A4)
             ->name($data->perihal.' '.$data->judul->mahasiswa->nama.' '.$data->judul->mahasiswa->npm.'.pdf');
@@ -34,6 +55,16 @@ class UndanganController extends Controller
     public function getSkPDF($id){
         $data = SuratKeputusan::findOrFail($id);
         return pdf()
+            ->withBrowsershot(function (Browsershot $browsershot){
+                $browsershot
+                    ->noSandbox()
+                    ->addChromiumArguments([
+                        '--no-sandbox',
+                        '--disable-setuid-sandbox',
+                        '--ignore-certificate-errors',
+                        '--disable-web-security'
+                    ]);
+            })
             ->view('pdf.sk.sk_pdf',compact('data'))
             ->format(Format::Legal)
             ->name('Surat Keputusan Mahasiswa '.$data->judul->mahasiswa->nama.' '.$data->judul->mahasiswa->npm.'.pdf');
@@ -42,6 +73,16 @@ class UndanganController extends Controller
     public function getTtdSkPDF($id){
         $data = SuratKeputusan::findOrFail($id);
         return pdf()
+            ->withBrowsershot(function (Browsershot $browsershot){
+                $browsershot
+                    ->noSandbox()
+                    ->addChromiumArguments([
+                        '--no-sandbox',
+                        '--disable-setuid-sandbox',
+                        '--ignore-certificate-errors',
+                        '--disable-web-security'
+                    ]);
+            })
             ->view('pdf.sk.sk_ttd_pdf',compact('data'))
             ->format(Format::Legal)
             ->name('Surat Keputusan Mahasiswa '.$data->judul->mahasiswa->nama.' '.$data->judul->mahasiswa->npm.'.pdf');;
@@ -54,11 +95,31 @@ class UndanganController extends Controller
         if ($jenis != 'proposal') {
 //            $pdf = DomPdf::loadView('pdf.hasil.berita_acara_hasil_pdf', compact('data'));
             return pdf()
+                ->withBrowsershot(function (Browsershot $browsershot){
+                    $browsershot
+                        ->noSandbox()
+                        ->addChromiumArguments([
+                            '--no-sandbox',
+                            '--disable-setuid-sandbox',
+                            '--ignore-certificate-errors',
+                            '--disable-web-security'
+                        ]);
+                })
                 ->view('pdf.hasil.berita_acara_hasil_pdf', compact('data'))
                 ->format(Format::A4)
                 ->name('Berita Acara Proposal '.$data->judul->mahasiswa->nama.' '.$data->judul->mahasiswa->npm.'.pdf');
         }
         return pdf()
+            ->withBrowsershot(function (Browsershot $browsershot){
+                $browsershot
+                    ->noSandbox()
+                    ->addChromiumArguments([
+                        '--no-sandbox',
+                        '--disable-setuid-sandbox',
+                        '--ignore-certificate-errors',
+                        '--disable-web-security'
+                    ]);
+            })
             ->view('pdf.proposal.berita_acara_proposal_pdf', compact('data'))
             ->format(Format::A4)
             ->name('Berita Acara Proposal '.$data->judul->mahasiswa->nama.' '.$data->judul->mahasiswa->npm.'.pdf');
