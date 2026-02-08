@@ -221,8 +221,8 @@ class UserAccountForm
                             ->native(false)
                             ->prefixIcon('heroicon-o-clock')
                             ->options([
-                                'pagi' => 'Kelas Pagi (08:00 - 12:00)',
-                                'sore' => 'Kelas Sore (13:00 - 17:00)',
+                                'pagi' => 'Kelas Reguler',
+                                'sore' => 'Kelas Ekstensi',
                             ])
                             ->visible(fn ($get) => $get('jenjang') === 'sarjana')
                             ->columnSpan(1),

@@ -1,11 +1,14 @@
 <div class="h-full w-full flex flex-col">
     <!-- Enhanced Header Bar -->
-    <header class="px-4 md:px-6 py-4 flex items-center justify-between glass-effect rounded-b-2xl mx-4 mb-4 shadow-lg">
+    <header class="px-4 md:px-2 py-4 flex items-center justify-between glass-effect rounded-b-2xl mx-4 mb-4 shadow-lg">
         <div class="flex items-center gap-4">
-            <div class="floating">
+            <div class="floating flex items-center">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-16 w-auto mr4">
                 <h1 class="text-transparent bg-clip-text bg-gradient-to-r from-slate-800 via-slate-600 to-slate-700 font-bold tracking-normal"
-                    style="font-size: clamp(1.3rem, 2vw + .6rem, 2.2rem);">
+                    >
                     Papan Informasi Fakultas
+                    <br>
+                    Hukum Universitas Doktor Husni Ingratubun Papua
                 </h1>
             </div>
         </div>

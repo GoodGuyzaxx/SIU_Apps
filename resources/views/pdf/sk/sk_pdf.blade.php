@@ -43,6 +43,22 @@
             vertical-align: top;
         }
 
+        .content-tb-menimbang ol {
+            vertical-align: top;
+            margin: 0;
+            padding-left: 15px
+        }
+
+        .content-tb-menimbang li {
+            margin: 0;
+            padding: 0;
+        }
+
+        .content-tb-menimbang p {
+            margin: 0;
+            padding: 0;
+        }
+
         table,
         th,
         td {
@@ -53,6 +69,22 @@
 
         .content-tb-mengingat {
             margin-bottom: 10px;
+        }
+
+        .content-tb-mengingat ol {
+            vertical-align: top;
+            margin: 0;
+            padding-left: 15px
+        }
+
+        .content-tb-mengingat li {
+            margin: 0;
+            padding: 0;
+        }
+
+        .content-tb-mengingat p {
+            margin: 0;
+            padding: 0;
         }
 
         .content-tb-memperhatikan {
@@ -147,10 +179,9 @@
                     <td style="width: 15%;">Menimbang</td>
                     <td>:&nbsp;</td>
                     <td>
-                        <ol style="margin: 0; padding-left: 15px;">
-                            <li>Bahwa untuk memperlancar proses penyusunan skripsi  mahasiswa perlu adanya bimbingan dan pengarahan dari dosen pembimbing.</li>
-                            <li>Bahwa sehubungan dengan butir (1) tersebut diatas, maka perlu ditetapkan Surat Keputusan Dekan Fakutas Hukum Universitas Doktor Husni Ingratubun (UNINGRAT) Papua.</li>
-                        </ol>
+{{--                        <ol style="margin: 0; padding-left: 15px;">--}}
+                            {!! $data->menimbang !!}
+{{--                        </ol>--}}
                     </td>
                 </tr>
             </table>
@@ -162,15 +193,16 @@
                     <td style="width: 15%;">Mengingat</td>
                     <td>:&nbsp;</td>
                     <td>
-                        <ol style="margin: 0; padding-left: 15px;">
-                            <li>Undang-Undang RI Nomor 20 Tahun 2003 Tentang Sistem Pendidikan Nasional.</li>
-                            <li>Undang-Undang Ri Nomor 14 Tahun 2005 Tentang Guru dan Dosen.</li>
-                            <li>Undang-Undang RI Nomor 12 Tahun 2012 Tentang Pendidikan Tinggi.</li>
-                            <li>Peraturan Pemerintah RI Nomor 4 Tahun 2014 Tentang Pengelolaan dan Penyelenggaraan
-                                Pendidikan.</li>
-                            <li>Akreditasi Program Studi S.1 (B) oleh BAN-PT Nomor: 4476/SK/BAN-PT/Ak-PNB/S/XI/2023
-                                tanggal 6 November 2023.</li>
-                        </ol>
+                        {!! $data->mengingat !!}
+{{--                        <ol style="margin: 0; padding-left: 15px;">--}}
+{{--                            <li>Undang-Undang RI Nomor 20 Tahun 2003 Tentang Sistem Pendidikan Nasional.</li>--}}
+{{--                            <li>Undang-Undang Ri Nomor 14 Tahun 2005 Tentang Guru dan Dosen.</li>--}}
+{{--                            <li>Undang-Undang RI Nomor 12 Tahun 2012 Tentang Pendidikan Tinggi.</li>--}}
+{{--                            <li>Peraturan Pemerintah RI Nomor 4 Tahun 2014 Tentang Pengelolaan dan Penyelenggaraan--}}
+{{--                                Pendidikan.</li>--}}
+{{--                            <li>Akreditasi Program Studi S.1 (B) oleh BAN-PT Nomor: 4476/SK/BAN-PT/Ak-PNB/S/XI/2023--}}
+{{--                                tanggal 6 November 2023.</li>--}}
+{{--                        </ol>--}}
                     </td>
                 </tr>
             </table>
@@ -179,10 +211,9 @@
         <div class="content-tb-memperhatikan">
             <table style="width: 100%;">
                 <tr>
-                    <td style="width: 15%;">Mengingat</td>
+                    <td style="width: 15%;">Memperhatikan</td>
                     <td>:&nbsp;</td>
-                    <td>Hasil Rapat Ketua Program Studi Ilmu Hukum Bersama Dosen Pada Tanggal 03 September 2024 (Note To
-                        Ask).</td>
+                    <td>{{$data->memperhatikan}}</td>
                 </tr>
             </table>
         </div>
@@ -303,12 +334,13 @@
                     <td style="width: 15%;">Menimbang</td>
                     <td>:&nbsp;</td>
                     <td>
-                        <ol style="margin: 0; padding-left: 15px;">
-                            <li>Bahwa untuk memperlancar proses penyusunan skripsi mahasiswa perlu adanya bimbingan dan
-                                pengarahan dari dosen penguji.</li>
-                            <li>Bahwa sehubungan dengan butir (1) tersebut diatas, maka perlu ditetapkan Surat Keputusan
-                                Dekan Fakutas Hukum Universitas Doktor Husni Ingratubun (UNINGRAT) Papua.</li>
-                        </ol>
+                        {!! $data->menimbang !!}
+{{--                        <ol style="margin: 0; padding-left: 15px;">--}}
+{{--                            <li>Bahwa untuk memperlancar proses penyusunan skripsi mahasiswa perlu adanya bimbingan dan--}}
+{{--                                pengarahan dari dosen penguji.</li>--}}
+{{--                            <li>Bahwa sehubungan dengan butir (1) tersebut diatas, maka perlu ditetapkan Surat Keputusan--}}
+{{--                                Dekan Fakutas Hukum Universitas Doktor Husni Ingratubun (UNINGRAT) Papua.</li>--}}
+{{--                        </ol>--}}
                     </td>
                 </tr>
             </table>
@@ -320,15 +352,16 @@
                     <td style="width: 15%;">Mengingat</td>
                     <td>:&nbsp;</td>
                     <td>
-                        <ol style="margin: 0; padding-left: 15px;">
-                            <li>Undang-Undang RI Nomor 20 Tahun 2003 Tentang Sistem Pendidikan Nasional.</li>
-                            <li>Undang-Undang Ri Nomor 14 Tahun 2005 Tentang Guru dan Dosen.</li>
-                            <li>Undang-Undang RI Nomor 12 Tahun 2012 Tentang Pendidikan Tinggi.</li>
-                            <li>Peraturan Pemerintah RI Nomor 4 Tahun 2014 Tentang Pengelolaan dan Penyelenggaraan
-                                Pendidikan.</li>
-                            <li>Akreditasi Program Studi S.1 (B) oleh BAN-PT Nomor: 4476/SK/BAN-PT/Ak-PNB/S/XI/2023
-                                tanggal 6 November 2023.</li>
-                        </ol>
+{{--                        <ol style="margin: 0; padding-left: 15px;">--}}
+{{--                            <li>Undang-Undang RI Nomor 20 Tahun 2003 Tentang Sistem Pendidikan Nasional.</li>--}}
+{{--                            <li>Undang-Undang Ri Nomor 14 Tahun 2005 Tentang Guru dan Dosen.</li>--}}
+{{--                            <li>Undang-Undang RI Nomor 12 Tahun 2012 Tentang Pendidikan Tinggi.</li>--}}
+{{--                            <li>Peraturan Pemerintah RI Nomor 4 Tahun 2014 Tentang Pengelolaan dan Penyelenggaraan--}}
+{{--                                Pendidikan.</li>--}}
+{{--                            <li>Akreditasi Program Studi S.1 (B) oleh BAN-PT Nomor: 4476/SK/BAN-PT/Ak-PNB/S/XI/2023--}}
+{{--                                tanggal 6 November 2023.</li>--}}
+{{--                        </ol>--}}
+                        {!! $data->mengingat !!}
                     </td>
                 </tr>
             </table>
@@ -339,8 +372,9 @@
                 <tr>
                     <td style="width: 15%;">Mengingat</td>
                     <td>:&nbsp;</td>
-                    <td>Hasil Rapat Ketua Program Studi Ilmu Hukum Bersama Dosen Pada Tanggal 03 September 2024 (Note To
-                        Ask).</td>
+                    <td>{{$data->memperhatikan}}</td>
+{{--                    <td>Hasil Rapat Ketua Program Studi Ilmu Hukum Bersama Dosen Pada Tanggal 03 September 2024 (Note To--}}
+{{--                        Ask).</td>--}}
                 </tr>
             </table>
         </div>

@@ -104,8 +104,8 @@ class UserEdit extends Page implements  HasForms
                                     ->native(false)
                                     ->prefixIcon('heroicon-o-clock')
                                     ->options([
-                                        'pagi' => 'Kelas Pagi',
-                                        'sore' => 'Kelas Sore',
+                                        'pagi' => 'Kelas Reguler',
+                                        'sore' => 'Kelas Ekstensi',
                                     ])
                                     ->visible(fn ($get) => $get('jenjang') === 'sarjana'),
 
