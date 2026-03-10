@@ -30,7 +30,7 @@ class StatusUndangaObserver
      */
     public function deleted(StatusUndangan $statusUndangan): void
     {
-        //
+    //
     }
 
     /**
@@ -38,7 +38,7 @@ class StatusUndangaObserver
      */
     public function restored(StatusUndangan $statusUndangan): void
     {
-        //
+    //
     }
 
     /**
@@ -46,7 +46,7 @@ class StatusUndangaObserver
      */
     public function forceDeleted(StatusUndangan $statusUndangan): void
     {
-        //
+    //
     }
 
     private function checkAndUpdateStatusUjian($idUndangan)
@@ -55,8 +55,8 @@ class StatusUndangaObserver
         // Ambil undangan
         $undangan = Undangan::find($idUndangan);
 
-        // Jangan update jika sudah gagal atau selesai
-        if (in_array($undangan->status_ujian, ['gagal_menjadwalkan_ujian', 'selesai'])) {
+        // Jangan update jika masih menunggu ACC, sudah gagal, atau selesai
+        if (in_array($undangan->status_ujian, ['menunggu_acc', 'gagal_menjadwalkan_ujian', 'selesai'])) {
             return;
         }
 

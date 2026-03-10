@@ -15,49 +15,60 @@ class UndangansTable
     {
         return $table
             ->columns([
-                //
-                TextColumn::make('judul.mahasiswa.nama')
-                ->label("Nama Mahasiswa"),
-                TextColumn::make('judul.judul')
-                ->label("Judul")
-                ->limit(30),
-                TextColumn::make('status_ujian')
-                ->label("Status Kesiapan Ujian")
-                    ->formatStateUsing(function ($state):string {
-                        if ($state == 'dijadwalkan'){
-                            return 'Di Jadwalkan';
-                        } elseif ($state == 'draft_uploaded') {
-                            return 'Draft Diupload';
-                        } elseif ($state == 'ready_to_exam'){
-                            return 'Ujian Siap Dilaksanakan';
-                        }elseif ($state == 'gagal_menjadwalkan_ujian')
-                            return 'Gagal Menjadwalkan Ujian';
-                        return $state;
-                    }),
-                TextColumn::make('Status')
-                    ->label('Status Konfirmasi')
-                    ->default(function (Undangan $record): string {
-                        return $record->statusUndangan->where('id_dosen', auth()->user()->dosen->id)->first()->status_konfirmasi;
-                    })
+            //
+            TextColumn::make('judul.mahasiswa.nama')
+            ->label("Nama Mahasiswa"),
+            TextColumn::make('judul.judul')
+            ->label("Judul")
+            ->limit(30),
+            TextColumn::make('status_ujian')
+            ->label("Status Kesiapan Ujian")
+            ->formatStateUsing(function ($state): string {
+            return match ($state) {
+                    'menunggu_acc' => 'Menunggu ACC Penguji 1',
+                    'dijadwalkan' => 'Di Jadwalkan',
+                    'draft_uploaded' => 'Draft Diupload',
+                    'ready_to_exam' => 'Ujian Siap Dilaksanakan',
+                    'selesai' => 'Ujian Selesai',
+                    'gagal_menjadwalkan_ujian' => 'Gagal Menjadwalkan Ujian',
+                    default => $state,
+                };
+        })
+            ->badge()
+            ->color(fn(string $state): string => match ($state) {
+            'menunggu_acc' => 'warning',
+            'dijadwalkan' => 'info',
+            'draft_uploaded' => 'info',
+            'ready_to_exam' => 'success',
+            'selesai' => 'success',
+            'gagal_menjadwalkan_ujian' => 'danger',
+            default => 'gray',
+        }),
+            TextColumn::make('Status')
+            ->label('Status Konfirmasi')
+            ->default(function (Undangan $record): string {
+            return $record->statusUndangan->where('id_dosen', auth()->user()->dosen->id)->first()->status_konfirmasi;
+        })
 
-            ])
+        ])
             ->filters([
-                //
-            ])
+            //
+        ])
             ->modifyQueryUsing(function ($query) {
-                return $query->whereHas('statusUndangan', function ($query) {
+            return $query->whereHas('statusUndangan', function ($query) {
                     $query->where('id_dosen', auth()->user()->dosen->id);
-                })->where('status_ujian', '!=', 'dijadwalkan');
+                }
+                )->whereNotIn('status_ujian', ['dijadwalkan']);
             })
             ->heading('Daftar Undangan Saya')
             ->description('Mohon Segera Tindak Lanjut Status Undangan Yang Belum Dikonfirmasi')
-            ->recordUrl(fn ($record) => DetailUndangan::getUrl(['record' => $record]))
+            ->recordUrl(fn($record) => DetailUndangan::getUrl(['record' => $record]))
             ->recordActions([
-                Action::make('Detail')
-                    ->label('Detail')
-                    ->icon('heroicon-o-eye')
-                    ->url(fn ($record) => DetailUndangan::getUrl(['record' => $record])),
-            ])
+            Action::make('Detail')
+            ->label('Detail')
+            ->icon('heroicon-o-eye')
+            ->url(fn($record) => DetailUndangan::getUrl(['record' => $record])),
+        ])
             ->emptyStateHeading('Belum Ada Undangan')
             ->emptyStateDescription('Belum Ada Pengajuan Undangan Untuk Anda.');
 
