@@ -13,6 +13,7 @@ class AccKesiapanUjian extends Model
     protected $fillable = [
         'id_undangan',
         'id_dosen',
+        'role',
         'status',
         'alasan_penolakan',
         'token',

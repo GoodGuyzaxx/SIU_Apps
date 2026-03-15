@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AccKesiapanUjian;
+use App\Models\StatusUndangan;
 use App\Models\Undangan;
 use App\Services\WhatsappService;
 use Carbon\Carbon;
@@ -21,7 +22,12 @@ class AccKesiapanController extends Controller
 
         $undangan = $acc->undangan;
 
-        return view('acc-kesiapan.form', compact('acc', 'undangan'));
+        // Ambil semua ACC untuk undangan ini agar bisa tampilkan status dosen lain
+        $allAcc = AccKesiapanUjian::with('dosen')
+            ->where('id_undangan', $undangan->id)
+            ->get();
+
+        return view('acc-kesiapan.form', compact('acc', 'undangan', 'allAcc'));
     }
 
     /**
@@ -38,21 +44,38 @@ class AccKesiapanController extends Controller
                 ->with('error', 'ACC sudah direspon sebelumnya.');
         }
 
+        // Update ACC status
         $acc->update([
             'status' => 'disetujui',
             'responded_at' => Carbon::now(),
         ]);
 
-        // Update status undangan ke "dijadwalkan"
-        $undangan = $acc->undangan;
-        $undangan->update(['status_ujian' => 'dijadwalkan']);
+        // Update juga StatusUndangan konfirmasi untuk dosen ini
+        StatusUndangan::where('id_undangan', $acc->id_undangan)
+            ->where('id_dosen', $acc->id_dosen)
+            ->update([
+                'status_konfirmasi' => 'Hadir',
+                'confirmed_at' => Carbon::now(),
+            ]);
 
-        // Kirim notifikasi undangan ke semua dosen via WhatsApp
-        $waService = new WhatsappService();
-        $waService->sendUndanganNotification($undangan);
+        // Cek apakah syarat minimum terpenuhi
+        $undangan = $acc->undangan;
+        $check = WhatsappService::checkMinimumRequirements($undangan->id);
+
+        if ($check['terpenuhi']) {
+            // Cek apakah draft sudah diupload
+            if (!empty($undangan->softcopy_file_path)) {
+                $undangan->update(['status_ujian' => 'ready_to_exam']);
+            } else {
+                $undangan->update(['status_ujian' => 'dijadwalkan']);
+            }
+        }
+        // Jika belum terpenuhi, tetap menunggu_acc
+
+        $roleLabel = WhatsappService::getRoleLabel($acc->role);
 
         return redirect()->route('acc.kesiapan.form', ['token' => $token])
-            ->with('success', 'Terima kasih! ACC kesiapan ujian telah disetujui. Undangan akan dikirim ke seluruh dosen.');
+            ->with('success', "Terima kasih! Anda telah menyetujui hadir sebagai {$roleLabel}.");
     }
 
     /**
@@ -75,21 +98,38 @@ class AccKesiapanController extends Controller
                 ->with('error', 'ACC sudah direspon sebelumnya.');
         }
 
+        // Update ACC status
         $acc->update([
             'status' => 'ditolak',
             'alasan_penolakan' => $request->alasan_penolakan,
             'responded_at' => Carbon::now(),
         ]);
 
-        // Update status undangan ke gagal
-        $undangan = $acc->undangan;
-        $undangan->update(['status_ujian' => 'gagal_menjadwalkan_ujian']);
+        // Update StatusUndangan konfirmasi
+        StatusUndangan::where('id_undangan', $acc->id_undangan)
+            ->where('id_dosen', $acc->id_dosen)
+            ->update([
+                'status_konfirmasi' => 'Tidak Hadir',
+                'alasan_penolakan' => $request->alasan_penolakan,
+                'confirmed_at' => Carbon::now(),
+            ]);
 
-        // Kirim notifikasi penolakan
+        // Cek apakah masih mungkin terpenuhi
+        $undangan = $acc->undangan;
+        $check = WhatsappService::checkMinimumRequirements($undangan->id);
+
+        if ($check['tidak_mungkin']) {
+            // Tidak mungkin terpenuhi lagi, gagalkan ujian
+            $undangan->update(['status_ujian' => 'gagal_menjadwalkan_ujian']);
+        }
+
+        // Log penolakan
         $waService = new WhatsappService();
         $waService->sendAccRejectedNotification($acc);
 
+        $roleLabel = WhatsappService::getRoleLabel($acc->role);
+
         return redirect()->route('acc.kesiapan.form', ['token' => $token])
-            ->with('success', 'ACC kesiapan ujian telah ditolak. Admin akan segera menindaklanjuti.');
+            ->with('success', "ACC sebagai {$roleLabel} telah ditolak. Admin akan menindaklanjuti.");
     }
 }

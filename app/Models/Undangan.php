@@ -36,8 +36,8 @@ class Undangan extends Model
         return $this->hasOne(StatusUndangan::class , 'id_undangan');
     }
 
-    public function accKesiapanUjian(): HasOne
+    public function accKesiapanUjian(): HasMany
     {
-        return $this->hasOne(AccKesiapanUjian::class , 'id_undangan');
+        return $this->hasMany(AccKesiapanUjian::class , 'id_undangan');
     }
 }

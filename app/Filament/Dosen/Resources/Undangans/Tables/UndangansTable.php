@@ -25,7 +25,7 @@ class UndangansTable
             ->label("Status Kesiapan Ujian")
             ->formatStateUsing(function ($state): string {
             return match ($state) {
-                    'menunggu_acc' => 'Menunggu ACC Penguji 1',
+                    'menunggu_acc' => 'Menunggu ACC Dosen',
                     'dijadwalkan' => 'Di Jadwalkan',
                     'draft_uploaded' => 'Draft Diupload',
                     'ready_to_exam' => 'Ujian Siap Dilaksanakan',

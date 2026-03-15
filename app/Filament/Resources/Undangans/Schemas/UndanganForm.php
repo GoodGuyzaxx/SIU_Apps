@@ -134,7 +134,7 @@ class UndanganForm
                 ->default('dijadwalkan')
                 ->columnSpanFull()
                 ->options([
-                    'menunggu_acc' => 'Menunggu ACC Penguji 1',
+                    'menunggu_acc' => 'Menunggu ACC Dosen',
                     'dijadwalkan' => 'Di Jadwalkan',
                     'draft_uploaded' => 'Draft Diupload',
                     'ready_to_exam' => 'Siap Ujian',

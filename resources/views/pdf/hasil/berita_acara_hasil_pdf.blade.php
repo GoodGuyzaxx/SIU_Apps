@@ -572,7 +572,7 @@
                 <strong>{{ \Carbon\Carbon::now()->isoFormat("dddd") }}</strong>
                 tanggal <strong>{{ \Carbon\Carbon::now()->isoFormat("D") }}</strong>
                 bulan <strong>{{ \Carbon\Carbon::now()->isoFormat("MMMM") }}</strong>
-                tahun <strong>{{  strtoupper($tahun ?? 'DUA RIBU DUA PULUH LIMA') }}</strong>
+                tahun <strong>{{  strtoupper(\Carbon\Carbon::now()->isoFormat('Y') ?? 'DUA RIBU DUA PULUH LIMA') }}</strong>
                 pukul <strong>{{ \Carbon\Carbon::parse($data->waktu)->format('H:i') ?? '-' }} WIT</strong>
                 sampai dengan selesai dilaksanakannya ujian strata satu ( S1 ) Program studi
                 Ilmu Hukum terhadap mahasiswa:

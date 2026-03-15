@@ -14,11 +14,6 @@ class WhatsappService
 {
     /**
      * Kirim pesan WA menggunakan GoWA API.
-     *
-     * @param string $phone Nomor HP tujuan (format: 628xxx)
-     * @param string $message Isi pesan
-     * @param string|null $link URL link (opsional)
-     * @return bool
      */
     public function sendMessage(string $phone, string $message, ?string $link = null): bool
     {
@@ -32,13 +27,11 @@ class WhatsappService
                 return false;
             }
 
-            // Format nomor telepon: pastikan format 628xxx@s.whatsapp.net
+            // Format nomor telepon
             $formattedPhone = $this->formatPhoneNumber($phone);
 
-            // GoWA API mewajibkan field 'link' untuk link preview di WhatsApp.
-            // Gunakan link yang diberikan, atau APP_URL jika publik,
-            // atau fallback ke URL default jika masih localhost.
-            $linkUrl = $link ?: config('app.url ');
+            // GoWA API mewajibkan field 'link' untuk link preview
+            $linkUrl = $link ?: config('app.url');
 
             // Jika URL masih localhost, gunakan fallback URL publik
             if (str_contains($linkUrl, 'localhost') || str_contains($linkUrl, '127.0.0.1')) {
@@ -50,7 +43,7 @@ class WhatsappService
 
             $payload = [
                 'phone' => $formattedPhone,
-                'link' => $linkUrl,
+                'link'  => $linkUrl,
                 'caption' => $message,
             ];
 
@@ -59,9 +52,9 @@ class WhatsappService
                 config('gowaapi.pass')
             )
                 ->withHeaders([
-                'Accept' => 'application/json',
-                'X-Device-Id' => config('gowaapi.device'),
-            ])
+                    'Accept' => 'application/json',
+                    'X-Device-Id' => config('gowaapi.device'),
+                ])
                 ->post(config('gowaapi.url'), $payload);
 
             if ($response->successful()) {
@@ -79,15 +72,14 @@ class WhatsappService
 
             return false;
 
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             Log::error('WhatsApp service error: ' . $e->getMessage());
             return false;
         }
     }
 
     /**
-     * Kirim permintaan ACC kesiapan ujian ke Penguji 1.
+     * Kirim permintaan ACC kesiapan ujian ke dosen.
      */
     public function sendAccKesiapanRequest(AccKesiapanUjian $acc): bool
     {
@@ -101,9 +93,12 @@ class WhatsappService
         $tanggal = Carbon::createFromFormat('Y-m-d', $undangan->tanggal_hari)->format('d/m/Y');
         $waktu = Carbon::parse($undangan->waktu)->format('H:i');
 
+        // Label role sesuai data ACC
+        $roleLabel = $this->getRoleLabel($acc->role);
+
         $message = "📋 *PERMINTAAN ACC KESIAPAN UJIAN*\n\n"
             . "Yth. Bapak/Ibu *{$dosen->nama}*,\n\n"
-            . "Mohon memberikan persetujuan (ACC) kesiapan hadir sebagai *Penguji 1* pada ujian berikut:\n\n"
+            . "Mohon memberikan persetujuan (ACC) kesiapan hadir sebagai *{$roleLabel}* pada ujian berikut:\n\n"
             . "📝 *Perihal:* {$undangan->perihal}\n"
             . "👤 *Mahasiswa:* {$mahasiswa->nama} ({$mahasiswa->npm})\n"
             . "📖 *Judul:* {$judul->judul}\n"
@@ -115,82 +110,22 @@ class WhatsappService
             . "Terima kasih.\n"
             . "_Sistem Akademik Uningrat Papua_";
 
-              Log::warning('Info URL', [
-                'url' => $accUrl
-            ]);
-
         return $this->sendMessage($dosen->nomor_hp, $message, $accUrl);
     }
 
     /**
-     * Kirim notifikasi undangan ke semua dosen setelah ACC disetujui.
-     */
-    public function sendUndanganNotification(Undangan $undangan): void
-    {
-        $judul = $undangan->judul;
-        $mahasiswa = $judul->mahasiswa;
-
-        $tanggal = Carbon::createFromFormat('Y-m-d', $undangan->tanggal_hari)->format('d/m/Y');
-        $waktu = Carbon::parse($undangan->waktu)->format('H:i');
-
-        // Ambil semua status undangan (semua dosen yang terlibat)
-        $statusList = StatusUndangan::where('id_undangan', $undangan->id)->get();
-
-        foreach ($statusList as $status) {
-            $dosen = $status->dosen;
-            if (!$dosen || !$dosen->nomor_hp) {
-                continue;
-            }
-
-            $roleLabel = match ($status->role) {
-                    'pembimbing_satu' => 'Pembimbing 1',
-                    'pembimbing_dua' => 'Pembimbing 2',
-                    'penguji_satu' => 'Penguji 1',
-                    'penguji_dua' => 'Penguji 2',
-                    default => $status->role,
-                };
-
-            $message = "📩 *UNDANGAN UJIAN*\n\n"
-                . "Yth. Bapak/Ibu *{$dosen->nama}*,\n\n"
-                . "Mohon kesediaan hadir sebagai *{$roleLabel}* pada ujian berikut:\n\n"
-                . "📝 *Perihal:* {$undangan->perihal}\n"
-                . "👤 *Mahasiswa:* {$mahasiswa->nama} ({$mahasiswa->npm})\n"
-                . "📖 *Judul:* {$judul->judul}\n"
-                . "📅 *Tanggal:* {$tanggal}\n"
-                . "⏰ *Waktu:* {$waktu} WIT\n"
-                . "📍 *Tempat:* {$undangan->tempat}\n\n"
-                . "Mohon segera konfirmasi kehadiran melalui Sistem Akademik.\n\n"
-                . "Terima kasih.\n"
-                . "_Sistem Akademik Uningrat Papua_";
-
-            $this->sendMessage($dosen->nomor_hp, $message);
-        }
-    }
-
-    /**
-     * Kirim notifikasi ACC ditolak ke Admin.
+     * Kirim notifikasi ACC ditolak (log only).
      */
     public function sendAccRejectedNotification(AccKesiapanUjian $acc): bool
     {
         $undangan = $acc->undangan;
         $dosen = $acc->dosen;
-        $judul = $undangan->judul;
-        $mahasiswa = $judul->mahasiswa;
+        $roleLabel = $this->getRoleLabel($acc->role);
 
-        // Kirim ke admin/kaprodi - Anda bisa sesuaikan nomor HP admin
-        $message = "⚠️ *ACC KESIAPAN UJIAN DITOLAK*\n\n"
-            . "Penguji 1 (*{$dosen->nama}*) menolak ACC kesiapan ujian:\n\n"
-            . "👤 *Mahasiswa:* {$mahasiswa->nama} ({$mahasiswa->npm})\n"
-            . "📖 *Judul:* {$judul->judul}\n"
-            . "📅 *Tanggal:* {$undangan->tanggal_hari}\n\n"
-            . "❌ *Alasan:* {$acc->alasan_penolakan}\n\n"
-            . "Mohon segera menindaklanjuti penjadwalan ulang.\n\n"
-            . "_Sistem Akademik Uningrat Papua_";
-
-        // Log the rejection - admin notification can be sent if admin phone is configured
         Log::info('ACC Kesiapan Ujian ditolak', [
             'undangan_id' => $undangan->id,
             'dosen' => $dosen->nama,
+            'role' => $roleLabel,
             'alasan' => $acc->alasan_penolakan,
         ]);
 
@@ -198,19 +133,74 @@ class WhatsappService
     }
 
     /**
+     * Cek apakah syarat minimum dosen terpenuhi untuk undangan.
+     *
+     * Aturan:
+     * - Minimal 1 Pembimbing + 1 Penguji = ✅
+     * - 0 Pembimbing + berapapun Penguji = ❌
+     */
+    public static function checkMinimumRequirements(int $undanganId): array
+    {
+        $accRecords = AccKesiapanUjian::where('id_undangan', $undanganId)->get();
+
+        $pembimbingDisetujui = $accRecords->filter(function ($acc) {
+            return str_contains($acc->role, 'pembimbing') && $acc->status === 'disetujui';
+        })->count();
+
+        $pengujiDisetujui = $accRecords->filter(function ($acc) {
+            return str_contains($acc->role, 'penguji') && $acc->status === 'disetujui';
+        })->count();
+
+        // Cek apakah masih mungkin terpenuhi (tidak semua ditolak)
+        $pembimbingPending = $accRecords->filter(function ($acc) {
+            return str_contains($acc->role, 'pembimbing') && $acc->status === 'pending';
+        })->count();
+
+        $pengujiPending = $accRecords->filter(function ($acc) {
+            return str_contains($acc->role, 'penguji') && $acc->status === 'pending';
+        })->count();
+
+        $terpenuhi = $pembimbingDisetujui >= 1 && $pengujiDisetujui >= 1;
+
+        // Tidak mungkin terpenuhi jika semua pembimbing/penguji sudah menolak
+        $tidakMungkin = ($pembimbingDisetujui === 0 && $pembimbingPending === 0)
+            || ($pengujiDisetujui === 0 && $pengujiPending === 0);
+
+        return [
+            'terpenuhi' => $terpenuhi,
+            'tidak_mungkin' => $tidakMungkin,
+            'pembimbing_setuju' => $pembimbingDisetujui,
+            'penguji_setuju' => $pengujiDisetujui,
+            'pembimbing_pending' => $pembimbingPending,
+            'penguji_pending' => $pengujiPending,
+        ];
+    }
+
+    /**
+     * Label role yang readable.
+     */
+    public static function getRoleLabel(?string $role): string
+    {
+        return match ($role) {
+            'pembimbing_satu' => 'Pembimbing 1',
+            'pembimbing_dua' => 'Pembimbing 2',
+            'penguji_satu' => 'Penguji 1',
+            'penguji_dua' => 'Penguji 2',
+            default => $role ?? '-',
+        };
+    }
+
+    /**
      * Format nomor telepon ke format WhatsApp.
      */
     private function formatPhoneNumber(string $phone): string
     {
-        // Hapus spasi, strip, dll
         $phone = preg_replace('/[^0-9]/', '', $phone);
 
-        // Jika diawali 0, ganti dengan 62
         if (str_starts_with($phone, '0')) {
             $phone = '62' . substr($phone, 1);
         }
 
-        // Jika belum diawali 62, tambahkan
         if (!str_starts_with($phone, '62')) {
             $phone = '62' . $phone;
         }

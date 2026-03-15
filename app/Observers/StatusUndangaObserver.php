@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\StatusUndangan;
 use App\Models\Undangan;
+use App\Services\WhatsappService;
 
 class StatusUndangaObserver
 {
@@ -12,7 +13,6 @@ class StatusUndangaObserver
      */
     public function created(StatusUndangan $statusUndangan): void
     {
-        //
         $this->checkAndUpdateStatusUjian($statusUndangan->id_undangan);
     }
 
@@ -21,7 +21,6 @@ class StatusUndangaObserver
      */
     public function updated(StatusUndangan $statusUndangan): void
     {
-        //
         $this->checkAndUpdateStatusUjian($statusUndangan->id_undangan);
     }
 
@@ -30,7 +29,7 @@ class StatusUndangaObserver
      */
     public function deleted(StatusUndangan $statusUndangan): void
     {
-    //
+        //
     }
 
     /**
@@ -38,7 +37,7 @@ class StatusUndangaObserver
      */
     public function restored(StatusUndangan $statusUndangan): void
     {
-    //
+        //
     }
 
     /**
@@ -46,31 +45,37 @@ class StatusUndangaObserver
      */
     public function forceDeleted(StatusUndangan $statusUndangan): void
     {
-    //
+        //
     }
 
     private function checkAndUpdateStatusUjian($idUndangan)
     {
-
-        // Ambil undangan
         $undangan = Undangan::find($idUndangan);
 
-        // Jangan update jika masih menunggu ACC, sudah gagal, atau selesai
-        if (in_array($undangan->status_ujian, ['menunggu_acc', 'gagal_menjadwalkan_ujian', 'selesai'])) {
+        if (!$undangan) return;
+
+        // Jangan update jika sudah gagal atau selesai
+        if (in_array($undangan->status_ujian, ['gagal_menjadwalkan_ujian', 'selesai'])) {
             return;
         }
 
-        // Cek apakah semua dosen dengan id_undangan ini berstatus 'hadir'
-        $totalDosen = StatusUndangan::where('id_undangan', $idUndangan)->count();
+        // Gunakan pengecekan syarat minimum dari WhatsappService
+        $check = WhatsappService::checkMinimumRequirements($idUndangan);
 
-        $dosenHadir = StatusUndangan::where('id_undangan', $idUndangan)
-            ->where('status_konfirmasi', 'Hadir')
-            ->count();
-
-        // Jika semua dosen hadir, update status_ujian
-        if ($totalDosen > 0 && $totalDosen === $dosenHadir) {
-            Undangan::where('id', $idUndangan)
-                ->update(['status_ujian' => 'ready_to_exam']);
+        if ($check['terpenuhi']) {
+            // Syarat dosen terpenuhi, cek draft
+            if (!empty($undangan->softcopy_file_path)) {
+                // Draft sudah ada → siap ujian
+                $undangan->update(['status_ujian' => 'ready_to_exam']);
+            } else {
+                // Draft belum ada → dijadwalkan, menunggu draft
+                if ($undangan->status_ujian === 'menunggu_acc') {
+                    $undangan->update(['status_ujian' => 'dijadwalkan']);
+                }
+            }
+        } elseif ($check['tidak_mungkin']) {
+            // Tidak mungkin terpenuhi
+            $undangan->update(['status_ujian' => 'gagal_menjadwalkan_ujian']);
         }
     }
 }

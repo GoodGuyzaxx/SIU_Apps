@@ -46,7 +46,7 @@ class UndangansTable
             ->searchable()
             ->formatStateUsing(function ($state): string {
             return match ($state) {
-                    'menunggu_acc' => 'Menunggu ACC Penguji 1',
+                    'menunggu_acc' => 'Menunggu ACC Dosen',
                     'dijadwalkan' => 'Di Jadwalkan',
                     'draft_uploaded' => 'Draft Diupload',
                     'ready_to_exam' => 'Ujian Siap Dilaksanakan',
@@ -115,29 +115,36 @@ class UndangansTable
             ->icon('heroicon-o-paper-airplane')
             ->color('warning')
             ->requiresConfirmation()
-            ->modalDescription('Kirim ulang permintaan ACC kesiapan ujian ke Penguji 1 via WhatsApp?')
+            ->modalDescription('Kirim ulang permintaan ACC kesiapan ujian ke semua dosen yang belum merespon via WhatsApp?')
             ->modalSubmitActionLabel('Ya, Kirim Ulang')
             ->visible(function (Undangan $record): bool {
             return $record->status_ujian === 'menunggu_acc';
         })
             ->action(function (Undangan $record): void {
-            $acc = AccKesiapanUjian::where('id_undangan', $record->id)->first();
-            if ($acc) {
-                $waService = new WhatsappService();
-                $sent = $waService->sendAccKesiapanRequest($acc);
-                if ($sent) {
-                    Notification::make()
-                        ->title('ACC Berhasil Dikirim Ulang')
-                        ->success()
-                        ->send();
+            $accList = AccKesiapanUjian::where('id_undangan', $record->id)
+                ->where('status', 'pending')
+                ->get();
+
+            $waService = new WhatsappService();
+            $sentCount = 0;
+
+            foreach ($accList as $acc) {
+                if ($waService->sendAccKesiapanRequest($acc)) {
+                    $sentCount++;
                 }
-                else {
-                    Notification::make()
-                        ->title('Gagal Mengirim ACC')
-                        ->body('Periksa konfigurasi WhatsApp API.')
-                        ->danger()
-                        ->send();
-                }
+            }
+
+            if ($sentCount > 0) {
+                Notification::make()
+                    ->title("ACC Dikirim Ulang ke {$sentCount} Dosen")
+                    ->success()
+                    ->send();
+            } else {
+                Notification::make()
+                    ->title('Gagal Mengirim ACC')
+                    ->body('Tidak ada dosen pending atau pengiriman gagal.')
+                    ->danger()
+                    ->send();
             }
         }),
             ActionGroup::make([

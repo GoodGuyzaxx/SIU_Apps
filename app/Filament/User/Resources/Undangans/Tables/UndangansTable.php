@@ -25,6 +25,7 @@ class UndangansTable
                 TextColumn::make('judul.judul')
                     ->label('Judul')
                     ->searchable()
+                    ->limit(30)
                     ->sortable(),
                 TextColumn::make('perihal')
                     ->label('Perihal')

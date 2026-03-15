@@ -327,9 +327,10 @@ class DetailUndangan extends Page
 
     public function konfirmasi()
     {
-        $idMahasiswa = Mahasiswa::where('id_user', auth()->user()->id)->first();
+        $idMahasiswa = Mahasiswa::where('id_user', auth()->user()->id)->get()->first();
         $dataJudul = Judul::where('id_mahasiswa', $idMahasiswa->id)->first();
-        $dataUndangan = Undangan::where('id_judul', $dataJudul->id)->first();
+        $dataUndangan = Undangan::where('id_judul', $dataJudul->id)->get()->first();
+//        dd($dataUndangan);
         $data = $this->uploadForm->getState();
 //        dd($data);
 
