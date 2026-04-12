@@ -2,48 +2,48 @@
 
 namespace App\Observers;
 
-use App\Models\StatusUndangan;
+use App\Models\AccKesiapanUjian;
 use App\Models\Undangan;
 use App\Services\WhatsappService;
 
 class StatusUndangaObserver
 {
     /**
-     * Handle the StatusUndangan "created" event.
+     * Handle the AccKesiapanUjian "created" event.
      */
-    public function created(StatusUndangan $statusUndangan): void
+    public function created(AccKesiapanUjian $accKesiapanUjian): void
     {
-        $this->checkAndUpdateStatusUjian($statusUndangan->id_undangan);
+        $this->checkAndUpdateStatusUjian($accKesiapanUjian->id_undangan);
     }
 
     /**
-     * Handle the StatusUndangan "updated" event.
+     * Handle the AccKesiapanUjian "updated" event.
      */
-    public function updated(StatusUndangan $statusUndangan): void
+    public function updated(AccKesiapanUjian $accKesiapanUjian): void
     {
-        $this->checkAndUpdateStatusUjian($statusUndangan->id_undangan);
+        $this->checkAndUpdateStatusUjian($accKesiapanUjian->id_undangan);
     }
 
     /**
-     * Handle the StatusUndangan "deleted" event.
+     * Handle the AccKesiapanUjian "deleted" event.
      */
-    public function deleted(StatusUndangan $statusUndangan): void
-    {
-        //
-    }
-
-    /**
-     * Handle the StatusUndangan "restored" event.
-     */
-    public function restored(StatusUndangan $statusUndangan): void
+    public function deleted(AccKesiapanUjian $accKesiapanUjian): void
     {
         //
     }
 
     /**
-     * Handle the StatusUndangan "force deleted" event.
+     * Handle the AccKesiapanUjian "restored" event.
      */
-    public function forceDeleted(StatusUndangan $statusUndangan): void
+    public function restored(AccKesiapanUjian $accKesiapanUjian): void
+    {
+        //
+    }
+
+    /**
+     * Handle the AccKesiapanUjian "force deleted" event.
+     */
+    public function forceDeleted(AccKesiapanUjian $accKesiapanUjian): void
     {
         //
     }

@@ -3,7 +3,7 @@
 namespace App\Filament\Dosen\Resources\Undangans\Pages;
 
 use App\Filament\Dosen\Resources\Undangans\UndanganResource;
-use App\Models\StatusUndangan;
+use App\Models\AccKesiapanUjian;
 use App\Models\Undangan;
 use Carbon\Carbon;
 use Filament\Actions\Action;
@@ -61,7 +61,7 @@ class DetailUndangan extends Page
     {
         $this->record = $this->resolveRecord($record);
         $this->idDosen = auth()->user();
-        $this->statusUndangan = StatusUndangan::where('id_dosen', $this->idDosen->id)->get();
+        $this->statusUndangan = AccKesiapanUjian::where('id_dosen', $this->idDosen->id)->get();
         $this->undangan = $this->record;
 //        dd($this->undangan->statusUndangan);
     }
@@ -166,7 +166,7 @@ class DetailUndangan extends Page
     public function infoStatusUndangan(Schema $schema): Schema
     {
         // Ambil semua status undangan untuk undangan ini
-        $dataStatus = StatusUndangan::with('dosen')
+        $dataStatus = AccKesiapanUjian::with('dosen')
             ->where('id_undangan', $this->undangan->id)
             ->get();
 
@@ -196,18 +196,18 @@ class DetailUndangan extends Page
 
                     TextEntry::make('status_saya')
                         ->label('Status Konfirmasi')
-                        ->default($statusSaya->status_konfirmasi ?? '-')
+                        ->default($statusSaya->status ?? '-')
                         ->badge()
                         ->color(fn (string $state): string => match ($state) {
-                            'Hadir' => 'success',
-                            'Tidak Hadir' => 'danger',
-                            default => 'warning',
+                            'disetujui' => 'success',
+                            'ditolak'   => 'danger',
+                            default     => 'warning',
                         }),
 
                     TextEntry::make('alasan_saya')
                         ->label('Alasan Penolakan')
                         ->default($statusSaya->alasan_penolakan ?? '-')
-                        ->visible(fn () => $statusSaya->status_konfirmasi === 'Tidak Hadir'),
+                        ->visible(fn () => $statusSaya->status === 'ditolak'),
                 ]);
         }
 
@@ -235,12 +235,12 @@ class DetailUndangan extends Page
 
                         TextEntry::make('status_' . $status->id)
                         ->label('Status Konfirmasi')
-                        ->default($status->status_konfirmasi ?? '-')
+                        ->default($status->status ?? '-')
                         ->badge()
                         ->color(fn (string $state): string => match ($state) {
-                        'Hadir' => 'success',
-                        'Tidak Hadir' => 'danger',
-                        default => 'warning',
+                        'disetujui' => 'success',
+                        'ditolak'   => 'danger',
+                        default     => 'warning',
                         }),
 
                         TextEntry::make('alasan_' . $status->id)
@@ -266,15 +266,22 @@ class DetailUndangan extends Page
                             ->modalCancelActionLabel('Batal')
                             ->modalSubmitActionLabel('Ya,Saya Bersedia')
                             ->visible(function () {
-                                return $this->undangan->statusUndangan->status_konfirmasi !== 'Hadir' && $this->undangan->statusUndangan->status_konfirmasi !== 'Tidak Hadir';
+                                return $this->undangan->accKesiapanUjian
+                                    ->where('id_dosen', auth()->user()->dosen->id ?? null)
+                                    ->first()?->status === 'pending';
                             })
                             ->hidden(function (){
                                 return $this->undangan->status_ujian === 'gagal_menjadwalkan_ujian';
                             })
-                            ->action(function () {
-                                $this->undangan->statusUndangan->status_konfirmasi = 'Hadir';
-                                $this->undangan->statusUndangan->confirmed_at =Carbon::now();
-                                $this->undangan->statusUndangan->save();
+                            ->action(function () use ($currentDosenId) {
+                                $acc = $this->undangan->accKesiapanUjian
+                                    ->where('id_dosen', $currentDosenId)
+                                    ->first();
+                                if ($acc) {
+                                    $acc->status       = 'disetujui';
+                                    $acc->responded_at = \Carbon\Carbon::now();
+                                    $acc->save();
+                                }
                                 Notification::make()
                                     ->title('Berhasil Konfirmasi Kehadiran')
                                     ->success()
@@ -287,7 +294,7 @@ class DetailUndangan extends Page
                             ->icon('heroicon-m-x-mark')
                             ->color('danger')
                             ->visible(function () use ($statusSaya, $currentDosenId) {
-                                return $statusSaya->id_dosen === $currentDosenId && empty($statusSaya->alasan_penolakan) && $statusSaya->status_konfirmasi !== 'Hadir' ;
+                                return $statusSaya->id_dosen === $currentDosenId && empty($statusSaya->alasan_penolakan) && $statusSaya->status !== 'disetujui';
                             })
                             ->schema([
                                 Textarea::make('alasan')
@@ -295,14 +302,21 @@ class DetailUndangan extends Page
                                     ->required()
                                     ->rows(3)
                             ])
-                            ->action(function (array $data): void {
-                                $this->statusUndangan->status_konfirmasi = 'Tidak Hadir';
-                                $this->statusUndangan->alasan_penolakan = $data['alasan'];
-                                $this->statusUndangan->save();
+                            ->action(function (array $data) use ($currentDosenId): void {
+                                $acc = $this->undangan->accKesiapanUjian
+                                    ->where('id_dosen', $currentDosenId)
+                                    ->first();
+                                if ($acc) {
+                                    $acc->status           = 'ditolak';
+                                    $acc->alasan_penolakan = $data['alasan'];
+                                    $acc->responded_at     = \Carbon\Carbon::now();
+                                    $acc->save();
+                                }
                                 Notification::make()
                                     ->title('Berhasil Menolak Undangan')
                                     ->success()
                                     ->send();
+                                $this->redirect(static::getUrl(['record' => $this->undangan->id]));
                             })
                     ]),
                 ]),

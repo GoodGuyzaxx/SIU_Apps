@@ -5,7 +5,7 @@
     {{$this->infoStatusUndangan}}
 
     {{-- Only show the button if status_ujian is 'draft_uploaded' --}}
-    @if($this->undangan->status_ujian == 'dijadwalkan')
+    @if($this->undangan->status_ujian == 'menunggu_acc')
         <a
             x-data
             x-on:click.prevent="$dispatch('open-modal', { id: 'uploadCostumeForm' })"

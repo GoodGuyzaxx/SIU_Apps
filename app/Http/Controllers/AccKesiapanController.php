@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AccKesiapanUjian;
-use App\Models\StatusUndangan;
+
 use App\Models\Undangan;
 use App\Services\WhatsappService;
 use Carbon\Carbon;
@@ -50,13 +50,6 @@ class AccKesiapanController extends Controller
             'responded_at' => Carbon::now(),
         ]);
 
-        // Update juga StatusUndangan konfirmasi untuk dosen ini
-        StatusUndangan::where('id_undangan', $acc->id_undangan)
-            ->where('id_dosen', $acc->id_dosen)
-            ->update([
-                'status_konfirmasi' => 'Hadir',
-                'confirmed_at' => Carbon::now(),
-            ]);
 
         // Cek apakah syarat minimum terpenuhi
         $undangan = $acc->undangan;
@@ -105,14 +98,6 @@ class AccKesiapanController extends Controller
             'responded_at' => Carbon::now(),
         ]);
 
-        // Update StatusUndangan konfirmasi
-        StatusUndangan::where('id_undangan', $acc->id_undangan)
-            ->where('id_dosen', $acc->id_dosen)
-            ->update([
-                'status_konfirmasi' => 'Tidak Hadir',
-                'alasan_penolakan' => $request->alasan_penolakan,
-                'confirmed_at' => Carbon::now(),
-            ]);
 
         // Cek apakah masih mungkin terpenuhi
         $undangan = $acc->undangan;

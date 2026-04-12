@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Http\Responses\LogoutResponse;
-use App\Models\StatusUndangan;
+use App\Models\AccKesiapanUjian;
 use App\Observers\StatusUndangaObserver;
 use Carbon\Carbon;
 use Filament\Auth\Http\Responses\Contracts\LogoutResponse as LogoutResponseContract;
@@ -28,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
-        StatusUndangan::observe(StatusUndangaObserver::class);
+        AccKesiapanUjian::observe(StatusUndangaObserver::class);
         Carbon::setLocale("id");
         \Livewire\Livewire::forceAssetInjection();
        if (

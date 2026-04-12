@@ -20,7 +20,7 @@ class UserAccountResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?int $navigationSort = 15;
+    protected static ?int $navigationSort = 10;
 
     protected static ?string $breadcrumb = "Akun";
 

@@ -2,18 +2,25 @@
 
 namespace Database\Seeders;
 
+use App\Models\Dosen;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class DosenSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     *
+     * @return void
      */
-    public function run(): void
+    public function run()
     {
-        $dosen = [
+        $this->command->info('Memulai proses seeding untuk Dosen dan Akun User...');
+
+        $dosens = [
             [
                 'nama' => 'Assoc. Prof. Dr. H. M.H. Ingratubun, SE.,SH.,MM.,MH.,Mediator',
                 'nidn' => '12.161264.01',
@@ -47,7 +54,7 @@ class DosenSeeder extends Seeder
                 'nrp_nip' => '09 08 085',
                 'inisial_dosen' => 'SJ',
                 'ttl' => 'Todo, 2 April 1974',
-                'nomor_hp' => '081388788584/082199904917',
+                'nomor_hp' => '081388788584',
                 'email' => 'salesiusjemaru8@gmail.com',
             ],
             [
@@ -56,7 +63,7 @@ class DosenSeeder extends Seeder
                 'nrp_nip' => '05 04 030',
                 'inisial_dosen' => 'YSB',
                 'ttl' => 'Toraja, 18 September 1973',
-                'nomor_hp' => '081335044951/081148189',
+                'nomor_hp' => '081335044951',
                 'email' => 'yohanisbakti09@gmail.com',
             ],
             [
@@ -155,7 +162,7 @@ class DosenSeeder extends Seeder
                 'nrp_nip' => '06 05 046',
                 'inisial_dosen' => 'ST',
                 'ttl' => 'Ohowait, 5 Mei 1981',
-                'nomor_hp' => '081248930405/081344190345',
+                'nomor_hp' => '081344190345',
                 'email' => 'samsultamhersamsul02046@gmail.com',
             ],
             [
@@ -213,7 +220,7 @@ class DosenSeeder extends Seeder
                 'email' => null,
             ],
             [
-                'nama' => 'Muhammad Toha Ingratubun, S.H., M.H.',
+                'nama' => 'Muhammad Toha Ingratubun, SH., MH., M.Kn',
                 'nidn' => null,
                 'nrp_nip' => null,
                 'inisial_dosen' => 'MTI',
@@ -272,23 +279,59 @@ class DosenSeeder extends Seeder
                 'nrp_nip' => null,
                 'inisial_dosen' => 'ATH',
                 'ttl' => null,
-                'nomor_hp' => null,
+                'nomor_hp' => '082199073789',
+                'email' => 'arie.zidanne@gmail.com',
+            ],
+            [
+                'nama' => 'William Halashon Sinaga, SH.,MH',
+                'nidn' => null,
+                'nrp_nip' => null,
+                'inisial_dosen' => 'WHS',
+                'ttl' => null,
+                'nomor_hp' => '082166366060',
                 'email' => null,
             ],
         ];
 
-        foreach ($dosen as $data) {
-            DB::table('dosen')->insert([
-                'nama' => $data['nama'],
-                'nidn' => $data['nidn'],
-                'nrp_nip' => $data['nrp_nip'],
-                'inisial_dosen' => $data['inisial_dosen'],
-                'ttl' => $data['ttl'],
-                'nomor_hp' => $data['nomor_hp'],
-                'email' => $data['email'],
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
+        foreach ($dosens as $dosenData) {
+            // Tentukan email berdasarkan NIDN atau buat string acak jika kosong
+            $emailIdentifier = $dosenData['nidn'] ?? Str::lower($dosenData['inisial_dosen']) . Str::random(5);
+
+            $email = $dosenData['email'] ?? $emailIdentifier . '@siu.ac.id';
+
+            // Cek apakah user dengan email ini sudah ada
+            $userExists = User::where('email', $email)->exists();
+            if ($userExists) {
+                $this->command->warn("User dengan email {$email} sudah ada. Melewati pembuatan untuk dosen: {$dosenData['nama']}");
+                continue;
+            }
+
+            // 1. Buat Akun User
+            $user = User::create([
+                'name' => $dosenData['nama'],
+                'nrp/nidn/npm' => $emailIdentifier,
+                'email' => $email,
+                'password' => Hash::make('password'), // Default password
+                'role' => 'dosen',
+                'email_verified_at' => Carbon::now(),
             ]);
+
+            $this->command->info("Akun user dibuat: {$user->name} ({$user->email})");
+
+            // 2. Buat Data Dosen dan hubungkan dengan user
+            Dosen::create([
+                'id_user' => $user->id,
+                'nama' => $dosenData['nama'],
+                'nidn' => $dosenData['nidn'],
+                'nrp_nip' => $dosenData['nrp_nip'],
+                'inisial_dosen' => $dosenData['inisial_dosen'],
+                'ttl' => $dosenData['ttl'],
+                'nomor_hp' => $dosenData['nomor_hp'],
+            ]);
+
+            $this->command->info("Data dosen dibuat untuk: {$dosenData['nama']}");
         }
+
+        $this->command->info('Seeding Dosen dan Akun User selesai.');
     }
 }

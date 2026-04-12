@@ -14,7 +14,6 @@ class Judul extends Model
         'id_mahasiswa',
         'minat',
         'judul',
-        'jenis',
         'pembimbing_satu',
         'pembimbing_dua',
         'penguji_satu',

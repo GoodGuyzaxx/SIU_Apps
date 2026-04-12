@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\StatusUndangan;
+use App\Models\AccKesiapanUjian;
 use App\Models\Undangan;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -32,7 +32,7 @@ class CheckUndanganStatus extends Command
     {
         $this->info('Checking undangan status...');
 
-        // Ambil undangan yang tanggalnya besok (1 hari lagi)
+    
         $batasWaktu = Carbon::now('Asia/Tokyo')->subDay();
 
         $undanganList = Undangan::where('created_at','<=', $batasWaktu)
@@ -46,15 +46,14 @@ class CheckUndanganStatus extends Command
 
         foreach ($undanganList as $undangan) {
             // Hitung total dosen dan yang sudah hadir
-            $totalDosen = StatusUndangan::where('id_undangan', $undangan->id)->count();
-            $dosenList = StatusUndangan::where('id_undangan', $undangan->id)->get();
+            $totalDosen = AccKesiapanUjian::where('id_undangan', $undangan->id)->count();
+            $dosenList = AccKesiapanUjian::where('id_undangan', $undangan->id)->get();
 
-            $dosenHadir = StatusUndangan::where('id_undangan', $undangan->id)
-                ->where('status_konfirmasi', 'hadir')
+            $dosenHadir = AccKesiapanUjian::where('id_undangan', $undangan->id)
+                ->where('status', 'disetujui')
                 ->count();
 
 
-            // Jika tidak semua dosen hadir, ubah status menjadi gagal
             if ($totalDosen > 0 && $dosenHadir < $totalDosen) {
                 $undangan->update([
                     'status_ujian' => 'gagal_menjadwalkan_ujian',
@@ -63,10 +62,12 @@ class CheckUndanganStatus extends Command
                 $this->warn("Undangan ID {$undangan->id} status changed to gagal_menjadwalkan_ujian");
             }
 
-            foreach ($dosenList as $statusUndangan){
-                if ($statusUndangan->status_konfirmasi == 'belum dikonfirmasi'){
-                    $statusUndangan->update([
-                        'alasan_penolakan' => 'Dosen Tidak Memberikan Response'
+            foreach ($dosenList as $accKesiapan){
+                if ($accKesiapan->status == 'pending'){
+                    $accKesiapan->update([
+                        'status' => 'ditolak',
+                        'alasan_penolakan' => 'Dosen Tidak Memberikan Response',
+                        'responded_at' => now(),
                     ]);
 
                     $this->warn("Undangan ID {$undangan->id} catatan penolakan diupdate");

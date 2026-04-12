@@ -41,7 +41,7 @@ class UndanganForm
                 ->afterStateUpdated(function (Set $set, ?string $state) {
             if (blank($state)) {
                 // Reset repeater jika tidak ada judul yang dipilih
-                $set('statusUndangan', [
+                $set('accKesiapanUjian', [
                             ['role' => 'pembimbing_satu'],
                             ['role' => 'pembimbing_dua'],
                             ['role' => 'penguji_satu'],
@@ -56,12 +56,12 @@ class UndanganForm
                 return;
 
             $dosenData = [
-                        ['id_dosen' => $judul->pembimbing_satu, 'role' => 'pembimbing_satu', 'status_konfirmasi' => 'belum dikonfirmasi'],
-                        ['id_dosen' => $judul->pembimbing_dua, 'role' => 'pembimbing_dua', 'status_konfirmasi' => 'belum dikonfirmasi'],
-                        ['id_dosen' => $judul->penguji_satu, 'role' => 'penguji_satu', 'status_konfirmasi' => 'belum dikonfirmasi'],
-                        ['id_dosen' => $judul->penguji_dua, 'role' => 'penguji_dua', 'status_konfirmasi' => 'belum dikonfirmasi'],
+                        ['id_dosen' => $judul->pembimbing_satu, 'role' => 'pembimbing_satu', 'status' => 'pending'],
+                        ['id_dosen' => $judul->pembimbing_dua, 'role' => 'pembimbing_dua', 'status' => 'pending'],
+                        ['id_dosen' => $judul->penguji_satu, 'role' => 'penguji_satu', 'status' => 'pending'],
+                        ['id_dosen' => $judul->penguji_dua, 'role' => 'penguji_dua', 'status' => 'pending'],
                     ];
-            $set('statusUndangan', $dosenData);
+            $set('accKesiapanUjian', $dosenData);
         })
                 ->required()
                 ->columnSpanFull(),
@@ -84,7 +84,7 @@ class UndanganForm
                 ->native(false)
                 ->options([
                     'Undangan Ujian Proposal' => 'Undangan Ujian Proposal',
-                    'Undangan Ujian Skripsi' => 'Undangan Ujian Skripsi'
+                    'Undangan Ujian Skripsi' => 'Undangan Ujian Hasil'
                 ])
 
             ])
@@ -168,7 +168,7 @@ class UndanganForm
             ->columnSpanFull()
 
             ->schema([
-                Repeater::make('statusUndangan')
+                Repeater::make('accKesiapanUjian')
                 ->relationship()
                 ->schema([
                     Select::make('id_dosen')
@@ -189,17 +189,16 @@ class UndanganForm
                     ])
                     ->required()
                     ->placeholder('Pilih peran'),
-                    Select::make('status_konfirmasi')
-                    ->label('Konfirmasi Kehadiran')
+                    Select::make('status')
+                    ->label('Status Kesiapan')
                     ->helperText('Opsional')
-                    ->default('belum dikonfirmasi')
+                    ->default('pending')
                     ->options([
-                        'Hadir' => 'Hadir',
-                        'Tidak Hadir' => 'Tidak Hadir',
-                        'belum dikonfirmasi' => 'Belum Dikonfirmasi'
+                        'disetujui' => 'Disetujui (Hadir)',
+                        'ditolak'   => 'Ditolak (Tidak Hadir)',
+                        'pending'   => 'Menunggu Konfirmasi',
                     ])
-                    ->default('belum dikonfirmasi')
-                    ->placeholder('Pilih status kehadiran'),
+                    ->placeholder('Pilih status'),
                     Textarea::make('alasan_penolakan')
                     ->label('Alasan Penolakan')
                     ->helperText('Opsional')

@@ -90,10 +90,15 @@ class UndanganController extends Controller
 
     public function getBeritaAcaraPdf($id,$jenis){
         $data = Undangan::find($id);
-//        $dosenList = array($data->pembimbing_satu,$data->pembimbing_dua,$data->penguji_satu,$data->penguji_dua);
-//        $inisialDosen = Dosen::whereIn('nama',$dosenList)->get();
+
+        $dosenList = [
+            'pembimbing_1' => request()->query('pembimbing_1') ? Dosen::find(request()->query('pembimbing_1')) : null,
+            'pembimbing_2' => request()->query('pembimbing_2') ? Dosen::find(request()->query('pembimbing_2')) : null,
+            'penguji_1' => request()->query('penguji_1') ? Dosen::find(request()->query('penguji_1')) : null,
+            'penguji_2' => request()->query('penguji_2') ? Dosen::find(request()->query('penguji_2')) : null,
+        ];
+
         if ($jenis != 'proposal') {
-//            $pdf = DomPdf::loadView('pdf.hasil.berita_acara_hasil_pdf', compact('data'));
             return pdf()
                 ->withBrowsershot(function (Browsershot $browsershot){
                     $browsershot
@@ -105,9 +110,9 @@ class UndanganController extends Controller
                             '--disable-web-security'
                         ]);
                 })
-                ->view('pdf.hasil.berita_acara_hasil_pdf', compact('data'))
+                ->view('pdf.hasil.berita_acara_hasil_pdf', compact('data', 'dosenList'))
                 ->format(Format::A4)
-                ->name('Berita Acara Proposal '.$data->judul->mahasiswa->nama.' '.$data->judul->mahasiswa->npm.'.pdf');
+                ->name('Berita Acara Hasil '.$data->judul->mahasiswa->nama.' '.$data->judul->mahasiswa->npm.'.pdf');
         }
         return pdf()
             ->withBrowsershot(function (Browsershot $browsershot){
@@ -120,11 +125,9 @@ class UndanganController extends Controller
                         '--disable-web-security'
                     ]);
             })
-            ->view('pdf.proposal.berita_acara_proposal_pdf', compact('data'))
+            ->view('pdf.proposal.berita_acara_proposal_pdf', compact('data', 'dosenList'))
             ->format(Format::A4)
             ->name('Berita Acara Proposal '.$data->judul->mahasiswa->nama.' '.$data->judul->mahasiswa->npm.'.pdf');
-
-
     }
 
 }

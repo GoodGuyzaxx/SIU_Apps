@@ -3,6 +3,7 @@
 namespace App\Filament\User\Pages\Profile\Pages;
 
 use App\Models\Mahasiswa;
+use App\Models\Prodi;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -105,7 +106,7 @@ class UserForm extends Page implements  HasForms
                                     ])
                                     ->visible(fn ($get) => $get('jenjang') === 'sarjana'),
 
-                                Select::make('program_studi')
+                                Select::make('prodi_id')
                                     ->label('Program Studi')
                                     ->placeholder('Pilih Program Studi')
                                     ->native(false)
@@ -115,14 +116,11 @@ class UserForm extends Page implements  HasForms
                                     ->options(
                                         function ($get) {
                                             if ($get('jenjang') == 'magister') {
-                                                return [
-                                                    'Magister Hukum' => 'Magister Hukum',
-                                                    'Kenotariatan' => 'Kenotariatan',
-                                                ];
+                                                return Prodi::query()->where('jenjang', 'S2')->pluck('nama_prodi', 'id');
+                                            } elseif ($get('jenjang') == 'dpktpr'){
+                                                return Prodi::query()->where('jenjang', 'S3')->pluck('nama_prodi', 'id');
                                             }
-                                            return [
-                                              'Ilmu Hukum' => 'Ilmu Hukum',
-                                            ];
+                                            return Prodi::query()->where('jenjang', 'S1')->pluck('nama_prodi', 'id');
                                         }
                                     ),
 

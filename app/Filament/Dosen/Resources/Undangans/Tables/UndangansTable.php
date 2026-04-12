@@ -45,9 +45,21 @@ class UndangansTable
             default => 'gray',
         }),
             TextColumn::make('Status')
-            ->label('Status Konfirmasi')
+            ->label('Status Konfirmasi Saya')
             ->default(function (Undangan $record): string {
-            return $record->statusUndangan->where('id_dosen', auth()->user()->dosen->id)->first()->status_konfirmasi;
+            $acc = $record->accKesiapanUjian->where('id_dosen', auth()->user()->dosen->id ?? null)->first();
+            return match($acc?->status) {
+                'disetujui' => 'Hadir',
+                'ditolak'   => 'Tidak Hadir',
+                'pending'   => 'Belum Dikonfirmasi',
+                default     => '-',
+            };
+        })
+            ->badge()
+            ->color(fn($state): string => match($state) {
+            'Hadir' => 'success',
+            'Tidak Hadir' => 'danger',
+            default => 'warning',
         })
 
         ])
@@ -55,7 +67,7 @@ class UndangansTable
             //
         ])
             ->modifyQueryUsing(function ($query) {
-            return $query->whereHas('statusUndangan', function ($query) {
+            return $query->whereHas('accKesiapanUjian', function ($query) {
                     $query->where('id_dosen', auth()->user()->dosen->id);
                 }
                 )->whereNotIn('status_ujian', ['dijadwalkan']);

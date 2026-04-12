@@ -4,11 +4,10 @@ namespace App\Filament\Resources\Undangans\Pages;
 
 use App\Filament\Resources\Undangans\UndanganResource;
 use App\Models\AccKesiapanUjian;
-use App\Models\StatusUndangan;
+use App\Models\Dosen;
 use App\Services\WhatsappService;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
-use Illuminate\Database\Eloquent\Model;
 
 class CreateUndangan extends CreateRecord
 {
@@ -31,10 +30,24 @@ class CreateUndangan extends CreateRecord
         // Set status undangan ke "menunggu_acc"
         $record->update(['status_ujian' => 'menunggu_acc']);
 
-        // Ambil semua status undangan (dosen yang terlibat)
-        $statusList = StatusUndangan::where('id_undangan', $record->id)->get();
+        // Bangun daftar dosen dari data judul
+        $dosenList = collect();
+        $judul = $record->judul;
 
-        if ($statusList->isEmpty()) {
+        if ($judul->id_pembimbing_satu) {
+            $dosenList->push(['id_dosen' => $judul->id_pembimbing_satu, 'role' => 'pembimbing_satu']);
+        }
+        if ($judul->id_pembimbing_dua) {
+            $dosenList->push(['id_dosen' => $judul->id_pembimbing_dua, 'role' => 'pembimbing_dua']);
+        }
+        if ($judul->id_penguji_satu) {
+            $dosenList->push(['id_dosen' => $judul->id_penguji_satu, 'role' => 'penguji_satu']);
+        }
+        if ($judul->id_penguji_dua) {
+            $dosenList->push(['id_dosen' => $judul->id_penguji_dua, 'role' => 'penguji_dua']);
+        }
+
+        if ($dosenList->isEmpty()) {
             Notification::make()
                 ->title('Peringatan')
                 ->body('Tidak ada dosen yang ditetapkan. ACC kesiapan tidak dapat dikirim.')
@@ -47,16 +60,23 @@ class CreateUndangan extends CreateRecord
         $sentCount = 0;
         $failCount = 0;
 
-        foreach ($statusList as $status) {
-            $dosen = $status->dosen;
+        foreach ($dosenList as $item) {
+            $dosen = Dosen::find($item['id_dosen']);
             if (!$dosen) continue;
+
+            // Cek apakah ACC sudah ada (hindari duplikat)
+            $existing = AccKesiapanUjian::where('id_undangan', $record->id)
+                ->where('id_dosen', $dosen->id)
+                ->first();
+
+            if ($existing) continue;
 
             // Buat record ACC kesiapan ujian untuk setiap dosen
             $acc = AccKesiapanUjian::create([
                 'id_undangan' => $record->id,
-                'id_dosen' => $dosen->id,
-                'role' => $status->role,
-                'status' => 'pending',
+                'id_dosen'    => $dosen->id,
+                'role'        => $item['role'],
+                'status'      => 'pending',
             ]);
 
             // Kirim notifikasi WA ke dosen
@@ -72,22 +92,28 @@ class CreateUndangan extends CreateRecord
             }
         }
 
+        // Kirim notifikasi WA ke mahasiswa untuk upload softcopy
+        $softcopySent = $waService->sendSoftcopyRequestToMahasiswa($record);
+
         if ($sentCount > 0 && $failCount === 0) {
             Notification::make()
                 ->title('Undangan Dibuat & ACC Dikirim')
-                ->body("Permintaan ACC kesiapan ujian telah dikirim ke {$sentCount} dosen melalui WhatsApp.")
+                ->body("Permintaan ACC kesiapan ujian telah dikirim ke {$sentCount} dosen melalui WhatsApp."
+                    . ($softcopySent ? ' Mahasiswa juga telah dinotifikasi untuk upload softcopy.' : ''))
                 ->success()
                 ->send();
         } elseif ($sentCount > 0 && $failCount > 0) {
             Notification::make()
                 ->title('Undangan Dibuat')
-                ->body("ACC terkirim ke {$sentCount} dosen, gagal {$failCount} dosen. Periksa nomor HP dosen.")
+                ->body("ACC terkirim ke {$sentCount} dosen, gagal {$failCount} dosen. Periksa nomor HP dosen."
+                    . ($softcopySent ? ' Mahasiswa telah dinotifikasi untuk upload softcopy.' : ''))
                 ->warning()
                 ->send();
         } else {
             Notification::make()
                 ->title('Undangan Dibuat')
-                ->body('Undangan berhasil dibuat, namun semua pengiriman ACC gagal. Silakan kirim manual.')
+                ->body('Undangan berhasil dibuat, namun semua pengiriman ACC gagal. Silakan kirim manual.'
+                    . ($softcopySent ? ' Mahasiswa telah dinotifikasi untuk upload softcopy.' : ''))
                 ->warning()
                 ->send();
         }

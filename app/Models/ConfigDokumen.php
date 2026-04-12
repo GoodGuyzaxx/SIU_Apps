@@ -5,31 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Mahasiswa extends Model
+class ConfigDokumen extends Model
 {
     //
-    protected $table = 'mahasiswa';
+
+    protected $table = 'config_dokumen';
 
     protected $fillable = [
-        'id_user',
         'prodi_id',
         'nama',
-        'npm',
-        'program_studi',
-        'kelas',
+        'ttd',
         'jenjang',
-        'agama',
-        'nomor_hp',
-        'angkatan'
+        'jabatan',
     ];
-
-    public function user(){
-        return $this->belongsTo(User::class, 'id_user','id');
-    }
 
     public function prodi(): BelongsTo
     {
         return $this->belongsTo(Prodi::class, 'prodi_id');
     }
-}
 
+}

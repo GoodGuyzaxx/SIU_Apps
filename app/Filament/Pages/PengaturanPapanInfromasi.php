@@ -32,9 +32,10 @@ class PengaturanPapanInfromasi extends Page
 
     public static function canAccess(): bool
     {
-        if (auth()->user()->role === 'admin'){
+        if (auth()->user()->role === 'admin') {
             return true;
-        } elseif(auth()->user()->role === 'akademik'){
+        }
+        elseif (auth()->user()->role === 'akademik') {
             return true;
         }
         return false;
@@ -44,9 +45,9 @@ class PengaturanPapanInfromasi extends Page
     {
         return [
             Action::make("papan-informasi")
-                ->label("Papan Informasi")
-                ->url(fn() => url(route("info")))
-                ->openUrlInNewTab(),
+            ->label("Papan Informasi")
+            ->url(fn() => url(route("info")))
+            ->openUrlInNewTab(),
         ];
     }
 
@@ -55,56 +56,59 @@ class PengaturanPapanInfromasi extends Page
     {
         return $schema
             ->components([
-                Section::make("Papan Infromasi Digital")->schema([
-                    TextInput::make("yt_url")
-                        ->label("Masukan URL Youtube")
-                        ->suffixIcon("heroicon-o-globe-alt")
-                        ->url(),
-                    Textarea::make('running_text')
-                        ->label("Running Text")
-                        ->autosize(true),
+            Section::make("Papan Infromasi Digital")->schema([
+                TextInput::make("yt_url")
+                ->label("Masukan URL Youtube")
+                ->suffixIcon("heroicon-o-globe-alt")
+                ->url(),
+                Textarea::make('running_text')
+                ->label("Running Text")
+                ->autosize(true),
+            ]),
+            Section::make("Informasi Jadwal Proposal")
+            ->description(
+            "Masukan rentang Tanggal jadwal proposal yang akan ditampilkan",
+        )
+            ->schema([
+                Grid::make(2)->schema([
+                    DatePicker::make("tanggal_awal_proposal")->label(
+                    "Rentang tanggal awal proposal",
+                ),
+                    DatePicker::make("tanggal_akhir_proposal")->label(
+                    "Rentang tanggal akhir proposal",
+                ),
                 ]),
-                Section::make("Informasi Jadwal Proposal")
-                    ->description(
-                        "Masukan rentang Tanggal jadwal proposal yang akan ditampilkan",
-                    )
-                    ->schema([
-                        Grid::make(2)->schema([
-                            DatePicker::make("tanggal_awal_proposal")->label(
-                                "Rentang tanggal awal proposal",
-                            ),
-                            DatePicker::make("tanggal_akhir_proposal")->label(
-                                "Rentang tanggal akhir proposal",
-                            ),
-                        ]),
-                    ]),
-                Section::make("Informasi Jadwal Skripsi")
-                    ->description(
-                        "Masukan rentan Tanggal jadwal Skripsi yang akan ditampilkan",
-                    )
-                    ->schema([
-                        Grid::make(2)->schema([
-                            DatePicker::make("tanggal_awal_skripsi")->label(
-                                "Rentang tanggal awal skripsi",
-                            ),
-                            DatePicker::make("tanggal_akhir_skripsi")->label(
-                                "Rentang tanggal akhir skripsi",
-                            ),
-                        ]),
-                    ]),
-                Section::make("Informasi Pengajuan Judul")
-                    ->description(
-                        "Masukan rentan Tanggal Pengajuan Judual yang akan ditampilkan",
-                    )
-                    ->schema([
-                        Grid::make(1)->schema([
-                            DatePicker::make("tanggal_pengajuan")
-                                ->label("Rentang dalam Bulan")
-                                ->format("m")
-                                ->extraInputAttributes(["type" => "month"]),
-                        ]),
-                    ]),
-            ])
+            ]),
+            Section::make("Informasi Jadwal Skripsi")
+            ->description(
+            "Masukan rentan Tanggal jadwal Skripsi yang akan ditampilkan",
+        )
+            ->schema([
+                Grid::make(2)->schema([
+                    DatePicker::make("tanggal_awal_skripsi")
+                    ->label(
+                    "Rentang tanggal awal skripsi",
+                ),
+                    DatePicker::make("tanggal_akhir_skripsi")
+                    ->label(
+                    "Rentang tanggal akhir skripsi",
+                ),
+                ]),
+            ]),
+            Section::make("Informasi Pengajuan Judul")
+            ->description(
+            "Masukan rentan Tanggal Pengajuan Judual yang akan ditampilkan",
+        )
+            ->schema([
+                Grid::make(1)->schema([
+                    DatePicker::make("tanggal_pengajuan")
+                    ->label("Rentang dalam Bulan")
+                    ->format("m")
+                    ->extraInputAttributes(["type" => "month"])
+                    ,
+                ]),
+            ]),
+        ])
             ->statePath("data");
     }
 
@@ -121,78 +125,85 @@ class PengaturanPapanInfromasi extends Page
             $payload['running_text'] = $dataForm['running_text'] ?? $papanInformasi->running_text;
 
             $proposalRaw = Undangan::with('judul.mahasiswa')
-                ->whereHas('judul', fn ($q) => $q->where('jenis', 'proposal'))
+                ->where('perihal', 'Undangan Ujian Proposal')
                 ->whereBetween('tanggal_hari', [
-                    $dataForm['tanggal_awal_proposal'],
-                    $dataForm['tanggal_akhir_proposal'],
-                ])
+                $dataForm['tanggal_awal_proposal'],
+                $dataForm['tanggal_akhir_proposal'],
+            ])
                 ->get();
 
             if ($proposalRaw->isNotEmpty()) {
                 $payload['jadwal_proposal'] = $proposalRaw->map(function ($item) {
-                    return [
-                        'nama'         => $item->judul->mahasiswa->nama  ?? '-',
-                        'npm'          => $item->judul->mahasiswa->npm   ?? '-',
-                        'judul'        => $item->judul->judul            ?? '-',
-                        'tanggal_hari' => $item->tanggal_hari            ?? '-',
-                        'waktu'        => $item->waktu                   ?? '-',
-                    ];
-                })->values();
-            }
-            $skripsiRaw = Undangan::with('judul.mahasiswa')
-                ->whereHas('judul', fn ($q) => $q->where('jenis', 'skripsi'))
-                ->whereBetween('tanggal_hari', [
-                    $dataForm['tanggal_awal_skripsi'],
-                    $dataForm['tanggal_akhir_skripsi'],
-                ])
-                ->get();
+                            return [
+                            'nama' => $item->judul->mahasiswa->nama ?? '-',
+                            'npm' => $item->judul->mahasiswa->npm ?? '-',
+                            'jenjang' => $item->judul->mahasiswa->jenjang ?? '-',
+                            'judul' => $item->judul->judul ?? '-',
+                            'tanggal_hari' => $item->tanggal_hari ?? '-',
+                            'waktu' => $item->waktu ?? '-',
+                            ];
+                        }
+                        )->values();
+                    }
+                    $skripsiRaw = Undangan::with('judul.mahasiswa')
+                        ->where('perihal', 'Undangan Ujian Skripsi')
+                        ->whereBetween('tanggal_hari', [
+                        $dataForm['tanggal_awal_skripsi'],
+                        $dataForm['tanggal_akhir_skripsi'],
+                    ])
+                        ->get();
 
-            if ($skripsiRaw->isNotEmpty()) {
-                $payload['jadwal_skripsi'] = $skripsiRaw->map(function ($item) {
-                    return [
-                        'nama'         => $item->judul->mahasiswa->nama  ?? '-',
-                        'npm'          => $item->judul->mahasiswa->npm   ?? '-',
-                        'judul'        => $item->judul->judul            ?? '-',
-                        'tanggal_hari' => $item->tanggal_hari            ?? '-',
-                        'waktu'        => $item->waktu                   ?? '-',
-                    ];
-                })->values();
-            }
+                    if ($skripsiRaw->isNotEmpty()) {
+                        $payload['jadwal_skripsi'] = $skripsiRaw->map(function ($item) {
+                            return [
+                            'nama' => $item->judul->mahasiswa->nama ?? '-',
+                            'npm' => $item->judul->mahasiswa->npm ?? '-',
+                            'jenjang' => $item->judul->mahasiswa->jenjang ?? '-',
+                            'judul' => $item->judul->judul ?? '-',
+                            'tanggal_hari' => $item->tanggal_hari ?? '-',
+                            'waktu' => $item->waktu ?? '-',
+                            ];
+                        }
+                        )->values();
+                    }
 
 
-            $usulanRaw = UsulanJudul::with('mahasiswa')
-                ->whereMonth('created_at', $dataForm['tanggal_pengajuan'])
-                ->get();
+                    $usulanRaw = UsulanJudul::with('mahasiswa')
+                        ->whereMonth('created_at', $dataForm['tanggal_pengajuan'])
+                        ->get();
 
-            if ($usulanRaw->isNotEmpty()) {
-                $payload['pengajuan_judul'] = $usulanRaw->map(function ($u) {
-                    return [
-                        'nama'   => $u->mahasiswa->nama ?? '-',
-                        'npm'    => $u->mahasiswa->npm  ?? '-',
-                        'status' => $u->status          ?? '-',
-                    ];
-                })->values();
-            }
+                    if ($usulanRaw->isNotEmpty()) {
+                        $payload['pengajuan_judul'] = $usulanRaw->map(function ($u) {
+                            return [
+                            'nama' => $u->mahasiswa->nama ?? '-',
+                            'jenjang' => $u->mahasiswa->jenjang ?? '-',
+                            'npm' => $u->mahasiswa->npm ?? '-',
+                            'status' => $u->status ?? '-',
+                            ];
+                        }
+                        )->values();
+                    }
 
-            if (! empty($payload)) {
-                $papanInformasi->update($payload);
-                Notification::make()
-                    ->title('Data Berhasil Disimpan')
-                    ->body('Field yang diperbarui: ' . implode(', ', array_keys($payload)))
-                    ->success()
-                    ->send();
-            } else {
+                    if (!empty($payload)) {
+                        $papanInformasi->update($payload);
+                        Notification::make()
+                            ->title('Data Berhasil Disimpan')
+                            ->body('Field yang diperbarui: ' . implode(', ', array_keys($payload)))
+                            ->success()
+                            ->send();
+                    }
+                    else {
 
-                Notification::make()
-                    ->title('Tidak Ada Perubahan')
-                    ->body('Tidak ada data baru ditemukan pada rentang yang dipilih. Data lama tetap dipertahankan.')
-                    ->warning()
-                    ->send();
-            }
-        });
+                        Notification::make()
+                            ->title('Tidak Ada Perubahan')
+                            ->body('Tidak ada data baru ditemukan pada rentang yang dipilih. Data lama tetap dipertahankan.')
+                            ->warning()
+                            ->send();
+                    }
+                });
     }
 
-    //     Function Save Data....
+//     Function Save Data....
 //    public function saveData()
 //    {
 //        $dataForm = $this->informasiForm->getState();
@@ -267,5 +278,5 @@ class PengaturanPapanInfromasi extends Page
 //            ->send();
 //    }
 
-    //      Open Infromasi
+//      Open Infromasi
 }

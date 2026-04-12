@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Undangan extends Model
 {
@@ -29,11 +28,6 @@ class Undangan extends Model
     public function judul(): BelongsTo
     {
         return $this->belongsTo(Judul::class , 'id_judul');
-    }
-
-    public function statusUndangan(): HasOne
-    {
-        return $this->hasOne(StatusUndangan::class , 'id_undangan');
     }
 
     public function accKesiapanUjian(): HasMany

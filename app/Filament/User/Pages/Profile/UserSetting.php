@@ -94,7 +94,7 @@ class UserSetting extends Page implements HasSchemas
                             ->default('-')
                             ->color('success'),
 
-                        TextEntry::make('program_studi')
+                        TextEntry::make('prodi.nama_prodi')
                             ->label('Program Studi')
                             ->icon('heroicon-m-academic-cap')
                             ->badge()
@@ -146,7 +146,7 @@ class UserSetting extends Page implements HasSchemas
                 Section::make('Informasi Akademik')
                     ->icon('heroicon-o-academic-cap')
                     ->schema([
-                        TextEntry::make('program_studi')
+                        TextEntry::make('prodi.nama_prodi')
                             ->label('Program Studi')
                             ->icon('heroicon-m-book-open')
                             ->weight(FontWeight::SemiBold)

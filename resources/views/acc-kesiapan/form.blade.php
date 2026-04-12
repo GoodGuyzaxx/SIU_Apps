@@ -1,360 +1,543 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ACC Kesiapan Ujian - Sistem Akademik</title>
+    <title>ACC Kesiapan Ujian</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg:          #0d1117;
+            --surface:     #161b22;
+            --surface-2:   #21262d;
+            --border:      #30363d;
+            --border-soft: rgba(48,54,61,0.6);
+            --text:        #e6edf3;
+            --text-muted:  #8b949e;
+            --text-subtle: #6e7681;
+            --accent:      #58a6ff;
+            --accent-dim:  rgba(88,166,255,0.12);
+            --green:       #3fb950;
+            --green-dim:   rgba(63,185,80,0.12);
+            --red:         #f85149;
+            --red-dim:     rgba(248,81,73,0.12);
+            --yellow:      #d29922;
+            --yellow-dim:  rgba(210,153,34,0.12);
+            --purple:      #a5d6ff;
+            --radius:      10px;
+            --radius-sm:   6px;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
             min-height: 100vh;
-            display: flex; align-items: center; justify-content: center;
-            padding: 20px; color: #e2e8f0;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 32px 16px 48px;
+            color: var(--text);
+            line-height: 1.5;
         }
-        .container { max-width: 640px; width: 100%; }
+
+        .wrap { width: 100%; max-width: 600px; }
+
+        /* ── Toast alerts ── */
+        .toast {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 16px; border-radius: var(--radius-sm);
+            font-size: 13.5px; font-weight: 500; margin-bottom: 12px;
+            border: 1px solid;
+            animation: slideIn .25s ease;
+        }
+        @keyframes slideIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:none; } }
+        .toast-success { background: var(--green-dim);  border-color: rgba(63,185,80,.3);   color: var(--green); }
+        .toast-error   { background: var(--red-dim);    border-color: rgba(248,81,73,.3);   color: var(--red); }
+        .toast-icon    { font-size: 16px; flex-shrink: 0; }
+
+        /* ── Card ── */
         .card {
-            background: rgba(30, 41, 59, 0.8);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(148, 163, 184, 0.1);
-            border-radius: 16px; padding: 32px; margin-bottom: 20px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-        .header { text-align: center; margin-bottom: 32px; }
-        .header .icon {
-            width: 64px; height: 64px;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            border-radius: 16px; display: flex;
-            align-items: center; justify-content: center;
-            margin: 0 auto 16px; font-size: 28px;
-        }
-        .header h1 { font-size: 22px; font-weight: 700; color: #f1f5f9; margin-bottom: 4px; }
-        .header p { font-size: 14px; color: #94a3b8; }
-
-        .info-section { margin-bottom: 24px; }
-        .info-section h3 {
-            font-size: 13px; text-transform: uppercase;
-            letter-spacing: 1px; color: #64748b;
-            margin-bottom: 12px; font-weight: 600;
-        }
-        .info-item {
-            display: flex; padding: 10px 0;
-            border-bottom: 1px solid rgba(148, 163, 184, 0.08);
-        }
-        .info-item:last-child { border-bottom: none; }
-        .info-item .label { min-width: 120px; font-size: 13px; color: #94a3b8; font-weight: 500; }
-        .info-item .value { font-size: 14px; color: #e2e8f0; font-weight: 500; flex: 1; }
-
-        .judul-text {
-            background: rgba(99, 102, 241, 0.1);
-            border-left: 3px solid #6366f1;
-            padding: 12px 16px; border-radius: 0 8px 8px 0;
-            margin-top: 8px; font-size: 14px; line-height: 1.6; color: #c7d2fe;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 16px;
         }
 
-        .status-badge {
-            display: inline-flex; align-items: center;
-            padding: 5px 12px; border-radius: 999px;
-            font-size: 12px; font-weight: 600; gap: 4px;
+        /* ── Card header ── */
+        .card-header {
+            padding: 20px 24px 18px;
+            border-bottom: 1px solid var(--border-soft);
+            display: flex; align-items: flex-start; gap: 14px;
         }
-        .status-pending { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
-        .status-approved { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
-        .status-rejected { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
-
-        .alert {
-            padding: 14px 20px; border-radius: 12px;
-            margin-bottom: 20px; font-size: 14px;
-            font-weight: 500; display: flex; align-items: center; gap: 10px;
+        .card-header-icon {
+            width: 40px; height: 40px; border-radius: var(--radius-sm);
+            background: var(--accent-dim); border: 1px solid rgba(88,166,255,.2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; flex-shrink: 0;
         }
-        .alert-success { background: rgba(34, 197, 94, 0.12); border: 1px solid rgba(34, 197, 94, 0.25); color: #4ade80; }
-        .alert-error { background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.25); color: #f87171; }
+        .card-header-text h1 {
+            font-size: 16px; font-weight: 700; color: var(--text);
+            line-height: 1.3; margin-bottom: 3px;
+        }
+        .card-header-text p { font-size: 12.5px; color: var(--text-muted); }
 
-        .actions { display: flex; gap: 12px; margin-top: 24px; }
-        .btn {
-            flex: 1; padding: 14px 24px; border: none; border-radius: 12px;
-            font-size: 15px; font-weight: 600; cursor: pointer;
-            transition: all 0.3s ease; font-family: 'Inter', sans-serif;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
+        /* ── My status pill ── */
+        .my-status {
+            padding: 12px 24px;
+            border-bottom: 1px solid var(--border-soft);
+            display: flex; align-items: center; justify-content: space-between;
+            background: var(--surface-2);
+        }
+        .my-status-label { font-size: 12px; color: var(--text-subtle); }
+        .my-status-label strong { color: var(--accent); font-weight: 600; }
+
+        /* ── Badge ── */
+        .badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 4px 10px; border-radius: 20px;
+            font-size: 11.5px; font-weight: 600; border: 1px solid;
+        }
+        .badge-pending  { background: var(--yellow-dim); border-color: rgba(210,153,34,.35); color: var(--yellow); }
+        .badge-approved { background: var(--green-dim);  border-color: rgba(63,185,80,.35);  color: var(--green); }
+        .badge-rejected { background: var(--red-dim);    border-color: rgba(248,81,73,.35);  color: var(--red); }
+
+        /* ── Section inside card ── */
+        .section { padding: 20px 24px; border-bottom: 1px solid var(--border-soft); }
+        .section:last-child { border-bottom: none; }
+        .section-title {
+            font-size: 11px; font-weight: 700; letter-spacing: .8px;
+            text-transform: uppercase; color: var(--text-subtle);
+            margin-bottom: 14px;
+        }
+
+        /* ── Key-value rows ── */
+        .kv { display: flex; align-items: baseline; gap: 12px; padding: 6px 0; }
+        .kv + .kv { border-top: 1px solid var(--border-soft); }
+        .kv-key {
+            flex-shrink: 0; width: 90px;
+            font-size: 12px; color: var(--text-subtle); font-weight: 500;
+        }
+        .kv-val { font-size: 13.5px; color: var(--text); font-weight: 500; flex: 1; }
+
+        /* ── Judul block ── */
+        .judul-block {
+            background: var(--surface-2);
+            border: 1px solid var(--border-soft);
+            border-left: 3px solid var(--accent);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            padding: 12px 14px;
+            font-size: 13.5px; color: var(--text); line-height: 1.65;
+        }
+
+        /* ── Softcopy status ── */
+        .file-box {
+            border-radius: var(--radius-sm);
+            border: 1px solid;
+            padding: 14px 16px;
+            display: flex; align-items: center; gap: 14px;
+        }
+        .file-box.has-file {
+            background: var(--green-dim); border-color: rgba(63,185,80,.3);
+        }
+        .file-box.no-file {
+            background: var(--yellow-dim); border-color: rgba(210,153,34,.3);
+        }
+        .file-box-icon { font-size: 24px; flex-shrink: 0; }
+        .file-box-body { flex: 1; min-width: 0; }
+        .file-box-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+        .file-box.has-file .file-box-title { color: var(--green); }
+        .file-box.no-file  .file-box-title { color: var(--yellow); }
+        .file-box-sub { font-size: 11.5px; color: var(--text-muted); }
+        .file-actions { display: flex; gap: 8px; flex-shrink: 0; }
+        .btn-file {
+            padding: 7px 14px; border-radius: var(--radius-sm);
+            font-size: 12.5px; font-weight: 600; cursor: pointer;
+            text-decoration: none; transition: opacity .15s;
+            display: inline-flex; align-items: center; gap: 5px;
+            border: 1px solid;
+        }
+        .btn-view     { background: var(--accent-dim);  border-color: rgba(88,166,255,.35); color: var(--accent); }
+        .btn-download { background: var(--green-dim);   border-color: rgba(63,185,80,.35);  color: var(--green); }
+        .btn-file:hover { opacity: .75; }
+
+        /* ── Dosen ACC grid ── */
+        .dosen-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .dosen-item {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 12px 14px;
+            transition: border-color .2s;
+        }
+        .dosen-item.is-me { border-color: rgba(88,166,255,.4); background: var(--accent-dim); }
+        .dosen-role { font-size: 10.5px; text-transform: uppercase; letter-spacing: .6px; color: var(--text-subtle); font-weight: 700; margin-bottom: 4px; }
+        .dosen-name { font-size: 13px; color: var(--text); font-weight: 600; margin-bottom: 8px; line-height: 1.35; }
+
+        /* ── Rejection note ── */
+        .rejection-box {
+            background: var(--red-dim); border: 1px solid rgba(248,81,73,.3);
+            border-left: 3px solid var(--red);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            padding: 12px 14px;
+            font-size: 13.5px; color: #ffa198; line-height: 1.6;
+        }
+
+        /* ── Actions ── */
+        .actions {
+            padding: 20px 24px;
+            display: flex; gap: 10px;
+        }
+        .btn-main {
+            flex: 1; padding: 11px 20px; border: none; border-radius: var(--radius-sm);
+            font-size: 14px; font-weight: 600; cursor: pointer;
+            font-family: inherit; transition: all .2s;
+            display: flex; align-items: center; justify-content: center; gap: 7px;
         }
         .btn-approve {
-            background: linear-gradient(135deg, #22c55e, #16a34a);
-            color: white; box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+            background: var(--green); color: #0d1117;
+            box-shadow: 0 0 0 0 rgba(63,185,80,0);
         }
-        .btn-approve:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4); }
+        .btn-approve:hover { background: #56d364; box-shadow: 0 4px 14px rgba(63,185,80,.35); }
         .btn-reject {
-            background: rgba(239, 68, 68, 0.15); color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            background: var(--surface-2); color: var(--red);
+            border: 1px solid rgba(248,81,73,.35);
         }
-        .btn-reject:hover { background: rgba(239, 68, 68, 0.25); transform: translateY(-2px); }
+        .btn-reject:hover { background: var(--red-dim); }
 
-        /* Dosen status grid */
-        .dosen-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
-        .dosen-card {
-            background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(148, 163, 184, 0.1);
-            border-radius: 10px; padding: 12px;
+        .responded-at {
+            padding: 10px 24px 16px;
+            font-size: 11.5px; color: var(--text-subtle); text-align: center;
         }
-        .dosen-card.current { border-color: rgba(99, 102, 241, 0.4); background: rgba(99, 102, 241, 0.08); }
-        .dosen-card .role { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; font-weight: 600; }
-        .dosen-card .name { font-size: 14px; color: #e2e8f0; font-weight: 600; margin: 4px 0 6px; }
 
-        /* Modal */
-        .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px);
-            z-index: 1000; align-items: center; justify-content: center; padding: 20px;
+        /* ── Footer ── */
+        .footer {
+            text-align: center; font-size: 12px; color: var(--text-subtle);
+            padding-top: 8px;
         }
-        .modal-overlay.active { display: flex; }
+
+        /* ── Modal ── */
+        .modal-bg {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,.65); backdrop-filter: blur(4px);
+            z-index: 100; align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-bg.open { display: flex; }
         .modal {
-            background: #1e293b; border: 1px solid rgba(148, 163, 184, 0.15);
-            border-radius: 16px; padding: 32px; max-width: 480px; width: 100%;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px; width: 100%; max-width: 440px;
+            box-shadow: 0 24px 60px rgba(0,0,0,.6);
+            animation: popIn .2s ease;
         }
-        .modal h3 { font-size: 18px; font-weight: 700; color: #f1f5f9; margin-bottom: 8px; }
-        .modal p { font-size: 14px; color: #94a3b8; margin-bottom: 20px; }
+        @keyframes popIn { from { opacity:0; transform: scale(.96) translateY(6px); } to { opacity:1; transform: none; } }
+        .modal h3 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+        .modal-desc { font-size: 13.5px; color: var(--text-muted); margin-bottom: 18px; line-height: 1.6; }
+        .modal-desc strong { color: var(--text); }
         .modal textarea {
-            width: 100%; min-height: 100px; padding: 14px;
-            border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 10px;
-            background: rgba(15, 23, 42, 0.8); color: #e2e8f0;
-            font-family: 'Inter', sans-serif; font-size: 14px;
-            resize: vertical; outline: none; transition: border-color 0.3s;
+            width: 100%; min-height: 96px; padding: 12px 14px;
+            background: var(--surface-2); border: 1px solid var(--border);
+            border-radius: var(--radius-sm); color: var(--text);
+            font-family: inherit; font-size: 13.5px; resize: vertical;
+            outline: none; transition: border-color .2s;
         }
-        .modal textarea:focus { border-color: #6366f1; }
-        .modal textarea::placeholder { color: #475569; }
-        .modal-actions { display: flex; gap: 12px; margin-top: 16px; }
-        .btn-modal-cancel {
-            flex: 1; padding: 12px; background: rgba(148, 163, 184, 0.1);
-            border: 1px solid rgba(148, 163, 184, 0.2); color: #94a3b8;
-            border-radius: 10px; font-size: 14px; font-weight: 600;
-            cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.2s;
+        .modal textarea:focus { border-color: var(--accent); }
+        .modal textarea::placeholder { color: var(--text-subtle); }
+        .err-msg { font-size: 12px; color: var(--red); margin-top: 6px; display: none; }
+        .modal-footer { display: flex; gap: 8px; margin-top: 16px; }
+        .mbtn {
+            flex: 1; padding: 10px 16px; border-radius: var(--radius-sm);
+            font-size: 13.5px; font-weight: 600; cursor: pointer;
+            font-family: inherit; transition: all .15s;
         }
-        .btn-modal-cancel:hover { background: rgba(148, 163, 184, 0.2); }
-        .btn-modal-reject {
-            flex: 1; padding: 12px; background: #ef4444; border: none; color: white;
-            border-radius: 10px; font-size: 14px; font-weight: 600;
-            cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.2s;
-        }
-        .btn-modal-reject:hover { background: #dc2626; }
-        .btn-modal-confirm {
-            flex: 1; padding: 12px;
-            background: linear-gradient(135deg, #22c55e, #16a34a);
-            border: none; color: white; border-radius: 10px;
-            font-size: 14px; font-weight: 600; cursor: pointer;
-            font-family: 'Inter', sans-serif; transition: all 0.2s;
-        }
-        .btn-modal-confirm:hover { transform: translateY(-1px); }
-        .error-text { color: #f87171; font-size: 12px; margin-top: 6px; }
-        .footer { text-align: center; font-size: 12px; color: #475569; margin-top: 16px; }
+        .mbtn-cancel { background: var(--surface-2); border: 1px solid var(--border); color: var(--text-muted); }
+        .mbtn-cancel:hover { background: var(--border); }
+        .mbtn-confirm { background: var(--green); border: none; color: #0d1117; }
+        .mbtn-confirm:hover { background: #56d364; }
+        .mbtn-danger  { background: var(--red); border: none; color: #fff; }
+        .mbtn-danger:hover { background: #ff7b73; }
 
         @media (max-width: 480px) {
-            .card { padding: 24px; }
-            .info-item { flex-direction: column; gap: 4px; }
-            .info-item .label { min-width: auto; }
-            .actions { flex-direction: column; }
+            body { padding: 20px 12px 40px; }
+            .card-header, .section, .actions { padding-left: 16px; padding-right: 16px; }
+            .my-status { padding-left: 16px; padding-right: 16px; }
+            .responded-at { padding-left: 16px; padding-right: 16px; }
+            .kv-key { width: 76px; }
             .dosen-grid { grid-template-columns: 1fr; }
+            .actions { flex-direction: column; }
+            .file-actions { flex-direction: column; flex-shrink: 0; }
         }
     </style>
 </head>
-
 <body>
-    <div class="container">
-        @if(session('success'))
-        <div class="alert alert-success"><span>✅</span> {{ session('success') }}</div>
-        @endif
-        @if(session('error'))
-        <div class="alert alert-error"><span>⚠️</span> {{ session('error') }}</div>
-        @endif
-        @if($errors->any())
-        <div class="alert alert-error">
-            <span>⚠️</span>
-            @foreach($errors->all() as $error) {{ $error }} @endforeach
-        </div>
-        @endif
+<div class="wrap">
 
-        <div class="card">
-            <div class="header">
+    {{-- ── Toasts ── --}}
+    @if(session('success'))
+    <div class="toast toast-success">
+        <span class="toast-icon">✓</span>
+        {{ session('success') }}
+    </div>
+    @endif
+    @if(session('error'))
+    <div class="toast toast-error">
+        <span class="toast-icon">!</span>
+        {{ session('error') }}
+    </div>
+    @endif
+    @foreach($errors->all() as $err)
+    <div class="toast toast-error">
+        <span class="toast-icon">!</span>
+        {{ $err }}
+    </div>
+    @endforeach
+
+    {{-- ── Main Card ── --}}
+    @php
+        $roleLabel = match($acc->role) {
+            'pembimbing_satu' => 'Pembimbing 1',
+            'pembimbing_dua'  => 'Pembimbing 2',
+            'penguji_satu'    => 'Penguji 1',
+            'penguji_dua'     => 'Penguji 2',
+            default           => $acc->role ?? '-',
+        };
+        $hasSoftcopy = !empty($undangan->softcopy_file_path);
+    @endphp
+
+    <div class="card">
+
+        {{-- Header --}}
+        <div class="card-header">
+            <div class="card-header-icon">📋</div>
+            <div class="card-header-text">
                 <h1>ACC Kesiapan Ujian</h1>
-                <p>Permintaan Persetujuan Kehadiran</p>
+                <p>Permintaan persetujuan kehadiran ujian</p>
             </div>
+        </div>
 
-            {{-- Status ACC saya --}}
-            @php
-                $roleLabel = match($acc->role) {
-                    'pembimbing_satu' => 'Pembimbing 1',
-                    'pembimbing_dua' => 'Pembimbing 2',
-                    'penguji_satu' => 'Penguji 1',
-                    'penguji_dua' => 'Penguji 2',
-                    default => $acc->role ?? '-',
-                };
-            @endphp
-
-            <div style="text-align: center; margin-bottom: 24px;">
-                <div style="font-size: 13px; color: #94a3b8; margin-bottom: 8px;">Status ACC Anda sebagai <strong style="color: #c7d2fe;">{{ $roleLabel }}</strong></div>
-                @if($acc->isPending())
-                <span class="status-badge status-pending">⏳ Menunggu Respon Anda</span>
-                @elseif($acc->isApproved())
-                <span class="status-badge status-approved">✅ Disetujui</span>
-                @elseif($acc->isRejected())
-                <span class="status-badge status-rejected">❌ Ditolak</span>
-                @endif
-            </div>
-
-            {{-- Informasi Dosen --}}
-            <div class="info-section">
-                <h3>Identitas Anda</h3>
-                <div class="info-item">
-                    <span class="label">Nama</span>
-                    <span class="value">{{ $acc->dosen->nama ?? '-' }}</span>
-                </div>
-                <div class="info-item">
-                    <span class="label">Peran</span>
-                    <span class="value">{{ $roleLabel }}</span>
-                </div>
-            </div>
-
-            {{-- Informasi Ujian --}}
-            <div class="info-section">
-                <h3>Detail Ujian</h3>
-                <div class="info-item">
-                    <span class="label">Perihal</span>
-                    <span class="value">{{ $undangan->perihal }}</span>
-                </div>
-                <div class="info-item">
-                    <span class="label">Mahasiswa</span>
-                    <span class="value">{{ $undangan->judul->mahasiswa->nama ?? '-' }} ({{ $undangan->judul->mahasiswa->npm ?? '-' }})</span>
-                </div>
-                <div class="info-item">
-                    <span class="label">Tanggal</span>
-                    <span class="value">{{ \Carbon\Carbon::createFromFormat('Y-m-d', $undangan->tanggal_hari)->format('d F Y') }}</span>
-                </div>
-                <div class="info-item">
-                    <span class="label">Waktu</span>
-                    <span class="value">{{ \Carbon\Carbon::parse($undangan->waktu)->format('H:i') }} WIT</span>
-                </div>
-                <div class="info-item">
-                    <span class="label">Tempat</span>
-                    <span class="value">{{ $undangan->tempat }}</span>
-                </div>
-            </div>
-
-            {{-- Judul --}}
-            <div class="info-section">
-                <h3>Judul</h3>
-                <div class="judul-text">{{ $undangan->judul->judul ?? '-' }}</div>
-            </div>
-
-            {{-- Status ACC Semua Dosen --}}
-            <div class="info-section">
-                <h3>Status ACC Dosen</h3>
-                <div class="dosen-grid">
-                    @foreach($allAcc as $item)
-                    @php
-                        $itemRole = match($item->role) {
-                            'pembimbing_satu' => 'Pembimbing 1',
-                            'pembimbing_dua' => 'Pembimbing 2',
-                            'penguji_satu' => 'Penguji 1',
-                            'penguji_dua' => 'Penguji 2',
-                            default => $item->role ?? '-',
-                        };
-                        $isCurrent = $item->id === $acc->id;
-                    @endphp
-                    <div class="dosen-card {{ $isCurrent ? 'current' : '' }}">
-                        <div class="role">{{ $itemRole }} {{ $isCurrent ? '(Anda)' : '' }}</div>
-                        <div class="name">{{ $item->dosen->nama ?? '-' }}</div>
-                        @if($item->status === 'pending')
-                        <span class="status-badge status-pending" style="font-size: 11px; padding: 3px 8px;">⏳ Pending</span>
-                        @elseif($item->status === 'disetujui')
-                        <span class="status-badge status-approved" style="font-size: 11px; padding: 3px 8px;">✅ Setuju</span>
-                        @elseif($item->status === 'ditolak')
-                        <span class="status-badge status-rejected" style="font-size: 11px; padding: 3px 8px;">❌ Ditolak</span>
-                        @endif
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-
-            {{-- Alasan Penolakan --}}
-            @if($acc->isRejected())
-            <div class="info-section">
-                <h3>Alasan Penolakan Anda</h3>
-                <div class="judul-text" style="border-left-color: #ef4444; background: rgba(239,68,68,0.1); color: #fca5a5;">
-                    {{ $acc->alasan_penolakan }}
-                </div>
-            </div>
-            @endif
-
-            {{-- Tombol Aksi --}}
+        {{-- My status bar --}}
+        <div class="my-status">
+            <span class="my-status-label">
+                Status Anda sebagai <strong>{{ $roleLabel }}</strong>
+            </span>
             @if($acc->isPending())
-            <div class="actions">
-                <button class="btn btn-approve" onclick="showConfirmModal()">✅ Setuju Hadir</button>
-                <button class="btn btn-reject" onclick="showRejectModal()">❌ Tolak</button>
-            </div>
-            @endif
-
-            @if($acc->responded_at)
-            <div style="text-align: center; margin-top: 16px; font-size: 13px; color: #64748b;">
-                Direspon pada: {{ $acc->responded_at->format('d/m/Y H:i') }}
-            </div>
+                <span class="badge badge-pending">⏳ Menunggu</span>
+            @elseif($acc->isApproved())
+                <span class="badge badge-approved">✓ Disetujui</span>
+            @elseif($acc->isRejected())
+                <span class="badge badge-rejected">✕ Ditolak</span>
             @endif
         </div>
 
-        <div class="footer">
-            Sistem Akademik &mdash; Universitas Doktor Husni Ingratubun Papua
-        </div>
-    </div>
-
-    {{-- Confirm Modal --}}
-    <div class="modal-overlay" id="confirmModal">
-        <div class="modal">
-            <h3>Konfirmasi Persetujuan</h3>
-            <p class="confirm-text" style="font-size: 15px; color: #e2e8f0; line-height: 1.6;">
-                Apakah Anda yakin <strong>bersedia hadir</strong> sebagai <strong>{{ $roleLabel }}</strong>
-                pada tanggal <strong>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $undangan->tanggal_hari)->format('d F Y') }}</strong>
-                pukul <strong>{{ \Carbon\Carbon::parse($undangan->waktu)->format('H:i') }} WIT</strong>?
-            </p>
-            <div class="modal-actions">
-                <button class="btn-modal-cancel" onclick="hideConfirmModal()">Batal</button>
-                <form action="{{ route('acc.kesiapan.setujui', ['token' => $acc->token]) }}" method="POST" style="flex: 1;">
-                    @csrf
-                    <button type="submit" class="btn-modal-confirm" style="width: 100%;">Ya, Saya Bersedia</button>
-                </form>
+        {{-- Dosen identity --}}
+        <div class="section">
+            <div class="section-title">Identitas Anda</div>
+            <div class="kv">
+                <span class="kv-key">Nama</span>
+                <span class="kv-val">{{ $acc->dosen->nama ?? '-' }}</span>
+            </div>
+            <div class="kv">
+                <span class="kv-key">Peran</span>
+                <span class="kv-val">{{ $roleLabel }}</span>
             </div>
         </div>
-    </div>
 
-    {{-- Reject Modal --}}
-    <div class="modal-overlay" id="rejectModal">
-        <div class="modal">
-            <h3>Tolak ACC Kesiapan Ujian</h3>
-            <p>Silakan berikan alasan mengapa Anda tidak dapat hadir pada ujian ini.</p>
-            <form action="{{ route('acc.kesiapan.tolak', ['token' => $acc->token]) }}" method="POST" id="rejectForm">
-                @csrf
-                <textarea name="alasan_penolakan" placeholder="Tuliskan alasan penolakan..." required id="alasanInput"></textarea>
-                <div class="error-text" id="errorText" style="display: none;">Alasan penolakan wajib diisi.</div>
-                <div class="modal-actions">
-                    <button type="button" class="btn-modal-cancel" onclick="hideRejectModal()">Batal</button>
-                    <button type="submit" class="btn-modal-reject">Tolak ACC</button>
+        {{-- Exam detail --}}
+        <div class="section">
+            <div class="section-title">Detail Ujian</div>
+            <div class="kv">
+                <span class="kv-key">Perihal</span>
+                <span class="kv-val">{{ $undangan->perihal }}</span>
+            </div>
+            <div class="kv">
+                <span class="kv-key">Mahasiswa</span>
+                <span class="kv-val">
+                    {{ $undangan->judul->mahasiswa->nama ?? '-' }}
+                    <span style="color:var(--text-muted); font-size:12px; font-weight:400;">
+                        &nbsp;{{ $undangan->judul->mahasiswa->npm ?? '' }}
+                    </span>
+                </span>
+            </div>
+            <div class="kv">
+                <span class="kv-key">Tanggal</span>
+                <span class="kv-val">{{ \Carbon\Carbon::createFromFormat('Y-m-d', $undangan->tanggal_hari)->translatedFormat('d F Y') }}</span>
+            </div>
+            <div class="kv">
+                <span class="kv-key">Waktu</span>
+                <span class="kv-val">{{ \Carbon\Carbon::parse($undangan->waktu)->format('H:i') }} WIT</span>
+            </div>
+            <div class="kv">
+                <span class="kv-key">Tempat</span>
+                <span class="kv-val">{{ $undangan->tempat }}</span>
+            </div>
+        </div>
+
+        {{-- Judul --}}
+        <div class="section">
+            <div class="section-title">Judul Penelitian</div>
+            <div class="judul-block">{{ $undangan->judul->judul ?? '-' }}</div>
+        </div>
+
+        {{-- Softcopy / Draft --}}
+        <div class="section">
+            <div class="section-title">Dokumen Draft Mahasiswa</div>
+            @if($hasSoftcopy)
+                @php
+                    $filename = basename($undangan->softcopy_file_path);
+                    $ext      = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+                    $icon     = match($ext) {
+                        'pdf'          => '📄',
+                        'doc', 'docx'  => '📝',
+                        default        => '📎',
+                    };
+                    $fileUrl  = asset('storage/' . $undangan->softcopy_file_path);
+                @endphp
+                <div class="file-box has-file">
+                    <div class="file-box-icon">{{ $icon }}</div>
+                    <div class="file-box-body">
+                        <div class="file-box-title">Draft telah diunggah</div>
+                        <div class="file-box-sub">{{ $filename }}</div>
+                    </div>
+                    <div class="file-actions">
+                        <a href="{{ $fileUrl }}" target="_blank" class="btn-file btn-view">
+                            👁 Lihat
+                        </a>
+                        <a href="{{ $fileUrl }}" download="{{ $filename }}" class="btn-file btn-download">
+                            ↓ Unduh
+                        </a>
+                    </div>
                 </div>
+            @else
+                <div class="file-box no-file">
+                    <div class="file-box-icon">📭</div>
+                    <div class="file-box-body">
+                        <div class="file-box-title">Draft belum diunggah</div>
+                        <div class="file-box-sub">Mahasiswa belum mengunggah softcopy dokumen</div>
+                    </div>
+                </div>
+            @endif
+        </div>
+
+        {{-- ACC status all dosen --}}
+        <div class="section">
+            <div class="section-title">Status ACC Dosen</div>
+            <div class="dosen-grid">
+                @foreach($allAcc as $item)
+                @php
+                    $itemRole = match($item->role) {
+                        'pembimbing_satu' => 'Pembimbing 1',
+                        'pembimbing_dua'  => 'Pembimbing 2',
+                        'penguji_satu'    => 'Penguji 1',
+                        'penguji_dua'     => 'Penguji 2',
+                        default           => $item->role ?? '-',
+                    };
+                    $isCurrent = $item->id === $acc->id;
+                @endphp
+                <div class="dosen-item {{ $isCurrent ? 'is-me' : '' }}">
+                    <div class="dosen-role">{{ $itemRole }}{{ $isCurrent ? ' · Anda' : '' }}</div>
+                    <div class="dosen-name">{{ $item->dosen->nama ?? '-' }}</div>
+                    @if($item->status === 'pending')
+                        <span class="badge badge-pending">⏳ Pending</span>
+                    @elseif($item->status === 'disetujui')
+                        <span class="badge badge-approved">✓ Setuju</span>
+                    @elseif($item->status === 'ditolak')
+                        <span class="badge badge-rejected">✕ Ditolak</span>
+                    @endif
+                </div>
+                @endforeach
+            </div>
+        </div>
+
+        {{-- Rejection reason --}}
+        @if($acc->isRejected())
+        <div class="section">
+            <div class="section-title">Alasan Penolakan Anda</div>
+            <div class="rejection-box">{{ $acc->alasan_penolakan }}</div>
+        </div>
+        @endif
+
+        {{-- Action buttons --}}
+        @if($acc->isPending())
+        <div class="actions">
+            <button class="btn-main btn-approve" onclick="openModal('confirmModal')">
+                ✓ Setuju Hadir
+            </button>
+            <button class="btn-main btn-reject" onclick="openModal('rejectModal')">
+                ✕ Tolak
+            </button>
+        </div>
+        @endif
+
+        @if($acc->responded_at)
+        <div class="responded-at">
+            Direspon pada {{ $acc->responded_at->format('d/m/Y H:i') }}
+        </div>
+        @endif
+
+    </div>{{-- /card --}}
+
+    <div class="footer">Sistem Akademik — Universitas Doktor Husni Ingratubun Papua</div>
+
+</div>{{-- /wrap --}}
+
+{{-- ── Confirm Modal ── --}}
+<div class="modal-bg" id="confirmModal">
+    <div class="modal">
+        <h3>Konfirmasi Kehadiran</h3>
+        <p class="modal-desc">
+            Anda akan menyatakan <strong>bersedia hadir</strong> sebagai
+            <strong>{{ $roleLabel }}</strong> pada
+            <strong>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $undangan->tanggal_hari)->translatedFormat('d F Y') }}</strong>
+            pukul <strong>{{ \Carbon\Carbon::parse($undangan->waktu)->format('H:i') }} WIT</strong>.
+        </p>
+        <div class="modal-footer">
+            <button class="mbtn mbtn-cancel" onclick="closeModal('confirmModal')">Batal</button>
+            <form action="{{ route('acc.kesiapan.setujui', ['token' => $acc->token]) }}" method="POST" style="flex:1;">
+                @csrf
+                <button type="submit" class="mbtn mbtn-confirm" style="width:100%;">Ya, Saya Bersedia</button>
             </form>
         </div>
     </div>
+</div>
 
-    <script>
-        function showConfirmModal() { document.getElementById('confirmModal').classList.add('active'); }
-        function hideConfirmModal() { document.getElementById('confirmModal').classList.remove('active'); }
-        function showRejectModal() { document.getElementById('rejectModal').classList.add('active'); }
-        function hideRejectModal() { document.getElementById('rejectModal').classList.remove('active'); }
-        document.querySelectorAll('.modal-overlay').forEach(o => {
-            o.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('active'); });
-        });
-        document.getElementById('rejectForm').addEventListener('submit', function(e) {
-            if (!document.getElementById('alasanInput').value.trim()) {
-                e.preventDefault();
-                document.getElementById('errorText').style.display = 'block';
-            }
-        });
-    </script>
+{{-- ── Reject Modal ── --}}
+<div class="modal-bg" id="rejectModal">
+    <div class="modal">
+        <h3>Tolak ACC Kesiapan</h3>
+        <p class="modal-desc">Berikan alasan mengapa Anda tidak dapat hadir.</p>
+        <form action="{{ route('acc.kesiapan.tolak', ['token' => $acc->token]) }}" method="POST" id="rejectForm">
+            @csrf
+            <textarea name="alasan_penolakan" id="alasanInput" placeholder="Tuliskan alasan penolakan…" required></textarea>
+            <div class="err-msg" id="errMsg">Alasan wajib diisi.</div>
+            <div class="modal-footer">
+                <button type="button" class="mbtn mbtn-cancel" onclick="closeModal('rejectModal')">Batal</button>
+                <button type="submit" class="mbtn mbtn-danger">Tolak ACC</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openModal(id)  { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    document.querySelectorAll('.modal-bg').forEach(bg => {
+        bg.addEventListener('click', e => { if (e.target === bg) bg.classList.remove('open'); });
+    });
+
+    document.getElementById('rejectForm').addEventListener('submit', function(e) {
+        const v = document.getElementById('alasanInput').value.trim();
+        if (!v) {
+            e.preventDefault();
+            document.getElementById('errMsg').style.display = 'block';
+        }
+    });
+    document.getElementById('alasanInput').addEventListener('input', function() {
+        if (this.value.trim()) document.getElementById('errMsg').style.display = 'none';
+    });
+</script>
 </body>
 </html>

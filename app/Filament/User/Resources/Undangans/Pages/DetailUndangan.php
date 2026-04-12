@@ -5,7 +5,7 @@ namespace App\Filament\User\Resources\Undangans\Pages;
 use App\Filament\User\Resources\Undangans\UndanganResource;
 use App\Models\Judul;
 use App\Models\Mahasiswa;
-use App\Models\StatusUndangan;
+use App\Models\AccKesiapanUjian;
 use App\Models\Undangan;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\FileUpload;
@@ -66,7 +66,7 @@ class DetailUndangan extends Page
 
         $this->undangan = $this->record;
 
-        $this->status = StatusUndangan::where('id_undangan', $this->undangan->id)->get();
+        $this->status = AccKesiapanUjian::where('id_undangan', $this->undangan->id)->get();
 
     }
 
@@ -174,12 +174,12 @@ class DetailUndangan extends Page
 
                     TextEntry::make('status_' . $status->id)
                         ->label('Status Konfirmasi')
-                        ->default($status->status_konfirmasi ?? '-')
+                        ->default($status->status ?? '-')
                         ->badge()
                         ->color(fn (string $state): string => match ($state) {
-                            'Hadir' => 'success',
-                            'Tidak Hadir' => 'danger',
-                            default => 'warning',
+                            'disetujui' => 'success',
+                            'ditolak'   => 'danger',
+                            default     => 'warning',
                         }),
 
                     TextEntry::make('alasan_' . $status->id)

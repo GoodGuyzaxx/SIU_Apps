@@ -31,8 +31,23 @@ class UndangansTable
                     ->label('Perihal')
                     ->limit(50)
                     ->searchable(),
-                TextColumn::make('statusUndangan.status_konfirmasi')
-                    ->label('Status Konfirmasi'),
+                TextColumn::make('acc_status')
+                    ->label('Status Konfirmasi')
+                    ->getStateUsing(function ($record) {
+                        $acc = $record->accKesiapanUjian->first();
+                        return match($acc?->status) {
+                            'disetujui' => 'Disetujui',
+                            'ditolak'   => 'Ditolak',
+                            'pending'   => 'Menunggu',
+                            default     => '-',
+                        };
+                    })
+                    ->badge()
+                    ->color(fn($state): string => match($state) {
+                        'Disetujui' => 'success',
+                        'Ditolak'   => 'danger',
+                        default     => 'warning',
+                    }),
                 TextColumn::make('status_ujian')
                 ->label('Status Kesiapan Ujian')
                     ->formatStateUsing(function ($state):string {

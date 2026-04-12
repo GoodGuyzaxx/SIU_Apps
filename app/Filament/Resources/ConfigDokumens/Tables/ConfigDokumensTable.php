@@ -1,38 +1,34 @@
 <?php
 
-namespace App\Filament\Resources\Mahasiswas\Tables;
+namespace App\Filament\Resources\ConfigDokumens\Tables;
+
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class MahasiswasTable
+class ConfigDokumensTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                //
+                ImageColumn::make('ttd')
+                    ->label('Tanda Tangan')
+                    ->square(),
                 TextColumn::make('nama')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('npm')
-                    ->label('NPM')
+                TextColumn::make('jenjang')
                     ->searchable()
-                    ->badge()
-                    ->copyable(),
-
-                TextColumn::make('nomor_hp')
-                    ->label('No. HP')
-                    ->copyable()
-                    ->placeholder('-'),
-                TextColumn::make('agama')
-                    ->placeholder('-'),
+                    ->sortable(),
                 TextColumn::make('prodi.nama_prodi')
                     ->label('Program Studi')
-                    ->sortable()
+                    ->searchable()
+                    ->sortable(),
             ])
             ->filters([
                 //

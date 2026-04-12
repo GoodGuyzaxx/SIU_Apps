@@ -11,17 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mahasiswa', function (Blueprint $table) {
+        Schema::create('config_dokumen', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_user')->constrained('users', 'id');
-            $table->foreignId('prodi_id')->constrained('prodi');
+            $table->foreignId('prodi_id')->nullable()->constrained('prodi');
             $table->string('nama');
-            $table->string('npm');
+            $table->string('ttd')->nullable();
             $table->string('jenjang');
-            $table->string('kelas')->default('-');
-            $table->string('nomor_hp');
-            $table->string('agama');
-            $table->string('angkatan');
             $table->timestamps();
         });
     }
@@ -31,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mahasiswa');
+        Schema::dropIfExists('config_dokumen');
     }
 };

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources\UserAccounts\Schemas;
+use App\Models\Prodi;
 use Faker\Provider\Text;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
@@ -198,6 +199,7 @@ class UserAccountForm
                             ->prefixIcon('heroicon-o-calendar')
                             ->required()
                             ->numeric()
+                            ->minValue(0)
                             ->helperText('Tahun masuk kuliah')
                             ->columnSpan(1),
 
@@ -210,6 +212,7 @@ class UserAccountForm
                             ->options([
                                 'sarjana' => 'Sarjana (S1)',
                                 'magister' => 'Magister (S2)',
+                                'doktor' => 'Doktor (S3)'
                             ])
                             ->live()
                             ->columnSpan(1),
@@ -227,7 +230,7 @@ class UserAccountForm
                             ->visible(fn ($get) => $get('jenjang') === 'sarjana')
                             ->columnSpan(1),
 
-                        Select::make('program_studi')
+                        Select::make('prodi_id')
                             ->label('Program Studi')
                             ->placeholder('Pilih Program Studi')
                             ->native(false)
@@ -237,14 +240,11 @@ class UserAccountForm
                             ->options(
                                 function ($get) {
                                     if ($get('jenjang') == 'magister') {
-                                        return [
-                                            'Magister Hukum' => 'Magister Hukum',
-                                            'Kenotariatan' => 'Kenotariatan',
-                                        ];
+                                        return Prodi::query()->where('jenjang', 'S2')->pluck('nama_prodi', 'id');
+                                    } elseif ($get('jenjang') == 'dpktpr'){
+                                        return Prodi::query()->where('jenjang', 'S3')->pluck('nama_prodi', 'id');
                                     }
-                                    return [
-                                        'Ilmu Hukum' => 'Ilmu Hukum',
-                                    ];
+                                    return Prodi::query()->where('jenjang', 'S1')->pluck('nama_prodi', 'id');
                                 }
                             )
                             ->helperText('Pilih program studi yang sesuai')

@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\AccKesiapanUjian;
 use App\Models\Dosen;
-use App\Models\StatusUndangan;
 use App\Models\Undangan;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
@@ -130,6 +129,64 @@ class WhatsappService
         ]);
 
         return true;
+    }
+
+    /**
+     * Kirim notifikasi WA ke mahasiswa untuk upload softcopy / draft skripsi.
+     */
+    public function sendSoftcopyRequestToMahasiswa(Undangan $undangan): bool
+    {
+        $judul     = $undangan->judul;
+        $mahasiswa = $judul?->mahasiswa;
+
+        if (!$mahasiswa) {
+            Log::warning('WhatsApp sendSoftcopyRequest: mahasiswa tidak ditemukan', [
+                'undangan_id' => $undangan->id,
+            ]);
+            return false;
+        }
+
+        if (!$mahasiswa->nomor_hp) {
+            Log::warning('WhatsApp sendSoftcopyRequest: nomor HP mahasiswa kosong', [
+                'mahasiswa' => $mahasiswa->nama,
+                'npm'       => $mahasiswa->npm,
+            ]);
+            return false;
+        }
+
+        $tanggal = Carbon::createFromFormat('Y-m-d', $undangan->tanggal_hari)->format('d/m/Y');
+        $waktu   = Carbon::parse($undangan->waktu)->format('H:i');
+
+        $message = "📢 *PEMBERITAHUAN UPLOAD DRAFT SKRIPSI*\n\n"
+            . "Yth. *{$mahasiswa->nama}* ({$mahasiswa->npm}),\n\n"
+            . "Undangan ujian Anda telah dibuat. Sebelum ujian berlangsung, "
+            . "Anda *diwajibkan mengunggah softcopy / draft* skripsi Anda melalui sistem akademik.\n\n"
+            . "📝 *Perihal:* {$undangan->perihal}\n"
+            . "📖 *Judul:* {$judul->judul}\n"
+            . "📅 *Tanggal Ujian:* {$tanggal}\n"
+            . "⏰ *Waktu:* {$waktu} WIT\n"
+            . "📍 *Tempat:* {$undangan->tempat}\n\n"
+            . "Silakan login ke sistem akademik dan unggah softcopy dokumen Anda "
+            . "sebelum tanggal ujian.\n\n"
+            . "Terima kasih.\n"
+            . "_Sistem Akademik Uningrat Papua_";
+
+        $appUrl = config('app.url');
+        if (str_contains($appUrl, 'localhost') || str_contains($appUrl, '127.0.0.1')) {
+            $appUrl = 'https://uningrat.ac.id';
+        }
+
+        $result = $this->sendMessage($mahasiswa->nomor_hp, $message, $appUrl);
+
+        if ($result) {
+            Log::info('WhatsApp: Notifikasi upload softcopy terkirim ke mahasiswa', [
+                'mahasiswa'   => $mahasiswa->nama,
+                'npm'         => $mahasiswa->npm,
+                'undangan_id' => $undangan->id,
+            ]);
+        }
+
+        return $result;
     }
 
     /**

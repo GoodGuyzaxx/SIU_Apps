@@ -4,7 +4,7 @@ use App\Http\Controllers\UndanganController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect('/user');
+    return redirect('/user/login');
 });
 
 Route::get('/dokumen/undangan/pdf/{id}', [\App\Http\Controllers\UndanganController::class , 'getPDF'])->name('undangan.pdf');
