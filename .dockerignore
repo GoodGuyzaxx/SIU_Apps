@@ -1,0 +1,39 @@
+# ── Git ──────────────────────────────────────────────
+.git
+.gitignore
+.gitattributes
+
+# ── Node ─────────────────────────────────────────────
+node_modules
+
+# ── Laravel storage (runtime dirs - not needed in image) ──
+storage/app/private/livewire-tmp
+storage/app/private
+storage/framework/cache
+storage/framework/sessions
+storage/framework/views
+storage/logs
+
+# ── Temp & cache ─────────────────────────────────────
+bootstrap/cache
+.cache
+
+# ── IDE & OS ─────────────────────────────────────────
+.idea
+.vscode
+*.DS_Store
+Thumbs.db
+
+# ── Docker itself ────────────────────────────────────
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# ── Tests ────────────────────────────────────────────
+tests
+
+# ── Dev/build tools ──────────────────────────────────
+.env.example
+.env.testing
+phpunit.xml
+vite.config.*
