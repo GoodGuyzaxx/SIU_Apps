@@ -28,7 +28,7 @@ class ViewUndangan extends ViewRecord
                 ->icon('heroicon-o-printer')
                 ->color('success')
                 ->url(fn () => route('undangan.pdf', $dataId)),
-            Action::make('Kirim Ulang ACC')
+            Action::make('Kirim Ulang Pesan Ke Dosen')
                 ->icon('heroicon-o-paper-airplane')
                 ->color('warning')
                 ->requiresConfirmation()
