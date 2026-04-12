@@ -79,8 +79,6 @@ COPY ../../../../.. .
 # Install dependency PHP menggunakan composer
 RUN composer install  --no-interaction
 
-RUN chown -R www-data:www-data
-
 # Buat direktori yang dibutuhkan Laravel
 RUN mkdir -p /var/www/html/storage/logs \
     && mkdir -p /var/www/html/storage/framework/cache \
