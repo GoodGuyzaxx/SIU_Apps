@@ -24,8 +24,13 @@ class CreateUndangan extends CreateRecord
 
     protected function afterCreate(): void
     {
+        $waService = new WhatsappService();
+        $sentCount = 0;
+        $failCount = 0;
         $record = $this->record;
-        $judul = $record->judul;
+
+
+
 
         // Set status undangan ke "menunggu_acc"
         $record->update(['status_ujian' => 'menunggu_acc']);
@@ -34,17 +39,18 @@ class CreateUndangan extends CreateRecord
         $dosenList = collect();
         $judul = $record->judul;
 
-        if ($judul->id_pembimbing_satu) {
-            $dosenList->push(['id_dosen' => $judul->id_pembimbing_satu, 'role' => 'pembimbing_satu']);
+
+        if ($judul->pembimbing_satu) {
+            $dosenList->push(['id_dosen' => $judul->pembimbing_satu, 'role' => 'pembimbing_satu']);
         }
-        if ($judul->id_pembimbing_dua) {
-            $dosenList->push(['id_dosen' => $judul->id_pembimbing_dua, 'role' => 'pembimbing_dua']);
+        if ($judul->pembimbing_dua) {
+            $dosenList->push(['id_dosen' => $judul->pembimbing_dua, 'role' => 'pembimbing_dua']);
         }
-        if ($judul->id_penguji_satu) {
-            $dosenList->push(['id_dosen' => $judul->id_penguji_satu, 'role' => 'penguji_satu']);
+        if ($judul->penguji_satu) {
+            $dosenList->push(['id_dosen' => $judul->penguji_satu, 'role' => 'penguji_satu']);
         }
-        if ($judul->id_penguji_dua) {
-            $dosenList->push(['id_dosen' => $judul->id_penguji_dua, 'role' => 'penguji_dua']);
+        if ($judul->penguji_dua) {
+            $dosenList->push(['id_dosen' => $judul->penguji_dua, 'role' => 'penguji_dua']);
         }
 
         if ($dosenList->isEmpty()) {
@@ -56,9 +62,6 @@ class CreateUndangan extends CreateRecord
             return;
         }
 
-        $waService = new WhatsappService();
-        $sentCount = 0;
-        $failCount = 0;
 
         foreach ($dosenList as $item) {
             $dosen = Dosen::find($item['id_dosen']);
@@ -117,5 +120,6 @@ class CreateUndangan extends CreateRecord
                 ->warning()
                 ->send();
         }
+
     }
 }

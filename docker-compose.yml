@@ -30,7 +30,7 @@ services:
         # Ini memungkinkan kita akses aplikasi via http://localhost:8080
         ports:
             - "8085:80"
-            - "8086:443"
+            #- "8086:443"
 
         volumes:
             # Mount source code agar Nginx bisa serve static files
