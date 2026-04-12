@@ -6,6 +6,7 @@ RUN apk update && apk upgrade --no-cache
 RUN apk add --no-cache \
     git \
     curl \
+    curl-dev \
     bash \
     libpng-dev \
     libxml2-dev \
@@ -32,7 +33,9 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
         gd \
         dom \
         fileinfo \
-        xml
+        xml \
+        curl \
+        opcache
 
 # ── Redis via PECL ─────────────────────────────────────────────────────────
 RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
@@ -75,6 +78,11 @@ RUN apk add --no-cache nodejs npm
 # ── Composer ───────────────────────────────────────────────────────────────
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# ── Composer env ───────────────────────────────────────────────────────────
+ENV COMPOSER_MEMORY_LIMIT=-1 \
+    COMPOSER_ALLOW_SUPERUSER=1 \
+    COMPOSER_NO_INTERACTION=1
+
 # ── Working directory ──────────────────────────────────────────────────────
 WORKDIR /var/www/html
 
@@ -83,17 +91,7 @@ WORKDIR /var/www/html
 COPY . .
 
 # ── Composer install ───────────────────────────────────────────────────────
-RUN composer install \
-    --no-interaction \
-    --no-dev \
-    --optimize-autoloader \
-    --prefer-dist
-
-# ── NPM install & build ────────────────────────────────────────────────────
-RUN npm ci --omit=dev
-
-# ── Build Vite assets ──────────────────────────────────────────────────────
-RUN npm run build
+RUN composer install --no-scripts --no-autoloader
 
 # ── Laravel storage dirs ───────────────────────────────────────────────────
 RUN mkdir -p \
@@ -105,11 +103,15 @@ RUN mkdir -p \
     storage/app/private \
     bootstrap/cache
 
+# ── NPM install & build ────────────────────────────────────────────────────
+RUN npm install --production
+
+
 # ── Set permissions ────────────────────────────────────────────────────────
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html \
-    && find /var/www/html/storage     -type d -exec chmod 775 {} \; \
-    && find /var/www/html/storage     -type f -exec chmod 664 {} \; \
+    && find /var/www/html/storage -type d -exec chmod 775 {} \; \
+    && find /var/www/html/storage -type f -exec chmod 664 {} \; \
     && find /var/www/html/bootstrap/cache -type d -exec chmod 775 {} \; \
     && find /var/www/html/bootstrap/cache -type f -exec chmod 664 {} \;
 
