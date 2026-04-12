@@ -2,10 +2,11 @@ FROM php:8.3-fpm-alpine
 
 RUN apk update && apk upgrade --no-cache
 
-# Install system dependencies untuk Laravel dan extensions PHP
+# ── System dependencies ────────────────────────────────────────────────────
 RUN apk add --no-cache \
     git \
     curl \
+    bash \
     libpng-dev \
     libxml2-dev \
     zip \
@@ -15,9 +16,10 @@ RUN apk add --no-cache \
     freetype-dev \
     libjpeg-turbo-dev \
     libwebp-dev \
-    icu-dev
+    icu-dev \
+    linux-headers
 
-# Konfigurasi dan install extension PHP standar Laravel
+# ── PHP core extensions ────────────────────────────────────────────────────
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j$(nproc) \
         pdo_mysql \
@@ -27,81 +29,93 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
         bcmath \
         intl \
         zip \
-        gd
+        gd \
+        dom \
+        fileinfo \
+        xml
 
-# Install Redis extension via PECL
-RUN apk add --no-cache --virtual .build-deps-redis $PHPIZE_DEPS \
+# ── Redis via PECL ─────────────────────────────────────────────────────────
+RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
     && pecl install redis \
     && docker-php-ext-enable redis \
-    && apk del .build-deps-redis
+    && apk del .build-deps
 
-# Install xlswriter extension via PECL (dengan dependencies lengkap)
-RUN apk add --no-cache --virtual .build-deps-xlswriter \
-        autoconf \
-        build-base \
+# ── xlswriter via PECL ─────────────────────────────────────────────────────
+# Gunakan $PHPIZE_DEPS bawaan image (bukan php83-dev alpine yang konflik)
+RUN apk add --no-cache --virtual .build-deps-xl $PHPIZE_DEPS \
+        zlib-dev \
         cmake \
         make \
         g++ \
-        zlib-dev \
-        curl-dev \
-        openssl-dev \
-        php83-dev \
+        autoconf \
+        build-base \
     && pecl install xlswriter \
     && docker-php-ext-enable xlswriter \
-    && apk del .build-deps-xlswriter
+    && apk del .build-deps-xl
 
-# Install For PDF Support
+# ── Chromium & fonts (untuk PDF) ──────────────────────────────────────────
 RUN apk add --no-cache \
     chromium \
     nss \
     freetype \
-    freetype-dev \
     harfbuzz \
     ca-certificates \
     ttf-freefont \
-    npm
+    fontconfig
 
-#Install Font
-RUN apk --no-cache add msttcorefonts-installer fontconfig && \
-    update-ms-fonts && \
-    fc-cache -f
+# Install Microsoft core fonts (optional - skip jika gagal)
+RUN apk add --no-cache msttcorefonts-installer \
+    && update-ms-fonts \
+    && fc-cache -f \
+    || true
 
+# ── Node / npm ─────────────────────────────────────────────────────────────
+RUN apk add --no-cache nodejs npm
 
-# Salin Composer dari image resmi
+# ── Composer ───────────────────────────────────────────────────────────────
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set direktori kerja
+# ── Working directory ──────────────────────────────────────────────────────
 WORKDIR /var/www/html
 
-# Salin semua file project ke container
-COPY ../../../../.. .
+# ── Copy project files ─────────────────────────────────────────────────────
+# Build context harus dari root project: docker build -f docker/php/Dockerfile .
+COPY . .
 
-# Install dependency PHP menggunakan composer
-RUN composer install  --no-interaction
+# ── Composer install ───────────────────────────────────────────────────────
+RUN composer install \
+    --no-interaction \
+    --no-dev \
+    --optimize-autoloader \
+    --prefer-dist
 
-# Buat direktori yang dibutuhkan Laravel
-RUN mkdir -p /var/www/html/storage/logs \
-    && mkdir -p /var/www/html/storage/framework/cache \
-    && mkdir -p /var/www/html/storage/framework/sessions \
-    && mkdir -p /var/www/html/storage/framework/views \
-    && mkdir -p /var/www/html/bootstrap/cache
+# ── NPM install & build ────────────────────────────────────────────────────
+RUN npm ci --omit=dev
 
-# Set permission Laravel
+# ── Build Vite assets ──────────────────────────────────────────────────────
+RUN npm run build
+
+# ── Laravel storage dirs ───────────────────────────────────────────────────
+RUN mkdir -p \
+    storage/logs \
+    storage/framework/cache \
+    storage/framework/sessions \
+    storage/framework/views \
+    storage/app/public \
+    storage/app/private \
+    bootstrap/cache
+
+# ── Set permissions ────────────────────────────────────────────────────────
 RUN chown -R www-data:www-data /var/www/html \
-    && find /var/www/html/storage -type f -exec chmod 664 {} \; \
-    && find /var/www/html/storage -type d -exec chmod 775 {} \; \
-    && find /var/www/html/bootstrap/cache -type f -exec chmod 664 {} \; \
-    && find /var/www/html/bootstrap/cache -type d -exec chmod 775 {} \;
+    && chmod -R 755 /var/www/html \
+    && find /var/www/html/storage     -type d -exec chmod 775 {} \; \
+    && find /var/www/html/storage     -type f -exec chmod 664 {} \; \
+    && find /var/www/html/bootstrap/cache -type d -exec chmod 775 {} \; \
+    && find /var/www/html/bootstrap/cache -type f -exec chmod 664 {} \;
 
-RUN npm install --production
-
-RUN npm install -g puppeteer
-
-# Optional: Salin konfigurasi PHP custom
+# ── PHP custom config ──────────────────────────────────────────────────────
 COPY docker/php/php.ini /usr/local/etc/php/conf.d/99-custom.ini
 
-# Expose port FPM
+# ── Expose & start ─────────────────────────────────────────────────────────
 EXPOSE 9000
-
-# Jalankan PHP-FPM
 CMD ["php-fpm"]
