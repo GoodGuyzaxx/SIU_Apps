@@ -62,6 +62,31 @@ class ViewUndangan extends ViewRecord
                             ->send();
                     }
                 }),
+            Action::make('Kirim Pesan ke Mahasiswa')
+                ->icon('heroicon-o-chat-bubble-left-ellipsis')
+                ->color('info')
+                ->requiresConfirmation()
+                ->modalHeading('Kirim Ulang Notifikasi ke Mahasiswa')
+                ->modalDescription('Kirim ulang pesan WhatsApp ke mahasiswa untuk mengingatkan upload softcopy / draft skripsi?')
+                ->modalSubmitActionLabel('Ya, Kirim Sekarang')
+                ->action(function (): void {
+                    $waService = new WhatsappService();
+                    $result = $waService->sendSoftcopyRequestToMahasiswa($this->record);
+
+                    if ($result) {
+                        Notification::make()
+                            ->title('Pesan Berhasil Dikirim')
+                            ->body('Notifikasi upload draft skripsi telah dikirim ke mahasiswa via WhatsApp.')
+                            ->success()
+                            ->send();
+                    } else {
+                        Notification::make()
+                            ->title('Gagal Mengirim Pesan')
+                            ->body('Pesan gagal dikirim. Pastikan nomor HP mahasiswa sudah terdaftar.')
+                            ->danger()
+                            ->send();
+                    }
+                }),
         ];
     }
 
