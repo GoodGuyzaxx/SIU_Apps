@@ -4,10 +4,12 @@ namespace App\Filament\Resources\Juduls\Schemas;
 
 use App\Models\Dosen;
 use App\Models\Mahasiswa;
+use App\Models\TahunAkademik;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\DB;
 
 class JudulForm
 {
@@ -36,6 +38,14 @@ class JudulForm
                         Textarea::make('judul')
                             ->required()
                             ->columnSpanFull(),
+
+                        Select::make('tahun_akademik_id')
+                            ->label('Tahun Akademik')
+                            ->native(false)
+                            ->options(
+                                TahunAkademik::query()
+                                    ->pluck(DB::raw("CONCAT('[',takad,'-', priode,']', '-',tahun)"), 'id')
+                            )
 
                     ])->columns(2),
 
