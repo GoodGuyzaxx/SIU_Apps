@@ -11,6 +11,7 @@ Route::get('/dokumen/undangan/pdf/{id}', [\App\Http\Controllers\UndanganControll
 Route::get('/dokumen/undangan/pdf/ttd/{id}', [\App\Http\Controllers\UndanganController::class , 'getTtdPDF'])->name('undangan.ttd.pdf');
 
 Route::get('info', \App\Livewire\PapanInfo::class)->name('info');
+Route::get('berita', \App\Livewire\PapanBerita::class)->name('berita');
 
 Route::get('/dokumen/sk/pdf/{id}', [UndanganController::class , 'getSkPDF'])->name('skPDF');
 
