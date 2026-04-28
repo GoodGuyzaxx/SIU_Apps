@@ -289,7 +289,7 @@
 
     <div class="sign-content">
         <p>Ditetapkan di<span style="margin-left: 20px; margin-right: 10px">:</span> Jayapura</p>
-        <p style="text-decoration: underline">Pada tanggal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp; {{\Carbon\Carbon::parse($data->created_at)->translatedFormat('d F Y') }}</p>
+        <p style="text-decoration: underline">Pada tanggal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp; {{\Carbon\Carbon::parse($data->dibuat)->translatedFormat('d F Y') }}</p>
         <p style="padding-bottom: 4px; margin-top: 5px;">Dekan,</p>
         <br>
         <br>
@@ -453,7 +453,7 @@
 
     <div class="sign-content">
         <p>Ditetapkan di <span style="margin-left: 20px; margin-right: 10px">:</span>Jayapura</p>
-        <p style="text-decoration: underline">Pada tanggal &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;{{\Carbon\Carbon::parse($data->created_at)->translatedFormat('d F Y') }}</p>
+        <p style="text-decoration: underline">Pada tanggal &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;{{\Carbon\Carbon::parse($data->dibuat)->translatedFormat('d F Y') }}</p>
         <p style="padding-bottom: 4px; margin-top: 5px;">Dekan,</p>
         <br>
         <br>
