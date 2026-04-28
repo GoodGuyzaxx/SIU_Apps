@@ -175,15 +175,6 @@ class DosenSeeder extends Seeder
                 'email' => 'mhvsaputra@gmail.com',
             ],
             [
-                'nama' => 'William Haustion Sinaga, SH.,MH',
-                'nidn' => null,
-                'nrp_nip' => null,
-                'inisial_dosen' => 'WHS',
-                'ttl' => null,
-                'nomor_hp' => '081344432175',
-                'email' => null,
-            ],
-            [
                 'nama' => 'Jumriah, S.H., M.Kn',
                 'nidn' => null,
                 'nrp_nip' => null,

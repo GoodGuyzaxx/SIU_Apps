@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             ProdiSeeder::class,
             UserSeeder::class,
             DosenSeeder::class,
+            // Jalankan setelah ProdiSeeder & DosenSeeder tersedia
+            // php artisan db:seed --class=DummyDataSeeder
         ]);
 
         DB::table('papan_informasi')->insert([
