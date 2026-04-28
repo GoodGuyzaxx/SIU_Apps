@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('nomor_sk_penguji');
             $table->string('nomor_sk_pembimbing');
             $table->string('signed')->nullable()->default('-');
+            $table->date('dibuat')->nullable()->default(\Illuminate\Support\Carbon::now());
             $table->timestamps();
         });
     }

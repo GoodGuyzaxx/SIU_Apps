@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\UserAccounts\Tables;
 
 use App\Models\User;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -39,6 +40,16 @@ class UserAccountsTable
                 //
             ])
             ->recordActions([
+                Action::make('verifyEmail')
+                    ->label('Verify')
+                    ->icon('heroicon-o-check-badge')
+                    ->color('success')
+                    ->action(function (User $record) {
+                        $record->markEmailAsVerified(); // Using Laravel's built-in method
+                    })
+                    ->visible(fn (User $record) => ! $record->hasVerifiedEmail())
+                    ->requiresConfirmation()
+                    ->tooltip('Verify Email'),
                 EditAction::make(),
             ])
             ->toolbarActions([

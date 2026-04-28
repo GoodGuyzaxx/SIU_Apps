@@ -4,9 +4,11 @@ namespace App\Filament\Resources\Pengajuans\Pages;
 
 use App\Filament\Resources\Juduls\Pages\ListJuduls;
 use App\Filament\Resources\Pengajuans\PengajuanResource;
+use App\Filament\Resources\TahunAkademiks\Pages\ListTahunAkademiks;
 use App\Models\Dosen;
 use App\Models\Judul;
 use App\Models\SuratKeputusan;
+use App\Models\TahunAkademik;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
@@ -69,7 +71,7 @@ class DetailPengajuan extends Page
                     ->searchable(),
 
                 Select::make('penguji_dua')
-                    ->label('Pembimbing Kedua')
+                    ->label('Penguji Kedua')
                     ->required()
                     ->options(Dosen::query()->pluck('nama', 'id'))
                     ->searchable()
@@ -86,28 +88,40 @@ class DetailPengajuan extends Page
             'catatan' => null,
         ]);
 
-        $dataJudul = Judul::create([
-           'id_mahasiswa' => $this->record->mahasiswa->id,
-            'minat' => $this->record->minat_kekuhusan,
-            'judul' => $this->judul,
-            'pembimbing_satu' => $data['pembimbing_satu'],
-            'pembimbing_dua' => $data['pembimbing_dua'],
-            'penguji_satu' => $data['penguji_satu'],
-            'penguji_dua' => $data['penguji_dua'],
-        ]);
+        $takad = TahunAkademik::latest()->where('status', 'Y')->first();
 
-        SuratKeputusan::create([
-            'id_judul' => $dataJudul->id,
-            'nomor_sk_penguji' => "HARAP ISI NOMOR",
-            'nomor_sk_pembimbing' => "HARAP ISI NOMOR"
-        ]);
+        if ($takad != null) {
+            $dataJudul = Judul::create([
+                'id_mahasiswa' => $this->record->mahasiswa->id,
+                'minat' => $this->record->minat_kekuhusan,
+                'judul' => $this->judul,
+                'tahun_akademik_id' => $takad->id,
+                'pembimbing_satu' => $data['pembimbing_satu'],
+                'pembimbing_dua' => $data['pembimbing_dua'],
+                'penguji_satu' => $data['penguji_satu'],
+                'penguji_dua' => $data['penguji_dua'],
+            ]);
 
-        Notification::make()
-            ->title('Pengajuan disetujui')
-            ->success()
-            ->send();
+//            SuratKeputusan::create([
+//                'id_judul' => $dataJudul->id,
+//                'nomor_sk_penguji' => "HARAP ISI NOMOR",
+//                'nomor_sk_pembimbing' => "HARAP ISI NOMOR"
+//            ]);
 
-        $this->redirect(ListJuduls::getUrl());
+            Notification::make()
+                ->title('Pengajuan disetujui')
+                ->success()
+                ->send();
+
+            $this->redirect(ListJuduls::getUrl());
+        }else {
+            Notification::make()
+                ->title('Harap Isi Tahun Akademik atau ubah status tahun akademik yang aktif')
+                ->warning()
+                ->send();
+
+            $this->redirect(ListTahunAkademiks::getUrl());
+        }
     }
 
 

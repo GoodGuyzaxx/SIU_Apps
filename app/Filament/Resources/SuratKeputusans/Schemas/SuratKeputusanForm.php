@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\SuratKeputusans\Schemas;
 
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -14,14 +15,18 @@ class SuratKeputusanForm
     {
         return $schema
             ->components([
-                Section::make('Nomor Surat Keputusan')
+                Section::make('Nomor Surat Keputusan Dan Tanggal')
                     ->columns(2)
                     ->columnSpanFull()
                     ->schema([
                         TextInput::make('nomor_sk_penguji')
                             ->label('Nomor Surat Keputusan Penguji'),
                         TextInput::make('nomor_sk_pembimbing')
-                            ->label('Nomor Surat Keputusan Pembimbing')
+                            ->label('Nomor Surat Keputusan Pembimbing'),
+                        DatePicker::make('dibuat')
+                        ->label('Tanggal Terbit Surat Keputusan')
+                        ->displayFormat('d/m/Y')
+                        ->format('Y-m-d')
                     ]),
                 Section::make('Konsideran')
                     ->columnSpanFull()

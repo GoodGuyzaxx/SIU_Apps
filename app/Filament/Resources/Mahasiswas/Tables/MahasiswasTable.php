@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Mahasiswas\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -15,7 +16,7 @@ class MahasiswasTable
         return $table
             ->columns([
                 //
-                TextColumn::make('nama')
+                TextColumn::make('user.name')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('npm')
