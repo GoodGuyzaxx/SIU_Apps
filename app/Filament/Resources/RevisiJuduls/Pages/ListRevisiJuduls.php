@@ -10,10 +10,6 @@ class ListRevisiJuduls extends ListRecords
 {
     protected static string $resource = RevisiJudulResource::class;
 
-    protected function getHeaderActions(): array
-    {
-        return [
-            CreateAction::make(),
-        ];
-    }
+    protected ?string $heading = 'Revisi Judul';
+
 }

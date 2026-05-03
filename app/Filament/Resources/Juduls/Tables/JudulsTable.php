@@ -29,8 +29,12 @@ class JudulsTable
                 TextColumn::make('mahasiswa.nama')
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('mahasiswa.npm')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('judul')
                     ->limit(50)
+                    ->tooltip(fn (string $state): string => $state)
                     ->searchable(),
                 TextColumn::make('pembimbingSatu.nama')
                     ->searchable(),

@@ -26,7 +26,7 @@ class LaporanResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?int $navigationSort = 7;
+    protected static ?int $navigationSort = 9;
 
     protected static string|UnitEnum|null $navigationGroup = 'Akademik';
 

@@ -10,10 +10,5 @@ class ListNilais extends ListRecords
 {
     protected static string $resource = NilaiResource::class;
 
-    protected function getHeaderActions(): array
-    {
-        return [
-            CreateAction::make(),
-        ];
-    }
+    protected ?string $heading = "Input Nilai Mahasiswa";
 }

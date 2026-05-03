@@ -7,20 +7,30 @@ use App\Filament\Resources\RevisiJuduls\Pages\EditRevisiJudul;
 use App\Filament\Resources\RevisiJuduls\Pages\ListRevisiJuduls;
 use App\Filament\Resources\RevisiJuduls\Schemas\RevisiJudulForm;
 use App\Filament\Resources\RevisiJuduls\Tables\RevisiJudulsTable;
+use App\Models\Judul;
 use App\Models\RevisiJudul;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class RevisiJudulResource extends Resource
 {
-    protected static ?string $model = RevisiJudul::class;
+    protected static ?string $model = Judul::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::PencilSquare;
 
-    protected static ?string $recordTitleAttribute = 'Judul';
+    protected static ?string $recordTitleAttribute = 'Revisi Judul';
+
+    protected static string | UnitEnum | null $navigationGroup = 'Akademik';
+
+    protected static ?string $navigationLabel = 'Revisi Judul';
+
+    protected static ?string $breadcrumb = 'Revisi Judul';
+
+    protected static ?int $navigationSort = 7;
 
     public static function form(Schema $schema): Schema
     {
@@ -43,8 +53,6 @@ class RevisiJudulResource extends Resource
     {
         return [
             'index' => ListRevisiJuduls::route('/'),
-            'create' => CreateRevisiJudul::route('/create'),
-            'edit' => EditRevisiJudul::route('/{record}/edit'),
         ];
     }
 }

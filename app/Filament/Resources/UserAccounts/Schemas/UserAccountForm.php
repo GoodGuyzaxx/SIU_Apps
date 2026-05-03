@@ -83,6 +83,17 @@ class UserAccountForm
                                 'user' => 'Mahasiswa',
                             ])
                             ->columnSpanFull(),
+
+                        Select::make('prodi_id')
+                            ->label('Program Studi')
+                            ->placeholder('Pilih Program Studi')
+                            ->options(Prodi::all()->pluck('nama_prodi', 'id'))
+                            ->searchable()
+                            ->disabled(fn ($get) => $get('role') != 'kaprodi')
+                            ->hidden(fn ($get) => $get('role') != 'kaprodi')
+                            ->native(false)
+                            ->prefixIcon('heroicon-m-academic-cap')
+                            ->columnSpanFull(),
                     ]),
 
                 // Dosen Section

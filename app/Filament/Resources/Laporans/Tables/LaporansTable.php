@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Laporans\Tables;
 
 use App\Exports\LaporanExport;
 use App\Models\Judul;
+use App\Models\Prodi;
 use App\Models\TahunAkademik;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
@@ -65,7 +66,19 @@ class LaporansTable
                     ->options(
                         TahunAkademik::query()
                             ->pluck(DB::raw("CONCAT('[',takad,'-', priode,']', '-',status)"), 'id')
-                    )
+                    ),
+                SelectFilter::make('prodi')
+                    ->label('Program Studi')
+                    ->native(false)
+                    ->searchable()
+                    ->options(Prodi::query()->pluck('nama_prodi', 'id'))
+                    ->query(fn ($query, $data) => $query->when(
+                        $data['value'] ?? null,
+                        fn($q, $value) => $q->whereHas(
+                            'mahasiswa',
+                            fn($q) => $q->where('prodi_id', $value)
+                        )
+                    ))
             ])
             ->recordActions([
                 // EditAction::make(),
@@ -76,17 +89,37 @@ class LaporansTable
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('success')
                     ->action(function ($livewire) {
-                        // Ambil filter tahun akademik yang sedang aktif
-                        $filterState       = $livewire->tableFilters['tahun_akademik_id']['value'] ?? null;
+                        // Ambil filter yang sedang aktif
+                        $filterTahun = $livewire->tableFilters['tahun_akademik_id']['value'] ?? null;
+                        $filterProdi = $livewire->tableFilters['prodi']['value'] ?? null;
+
                         $tahunAkademikLabel = null;
+                        $prodiLabel         = null;
 
-                        $query = Judul::with(['mahasiswa', 'tahunAkademik', 'nilai', 'suratKeputusan']);
+                        $query = Judul::with([
+                            'mahasiswa.prodi',
+                            'tahunAkademik',
+                            'nilai',
+                            'suratKeputusan',
+                            'pembimbingSatu',
+                            'pembimbingDua',
+                            'pengujiSatu',
+                            'pengujiDua',
+                        ]);
 
-                        if ($filterState) {
-                            $query->where('tahun_akademik_id', $filterState);
-                            $ta = TahunAkademik::find($filterState);
+                        if ($filterTahun) {
+                            $query->where('tahun_akademik_id', $filterTahun);
+                            $ta = TahunAkademik::find($filterTahun);
                             if ($ta) {
                                 $tahunAkademikLabel = "Tahun Akademik: [{$ta->takad}-{$ta->priode}]-{$ta->status}";
+                            }
+                        }
+
+                        if ($filterProdi) {
+                            $query->whereHas('mahasiswa', fn($q) => $q->where('prodi_id', $filterProdi));
+                            $prodi = Prodi::find($filterProdi);
+                            if ($prodi) {
+                                $prodiLabel = $prodi->nama_prodi;
                             }
                         }
 
@@ -96,7 +129,7 @@ class LaporansTable
 
                         $filename = 'laporan-skripsi-' . now()->format('Ymd-His') . '.xlsx';
 
-                        return (new LaporanExport($data, $tahunAkademikLabel))->download($filename);
+                        return (new LaporanExport($data, $tahunAkademikLabel, $prodiLabel))->download($filename);
                     }),
             ])
             ->toolbarActions([

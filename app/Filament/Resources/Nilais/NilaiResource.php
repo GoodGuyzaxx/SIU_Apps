@@ -13,14 +13,21 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class NilaiResource extends Resource
 {
     protected static ?string $model = Nilai::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::PresentationChartLine;
 
     protected static ?string $recordTitleAttribute = 'Nilai';
+
+    protected static ?string $navigationLabel = 'Nilai';
+
+    protected static string | UnitEnum | null $navigationGroup = 'Akademik';
+
+    protected static ?int $navigationSort = 8;
 
     public static function form(Schema $schema): Schema
     {
@@ -43,8 +50,6 @@ class NilaiResource extends Resource
     {
         return [
             'index' => ListNilais::route('/'),
-            'create' => CreateNilai::route('/create'),
-            'edit' => EditNilai::route('/{record}/edit'),
         ];
     }
 }
