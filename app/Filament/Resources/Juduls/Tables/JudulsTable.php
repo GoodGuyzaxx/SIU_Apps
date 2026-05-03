@@ -102,7 +102,10 @@ class JudulsTable
                     ]),
                 ])
                 ->action(function (array $data, Judul $record): void {
-                    $record->nilai()->update($data);
+                    $nilai = $record->nilai;
+                    if ($nilai) {
+                        $nilai->update($data);
+                    }
                     Notification::make()
                         ->title('Nilai Berhasil Di input')
                         ->success()
