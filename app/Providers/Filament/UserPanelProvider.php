@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\Filament\User\Pages\Auth\Login;
 use App\Filament\User\Pages\Auth\RegisterAuth;
 use App\Filament\User\Pages\Profile\Pages\UserForm;
+use App\Filament\User\Widgets\MahasiswaStats;
 use App\Http\Middleware\RedirectPanel;
 use DiogoGPinto\AuthUIEnhancer\AuthUIEnhancerPlugin;
 use DiogoGPinto\AuthUIEnhancer\Pages\Auth\EmailVerification\AuthUiEnhancerEmailVerificationPrompt;
@@ -51,8 +52,7 @@ class UserPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/User/Widgets'), for: 'App\Filament\User\Widgets')
             ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
+                MahasiswaStats::class
             ])
             ->middleware([
                 EncryptCookies::class,

@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Dosen\Widgets\DosenStatusStats;
 use App\Http\Middleware\OnlyDosen;
 use App\Http\Middleware\RedirectPanel;
 use Filament\Http\Middleware\Authenticate;
@@ -42,8 +43,7 @@ class DosenPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Dosen/Widgets'), for: 'App\Filament\Dosen\Widgets')
             ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
+                DosenStatusStats::class
             ])
             ->middleware([
                 EncryptCookies::class,
