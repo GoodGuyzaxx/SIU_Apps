@@ -16,48 +16,75 @@ class ConfigDokumenForm
     {
         return $schema
             ->components([
-                Section::make('Konfigurasi Dokumen')
-                    ->description('Atur detail pejabat dan tanda tangan untuk dokumen.')
+                Section::make('Informasi Pejabat')
+                    ->description('Atur detail pejabat, jabatan, dan tanda tangan untuk dokumen.')
                     ->schema([
-                        Grid::make(['default' => 1, 'md' => 2]) // Responsive grid for medium screens and up
+                        Grid::make(['default' => 1, 'lg' => 3]) // Responsive grid
                             ->schema([
                                 // Left Column for textual data
                                 Grid::make(1)
                                     ->schema([
                                         TextInput::make('nama')
-                                            ->label('Nama Pejabat')
-                                            ->placeholder('Nama lengkap beserta gelar')
+                                            ->label('Nama Lengkap')
+                                            ->placeholder('Contoh: Dr. Fulan, S.H., M.H.')
                                             ->required(),
-                                        Select::make('jenjang')
-                                            ->label('Jenjang')
-                                            ->options([
-                                                'S1' => 'S1/Sarjana',
-                                                'S2' => 'S2/Magister',
-                                                'S3' => 'S3/Doktor'
-                                            ])
+
+                                        Select::make('jabatan')
+                                            ->label('Jabatan')
+                                            ->required()
                                             ->native(false)
-                                            ->required(),
+                                        ->options([
+                                            'rektor' => 'Rektor',
+                                            'dekan' => 'Dekan',
+                                            'kaprodi' => 'Ketua Program Studi',
+                                        ]),
+
                                         Select::make('prodi_id')
                                             ->label('Program Studi')
                                             ->options(Prodi::all()->pluck('nama_prodi', 'id'))
-                                            ->default('-')
-                                            ->nullable(true)
+                                            ->searchable()
+                                            ->placeholder('Pilih Program Studi (Opsional)')
                                             ->native(false)
-                                            ->required(),
-                                    ]),
+                                            ->nullable(true),
+
+                                        Section::make('Nomor Identitas Pegawai')
+                                            ->schema([
+                                                Grid::make(['default' => 1, 'sm' => 3])
+                                                    ->schema([
+                                                        TextInput::make('nidn')
+                                                            ->label('NIDN')
+                                                            ->placeholder('Nomor Induk Dosen Nasional')
+                                                            ->numeric()
+                                                            ->maxLength(20),
+                                                        TextInput::make('nrp')
+                                                            ->label('NRP')
+                                                            ->placeholder('Nomor Register Pegawai')
+                                                            ->numeric()
+                                                            ->maxLength(20),
+                                                        TextInput::make('nip')
+                                                            ->label('NIP')
+                                                            ->placeholder('Nomor Induk Pegawai')
+                                                            ->numeric()
+                                                            ->maxLength(25),
+                                                    ]),
+                                            ]),
+                                    ])
+                                    ->columnSpan(['default' => 1, 'lg' => 2]),
 
                                 // Right Column for the file upload
                                 Grid::make(1)
                                     ->schema([
                                         FileUpload::make('ttd')
                                             ->label('Tanda Tangan')
-                                            ->helperText('Unggah gambar tanda tangan (format PNG transparan disarankan).')
+                                            ->helperText('Unggah gambar tanda tangan (Format PNG transparan disarankan). Maksimal 2MB.')
                                             ->visibility('public')
                                             ->directory('ttd')
                                             ->image()
                                             ->imageEditor()
+                                            ->maxSize(2048)
                                             ->panelLayout('compact'),
-                                    ]),
+                                    ])
+                                    ->columnSpan(['default' => 1, 'lg' => 1]),
                             ]),
                     ])
                     ->columnSpanFull(),

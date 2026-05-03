@@ -15,8 +15,10 @@ class ConfigDokumen extends Model
         'prodi_id',
         'nama',
         'ttd',
-        'jenjang',
         'jabatan',
+        'nidn',
+        'nrp',
+        'nip'
     ];
 
     public function prodi(): BelongsTo

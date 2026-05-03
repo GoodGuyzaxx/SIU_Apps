@@ -16,7 +16,10 @@ return new class extends Migration
             $table->foreignId('prodi_id')->nullable()->constrained('prodi');
             $table->string('nama');
             $table->string('ttd')->nullable();
-            $table->string('jenjang');
+            $table->string('jabatan')->nullable();
+            $table->string('nidn')->nullable();
+            $table->string('nrp')->nullable();
+            $table->string('nip')->nullable();
             $table->timestamps();
         });
     }

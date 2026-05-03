@@ -18,17 +18,23 @@ class ConfigDokumensTable
             ->columns([
                 ImageColumn::make('ttd')
                     ->label('Tanda Tangan')
-                    ->square(),
+                    ->square()
+                    ->placeholder('Belum ada Isi'),
+                    
                 TextColumn::make('nama')
-                    ->searchable()
+                    ->label('Nama Pejabat & Jabatan')
+                    ->description(fn ($record) => $record->jabatan ? ucfirst($record->jabatan) : '-')
+                    ->searchable(['nama', 'jabatan'])
                     ->sortable(),
-                TextColumn::make('jenjang')
-                    ->searchable()
-                    ->sortable(),
+                    
                 TextColumn::make('prodi.nama_prodi')
                     ->label('Program Studi')
+                    ->badge()
+                    ->color('info')
+                    ->placeholder('Tingkat Universitas / Rektorat')
                     ->searchable()
                     ->sortable(),
+                    
             ])
             ->filters([
                 //
