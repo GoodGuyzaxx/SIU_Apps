@@ -12,8 +12,8 @@ class Nilai extends Model
 
     protected $fillable = [
         'judul_id',
-        'nilai_porposal',
-        'nilai_porposal_angka',
+        'nilai_proposal',
+        'nilai_proposal_angka',
         'tanggal_ujian_proposal',
         'nilai_hasil',
         'nilai_hasil_angka',
