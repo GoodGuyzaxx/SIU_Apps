@@ -29,7 +29,7 @@ class ProdiSeeder extends Seeder
         DB::table('prodi')->insert([
             'id' => 3,
             'nama_prodi' => 'Kenotaritan',
-            'jenjang' => 'S3'
+            'jenjang' => 'S2'
         ]);
     }
 }
