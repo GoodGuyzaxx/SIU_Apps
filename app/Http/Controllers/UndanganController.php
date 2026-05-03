@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ConfigDokumen;
 use App\Models\Dosen;
 use App\Models\Judul;
 use App\Models\SuratKeputusan;
@@ -17,6 +18,8 @@ class UndanganController extends Controller
 
     public function getPDF($id) {
         $data = Undangan::find($id);
+        $kaprodi = ConfigDokumen::where('prodi_id', $data->judul->mahasiswa->prodi->id)->first();
+
         return pdf()
             ->withBrowsershot(function (Browsershot $browsershot){
                 $browsershot
@@ -28,13 +31,14 @@ class UndanganController extends Controller
                         '--disable-web-security'
                     ]);
             })
-            ->view('pdf.undangan.undangan_pdf', compact('data'))
+            ->view('pdf.undangan.undangan_pdf', compact('data', 'kaprodi'))
             ->format(Format::A4)
             ->name($data->perihal.' '.$data->judul->mahasiswa->nama.' '.$data->judul->mahasiswa->npm.'.pdf');
     }
 
     public function getTtdPDF($id) {
         $data = Undangan::find($id);
+        $kaprodi = ConfigDokumen::where('prodi_id', $data->judul->mahasiswa->prodi->id)->first();
         return pdf()
             ->withBrowsershot(function (Browsershot $browsershot){
                 $browsershot
@@ -46,7 +50,7 @@ class UndanganController extends Controller
                         '--disable-web-security'
                     ]);
             })
-            ->view('pdf.undangan.undangan_ttd_pdf', compact('data'))
+            ->view('pdf.undangan.undangan_ttd_pdf', compact('data','kaprodi'))
             ->format(Format::A4)
             ->name($data->perihal.' '.$data->judul->mahasiswa->nama.' '.$data->judul->mahasiswa->npm.'.pdf');
     }
@@ -54,6 +58,7 @@ class UndanganController extends Controller
 
     public function getSkPDF($id){
         $data = SuratKeputusan::findOrFail($id);
+        $dekan = ConfigDokumen::where('jabatan', 'dekan')->first();
         return pdf()
             ->withBrowsershot(function (Browsershot $browsershot){
                 $browsershot
@@ -65,13 +70,14 @@ class UndanganController extends Controller
                         '--disable-web-security'
                     ]);
             })
-            ->view('pdf.sk.sk_pdf',compact('data'))
+            ->view('pdf.sk.sk_pdf',compact('data', 'dekan'))
             ->format(Format::Legal)
             ->name('Surat Keputusan Mahasiswa '.$data->judul->mahasiswa->nama.' '.$data->judul->mahasiswa->npm.'.pdf');
     }
 
     public function getTtdSkPDF($id){
         $data = SuratKeputusan::findOrFail($id);
+        $dekan = ConfigDokumen::where('jabatan', 'dekan')->first();
         return pdf()
             ->withBrowsershot(function (Browsershot $browsershot){
                 $browsershot
@@ -83,13 +89,14 @@ class UndanganController extends Controller
                         '--disable-web-security'
                     ]);
             })
-            ->view('pdf.sk.sk_ttd_pdf',compact('data'))
+            ->view('pdf.sk.sk_ttd_pdf',compact('data', 'dekan'))
             ->format(Format::Legal)
             ->name('Surat Keputusan Mahasiswa '.$data->judul->mahasiswa->nama.' '.$data->judul->mahasiswa->npm.'.pdf');;
     }
 
     public function getBeritaAcaraPdf($id,$jenis){
         $data = Undangan::find($id);
+        $kaprodi = ConfigDokumen::where('prodi_id', $data->judul->mahasiswa->prodi->id)->first();
 
         $dosenList = [
             'pembimbing_1' => request()->query('pembimbing_1') ? Dosen::find(request()->query('pembimbing_1')) : null,
@@ -110,7 +117,7 @@ class UndanganController extends Controller
                             '--disable-web-security'
                         ]);
                 })
-                ->view('pdf.hasil.berita_acara_hasil_pdf', compact('data', 'dosenList'))
+                ->view('pdf.hasil.berita_acara_hasil_pdf', compact('data', 'dosenList','kaprodi'))
                 ->format(Format::A4)
                 ->name('Berita Acara Hasil '.$data->judul->mahasiswa->nama.' '.$data->judul->mahasiswa->npm.'.pdf');
         }
@@ -125,7 +132,7 @@ class UndanganController extends Controller
                         '--disable-web-security'
                     ]);
             })
-            ->view('pdf.proposal.berita_acara_proposal_pdf', compact('data', 'dosenList'))
+            ->view('pdf.proposal.berita_acara_proposal_pdf', compact('data', 'dosenList','kaprodi'))
             ->format(Format::A4)
             ->name('Berita Acara Proposal '.$data->judul->mahasiswa->nama.' '.$data->judul->mahasiswa->npm.'.pdf');
     }
