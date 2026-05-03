@@ -149,14 +149,14 @@
                     <template x-if="slides.length > 0">
                         <template x-for="(slide, index) in slides" :key="index">
                             <div x-show="activeSlide === index"
-                                x-transition:enter="transition ease-out duration-1000"
-                                x-transition:enter-start="opacity-0 transform scale-105"
-                                x-transition:enter-end="opacity-100 transform scale-100"
-                                x-transition:leave="transition ease-in duration-1000"
-                                x-transition:leave-start="opacity-100 transform scale-100"
-                                x-transition:leave-end="opacity-0 transform scale-95"
-                                class="absolute inset-0 w-full h-full">
-                                <img :src="slide" class="w-full h-full object-cover" alt="Gallery Image">
+                                 x-transition:enter="transition ease-out duration-1000"
+                                 x-transition:enter-start="opacity-0 transform scale-105"
+                                 x-transition:enter-end="opacity-100 transform scale-100"
+                                 x-transition:leave="transition ease-in duration-1000"
+                                 x-transition:leave-start="opacity-100 transform scale-100"
+                                 x-transition:leave-end="opacity-0 transform scale-95"
+                                 class="absolute inset-0 w-full h-full">
+                                <img :src="slide" class="w-full h-full" alt="Gallery Image">
                             </div>
                         </template>
                     </template>
