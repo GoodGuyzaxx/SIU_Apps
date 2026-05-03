@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Judul extends Model
 {
@@ -58,6 +59,11 @@ class Judul extends Model
     public function suratKeputusan(): HasOne
     {
         return $this->hasOne(SuratKeputusan::class, 'id_judul');
+    }
+
+    public function undangans(): HasMany
+    {
+        return $this->hasMany(Undangan::class, 'id_judul');
     }
 
     protected static function booted()

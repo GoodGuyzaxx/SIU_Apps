@@ -26,27 +26,139 @@ class LaporansTable
                 TextColumn::make('mahasiswa.npm')
                     ->label('NPM')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('mahasiswa.nama')
                     ->label('Nama Mahasiswa')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('mahasiswa.program_studi')
+                    ->label('Program Studi')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('mahasiswa.kelas')
+                    ->label('Kelas')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('mahasiswa.jenjang')
+                    ->label('Jenjang')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('mahasiswa.agama')
+                    ->label('Agama')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('mahasiswa.nomor_hp')
+                    ->label('No. HP Mahasiswa')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('mahasiswa.angkatan')
+                    ->label('Angkatan')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('tahunAkademik.takad')
+                    ->label('Tahun Akademik')
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('minat')
+                    ->label('Minat/Konsentrasi')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('judul')
                     ->label('Judul Skripsi')
                     ->searchable()
-                    ->wrap(),
-                TextColumn::make('tahunAkademik.takad')
-                    ->label('Tahun Akademik'),
-                TextColumn::make('suratkeputusan')
-                    ->label('No. SK')
-                    ->formatStateUsing(fn($record) => $record->suratKeputusan->nomor_sk_pembimbing . ' / ' . $record->suratKeputusan->nomor_sk_penguji)
-                    ->placeholder('Belum ada'),
-                TextColumn::make('nilai')
-                    ->label('Nilai Proposal / Hasil')
-                    ->formatStateUsing(fn($record) =>
-                        ($record->nilai->nilai_proposal ?? 'Belum ada') . ' / ' . ($record->nilai->nilai_hasil ?? 'Belum ada')
-                    )
-                    ->placeholder('Belum dinilai'),
+                    ->wrap()
+                    ->toggleable(),
+                TextColumn::make('rev_judul')
+                    ->label('Revisi Judul')
+                    ->searchable()
+                    ->wrap()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('pembimbingSatu.nama')
+                    ->label('Pembimbing 1')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('pembimbingDua.nama')
+                    ->label('Pembimbing 2')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('pengujiSatu.nama')
+                    ->label('Penguji 1')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('pengujiDua.nama')
+                    ->label('Penguji 2')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('nilai.nilai_proposal')
+                    ->label('Nilai Proposal')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('nilai.nilai_proposal_angka')
+                    ->label('Nilai Proposal (Angka)')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('nilai.tanggal_ujian_proposal')
+                    ->label('Tgl Ujian Proposal')
+                    ->date()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('nilai.nilai_hasil')
+                    ->label('Nilai Hasil')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('nilai.nilai_hasil_angka')
+                    ->label('Nilai Hasil (Angka)')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('nilai.tanggal_ujian_hasil')
+                    ->label('Tgl Ujian Hasil')
+                    ->date()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('suratKeputusan.nomor_sk_pembimbing')
+                    ->label('No. SK Pembimbing')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('suratKeputusan.nomor_sk_penguji')
+                    ->label('No. SK Penguji')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('undangans.nomor')
+                    ->label('Nomor Undangan')
+                    ->searchable()
+                    ->listWithLineBreaks()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('undangans.status_ujian')
+                    ->label('Status Ujian (Undangan)')
+                    ->searchable()
+                    ->listWithLineBreaks()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('status')
                     ->label('Status Judul')
                     ->badge()
@@ -56,7 +168,8 @@ class LaporansTable
                         'pengajuan' => 'danger',   // Merah
                         default    => 'gray',     // Warna default jika tidak cocok
                     })
-                ->summarize(Count::make())
+                    ->summarize(Count::make())
+                    ->toggleable()
             ])
             ->filters([
                 SelectFilter::make('tahun_akademik_id')
