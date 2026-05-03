@@ -151,7 +151,7 @@
             <tr>
                 <td>NAMA MAHASISWA</td>
                 <td>JUDUL</td>
-                <td>TDD</td>
+                <td>TTD</td>
             </tr>
             </thead>
             <tbody>
@@ -238,12 +238,12 @@
 
     <div class="dosen-section">
         <p>PENANGGUNG JAWAB</p>
-        <p>KETUA PROGRAM STUDI ILMU HUKUM</p>
+        <p>KETUA PROGRAM {{strtoupper($kaprodi->prodi->nama_prodi)}}</p>
         <div style="margin-bottom: 20px; margin-top:40px ">
 
         </div>
-        <span class="nama-dosen">Muhammad Toha Ingratubun, S.H., M.H</span>
-        <p>Nrp. 2010160</p>
+        <span class="nama-dosen">{{$kaprodi->nama}}</span>
+        <p>Nrp. {{$kaprodi->nrp}}</p>
     </div>
 </div>
 

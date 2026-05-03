@@ -563,7 +563,11 @@
     <div class="container">
         <div class="header">
             <h1>BERITA ACARA UJIAN</h1>
-            <h2>SKRIPSI</h2>
+            @if($data->judul->mahasiswa->prodi->jenjang === 'S1')
+                <h2>SKRIPSI</h2>
+            @elseif($data->judul->mahasiswa->prodi->jenjang === 'S2')
+                <h2>SEMINAR HASIL</h2>
+            @endif
         </div>
 
         <div class="content">
@@ -574,8 +578,13 @@
                 bulan <strong>{{ \Carbon\Carbon::now()->isoFormat("MMMM") }}</strong>
                 tahun <strong>{{  strtoupper(\Carbon\Carbon::now()->isoFormat('Y') ?? 'DUA RIBU DUA PULUH LIMA') }}</strong>
                 pukul <strong>{{ \Carbon\Carbon::parse($data->waktu)->format('H:i') ?? '-' }} WIT</strong>
-                sampai dengan selesai dilaksanakannya ujian strata satu ( S1 ) Program studi
-                Ilmu Hukum terhadap mahasiswa:
+                @if($data->judul->mahasiswa->prodi->jenjang === 'S1')
+                    sampai dengan selesai dilaksanakannya ujian strata satu ( S1 ) Program studi
+                    {{$data->judul->mahasiswa->prodi->nama_prodi}} terhadap mahasiswa:
+                @elseif($data->judul->mahasiswa->prodi->jenjang === 'S2')
+                    sampai dengan selesai dilaksanakannya ujian strata dua ( S2 ) Program studi
+                    {{$data->judul->mahasiswa->prodi->nama_prodi}} terhadap mahasiswa:
+                @endif
             </p>
         </div>
 
@@ -590,7 +599,7 @@
             </div>
             <div class="info-row">
                 <div class="info-label">Program Studi</div>
-                <div class="info-value">: {{ $data->judul->mahasiswa->program_studi ?? '-' }}</div>
+                <div class="info-value">: {{ $data->judul->mahasiswa->prodi->nama_prodi ?? '-' }}</div>
             </div>
             <div class="info-row">
                 <div class="info-label">Bagian Kekhususan</div>
@@ -746,7 +755,12 @@
     <div class="container">
         <div class="heading">
             <h2>PENILAIAN UJIAN</h2>
-            <h2>TUTUP SKRIPSI</h2>
+            @if($data->judul->mahasiswa->prodi->jenjang === 'S1')
+                <h2>TUTUP SKRIPSI</h2>
+            @elseif($data->judul->mahasiswa->prodi->jenjang === 'S2')
+                <h2>SEMINAR HASIL</h2>
+            @endif
+
             <h3>FAKULTAS HUKUM UNINGRAT PAPUA</h3>
             <h3>TAHUN AKADEMIK {{\Carbon\Carbon::now()->subYear()->startOfYear()->isoFormat('Y')}}/{{\Carbon\Carbon::now()->startOfYear()->isoFormat('Y')}}</h3>
             <h3>DOSEN PENGUJI I</h3>
@@ -855,7 +869,12 @@
     <div class="container">
         <div class="heading">
             <h2>PENILAIAN UJIAN</h2>
-            <h2>TUTUP SKRIPSI</h2>
+            @if($data->judul->mahasiswa->prodi->jenjang === 'S1')
+                <h2>TUTUP SKRIPSI</h2>
+            @elseif($data->judul->mahasiswa->prodi->jenjang === 'S2')
+                <h2>SEMINAR HASIL</h2>
+            @endif
+
             <h3>FAKULTAS HUKUM UNINGRAT PAPUA</h3>
             <h3>TAHUN AKADEMIK {{\Carbon\Carbon::now()->subYear()->startOfYear()->isoFormat('Y')}}/{{\Carbon\Carbon::now()->startOfYear()->isoFormat('Y')}}</h3>
             <h3>DOSEN PENGUJI II</h3>
@@ -964,7 +983,12 @@
     <div class="container">
         <div class="heading">
             <h2>PENILAIAN UJIAN</h2>
-            <h2>TUTUP SKRIPSI</h2>
+            @if($data->judul->mahasiswa->prodi->jenjang === 'S1')
+                <h2>TUTUP SKRIPSI</h2>
+            @elseif($data->judul->mahasiswa->prodi->jenjang === 'S2')
+                <h2>SEMINAR HASIL</h2>
+            @endif
+
             <h3>FAKULTAS HUKUM UNINGRAT PAPUA</h3>
             <h3>TAHUN AKADEMIK {{\Carbon\Carbon::now()->subYear()->startOfYear()->isoFormat('Y')}}/{{\Carbon\Carbon::now()->startOfYear()->isoFormat('Y')}}</h3>
             <h3>DOSEN PENGUJI III</h3>
@@ -1073,7 +1097,12 @@
     <div class="container">
         <div class="heading">
             <h2>PENILAIAN UJIAN</h2>
-            <h2>TUTUP SKRIPSI</h2>
+            @if($data->judul->mahasiswa->prodi->jenjang === 'S1')
+                <h2>TUTUP SKRIPSI</h2>
+            @elseif($data->judul->mahasiswa->prodi->jenjang === 'S2')
+                <h2>SEMINAR HASIL</h2>
+            @endif
+
             <h3>FAKULTAS HUKUM UNINGRAT PAPUA</h3>
             <h3>TAHUN AKADEMIK {{\Carbon\Carbon::now()->subYear()->startOfYear()->isoFormat('Y')}}/{{\Carbon\Carbon::now()->startOfYear()->isoFormat('Y')}}</h3>
             <h3>DOSEN PENGUJI IV</h3>
@@ -1180,7 +1209,12 @@
     <div class="container">
         <div class="heading">
             <h2>REKAP NILAI UJIAN</h2>
-            <h2>TUTUP SKRIPSI</h2>
+            @if($data->judul->mahasiswa->prodi->jenjang === 'S1')
+                <h2>TUTUP SKRIPSI</h2>
+            @elseif($data->judul->mahasiswa->prodi->jenjang === 'S2')
+                <h2>SEMINAR HASIL</h2>
+            @endif
+
             <h3>FAKULTAS HUKUM UNINGRAT PAPUA</h3>
             <h3>TAHUN AKADEMIK {{\Carbon\Carbon::now()->subYear()->startOfYear()->isoFormat('Y')}}/{{\Carbon\Carbon::now()->startOfYear()->isoFormat('Y')}}</h3>
         </div>
@@ -1277,7 +1311,12 @@
 <div class="page-koreksi-ujian">
     <div class="heading">
         <h2>KOREKSI UJIAN</h2>
-        <h2>TUTUP SKRIPSI</h2>
+        @if($data->judul->mahasiswa->prodi->jenjang === 'S1')
+            <h2>TUTUP SKRIPSI</h2>
+        @elseif($data->judul->mahasiswa->prodi->jenjang === 'S2')
+            <h2>SEMINAR HASIL</h2>
+        @endif
+
     </div>
 
     <div class="info-label-koreksi">
@@ -1334,7 +1373,12 @@
 <div class="page-koreksi-ujian-dua">
     <div class="heading">
         <h2>KOREKSI UJIAN</h2>
-        <h2>TUTUP SKRIPSI</h2>
+        @if($data->judul->mahasiswa->prodi->jenjang === 'S1')
+            <h2>TUTUP SKRIPSI</h2>
+        @elseif($data->judul->mahasiswa->prodi->jenjang === 'S2')
+            <h2>SEMINAR HASIL</h2>
+        @endif
+
     </div>
 
     <div class="info-label-koreksi">
@@ -1391,7 +1435,12 @@
 <div class="page-koreksi-ujian-tiga">
     <div class="heading">
         <h2>KOREKSI UJIAN</h2>
-        <h2>TUTUP SKRIPSI</h2>
+        @if($data->judul->mahasiswa->prodi->jenjang === 'S1')
+            <h2>TUTUP SKRIPSI</h2>
+        @elseif($data->judul->mahasiswa->prodi->jenjang === 'S2')
+            <h2>SEMINAR HASIL</h2>
+        @endif
+
     </div>
 
     <div class="info-label-koreksi">
@@ -1448,7 +1497,12 @@
 <div class="page-koreksi-ujian-empat">
     <div class="heading">
         <h2>KOREKSI UJIAN</h2>
-        <h2>TUTUP SKRIPSI</h2>
+        @if($data->judul->mahasiswa->prodi->jenjang === 'S1')
+            <h2>TUTUP SKRIPSI</h2>
+        @elseif($data->judul->mahasiswa->prodi->jenjang === 'S2')
+            <h2>SEMINAR HASIL</h2>
+        @endif
+
     </div>
 
     <div class="info-label-koreksi">

@@ -84,7 +84,11 @@
 <div class="page-koreksi-judul">
     <div class="heading">
         <h2>KOREKSI JUDUL</h2>
-        <h3>PROPOSAL SKRIPSI</h3>
+        @if($data->judul->mahasiswa->prodi->jenjang === 'S1')
+            <h2>PROPOSAL SKRIPSI</h2>
+        @elseif($data->judul->mahasiswa->prodi->jenjang === 'S2')
+            <h2>PROPOSAL THESIS</h2>
+        @endif
     </div>
 
     <div class="koreksi-info-label">

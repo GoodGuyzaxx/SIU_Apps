@@ -212,7 +212,7 @@
         <div class="letter-row">
             <span class="letter-label">Nomor</span>
             <span class="letter-separator">:</span>
-            <span>B/ {{$data->nomor}} / KPSIH-FH / UND / {{\Illuminate\Support\Carbon::now()->year}} </span>
+            <span>B/ {{$data->nomor}} / KPSIH-FH / UND / {{\Carbon\Carbon::parse($data->tanggal_hari)->isoFormat('YYYY')}} </span>
         </div>
         <div class="letter-row">
             <span class="letter-label">Perihal</span>
@@ -258,7 +258,7 @@
 
         <!-- Greeting -->
         <div class="greeting">
-            Dengan hormat kami mengundang Bapak / Ibu untuk hadir dan bertindak sebagai penguji dalam Sidang Ujian bagi mahasiswa Program Studi Ilmu Hukum sebagai berikut :
+            Dengan hormat kami mengundang Bapak / Ibu untuk hadir dan bertindak sebagai penguji dalam Sidang Ujian bagi mahasiswa Program Studi {{$kaprodi->prodi->nama_prodi}} sebagai berikut :
         </div>
 
         <!-- Student Information -->
@@ -321,9 +321,9 @@
     <div class="signature-section">
         <div class="signature-box">
             <div class="signature-date">Jayapura, {{\Carbon\Carbon::parse($data->create_at)->translatedFormat('d F Y')}}</div>
-            <div class="signature-role">a.n Dekan<br>Ketua Program Studi Ilmu Hukum</div>
-            <div class="signature-name">Muhammad Toha Ingratubun, S.H., M.H</div>
-            <div class="signature-nrp">Nrp 2010160</div>
+            <div class="signature-role">a.n Dekan<br>Ketua Program Studi {{$kaprodi->prodi->nama_prodi}}</div>
+            <div class="signature-name">{{$kaprodi->nama}}</div>
+            <div class="signature-nrp">Nrp {{$kaprodi->nrp}}</div>
         </div>
     </div>
 

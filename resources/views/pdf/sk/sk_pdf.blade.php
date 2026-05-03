@@ -168,7 +168,13 @@
         <div class="heading-title-text">UNIVERSITAS DOKTOR HUSNI INGRATUBUN (UNINGRAT) PAPUA</div>
         <div class="heading-title-normal-text"> NOMOR : {{$data->nomor_sk_pembimbing}}</div>
         <div class="heading-title-normal-text"> T E N T A N G</div>
-        <div class="heading-title-text">PENETAPAN PEMBIMBING SKRIPSI PROGRAM STRATA SATU (S.1)</div>
+
+        @if($data->judul->mahasiswa->prodi->jenjang == 'S1' )
+            <div class="heading-title-text">PENETAPAN PEMBIMBING SKRIPSI PROGRAM STRATA SATU (S.1)</div>
+        @elseif($data->judul->mahasiswa->prodi->jenjang == 'S2' )
+            <div class="heading-title-text">PENETAPAN PEMBIMBING  PROGRAM STRATA DUA (S.2)</div>
+        @endif
+
     </div>
 
     <div class="content">
@@ -179,9 +185,7 @@
                     <td style="width: 15%;">Menimbang</td>
                     <td>:&nbsp;</td>
                     <td>
-{{--                        <ol style="margin: 0; padding-left: 15px;">--}}
                             {!! $data->menimbang !!}
-{{--                        </ol>--}}
                     </td>
                 </tr>
             </table>
@@ -194,15 +198,6 @@
                     <td>:&nbsp;</td>
                     <td>
                         {!! $data->mengingat !!}
-{{--                        <ol style="margin: 0; padding-left: 15px;">--}}
-{{--                            <li>Undang-Undang RI Nomor 20 Tahun 2003 Tentang Sistem Pendidikan Nasional.</li>--}}
-{{--                            <li>Undang-Undang Ri Nomor 14 Tahun 2005 Tentang Guru dan Dosen.</li>--}}
-{{--                            <li>Undang-Undang RI Nomor 12 Tahun 2012 Tentang Pendidikan Tinggi.</li>--}}
-{{--                            <li>Peraturan Pemerintah RI Nomor 4 Tahun 2014 Tentang Pengelolaan dan Penyelenggaraan--}}
-{{--                                Pendidikan.</li>--}}
-{{--                            <li>Akreditasi Program Studi S.1 (B) oleh BAN-PT Nomor: 4476/SK/BAN-PT/Ak-PNB/S/XI/2023--}}
-{{--                                tanggal 6 November 2023.</li>--}}
-{{--                        </ol>--}}
                     </td>
                 </tr>
             </table>
@@ -228,7 +223,11 @@
             <table style="width: 100%;">
                 <td style="width: 15%;">Menetapkan</td>
                 <td>:&nbsp;</td>
-                <td>KEPUTUSAN DEKAN FAKULTAS HUKUM UNIVERSITAS DOKTOR HUSNI INGRATUBUN (UNINGRAT) PAPUA TENTANG PENETAPAN DOSEN PEMBIMBING SKRIPSI PROGRAM STRATA SATU (S.1).</td>
+                @if($data->judul->mahasiswa->prodi->jenjang == 'S1' )
+                    <td>KEPUTUSAN DEKAN FAKULTAS HUKUM UNIVERSITAS DOKTOR HUSNI INGRATUBUN (UNINGRAT) PAPUA TENTANG PENETAPAN DOSEN PEMBIMBING SKRIPSI PROGRAM STRATA SATU (S.1).</td>
+                @elseif($data->judul->mahasiswa->prodi->jenjang == 'S2' )
+                    <td>KEPUTUSAN DEKAN FAKULTAS HUKUM UNIVERSITAS DOKTOR HUSNI INGRATUBUN (UNINGRAT) PAPUA TENTANG PENETAPAN DOSEN PEMBIMBING PROGRAM STRATA DUA (S.2).</td>
+                @endif
             </table>
         </div>
 
@@ -293,8 +292,8 @@
         <p style="padding-bottom: 4px; margin-top: 5px;">Dekan,</p>
         <br>
         <br>
-        <p>Assoc. Prof. Dr. Hj. Fitriyah Ingratubun, SH.,MH</p>
-        <p>Nrp. 0908084</p>
+        <p>{{$dekan->nama ?? '-'}}</p>
+        <p>Nrp. {{$dekan->nrp ?? '-'}}</p>
     </div>
 
     <div class="tembusan">
@@ -323,7 +322,11 @@
         <div class="heading-title-text">UNIVERSITAS DOKTOR HUSNI INGRATUBUN (UNINGRAT) PAPUA</div>
         <div class="heading-title-normal-text"> NOMOR : {{$data->nomor_sk_pembimbing}}</div>
         <div class="heading-title-normal-text"> T E N T A N G</div>
-        <div class="heading-title-text">PENETAPAN PENGUJI SKRIPSI PROGRAM STRATA SATU (S.1)</div>
+        @if($data->judul->mahasiswa->prodi->jenjang == 'S1' )
+            <div class="heading-title-text">PENETAPAN PENGUJI SKRIPSI PROGRAM STRATA SATU (S.1)</div>
+        @elseif($data->judul->mahasiswa->prodi->jenjang == 'S2' )
+            <div class="heading-title-text">PENETAPAN PENGUJI PROGRAM STRATA DUA (S.2)</div>
+        @endif
     </div>
 
     <div class="content">
@@ -335,12 +338,6 @@
                     <td>:&nbsp;</td>
                     <td>
                         {!! $data->menimbang !!}
-{{--                        <ol style="margin: 0; padding-left: 15px;">--}}
-{{--                            <li>Bahwa untuk memperlancar proses penyusunan skripsi mahasiswa perlu adanya bimbingan dan--}}
-{{--                                pengarahan dari dosen penguji.</li>--}}
-{{--                            <li>Bahwa sehubungan dengan butir (1) tersebut diatas, maka perlu ditetapkan Surat Keputusan--}}
-{{--                                Dekan Fakutas Hukum Universitas Doktor Husni Ingratubun (UNINGRAT) Papua.</li>--}}
-{{--                        </ol>--}}
                     </td>
                 </tr>
             </table>
@@ -352,15 +349,6 @@
                     <td style="width: 15%;">Mengingat</td>
                     <td>:&nbsp;</td>
                     <td>
-{{--                        <ol style="margin: 0; padding-left: 15px;">--}}
-{{--                            <li>Undang-Undang RI Nomor 20 Tahun 2003 Tentang Sistem Pendidikan Nasional.</li>--}}
-{{--                            <li>Undang-Undang Ri Nomor 14 Tahun 2005 Tentang Guru dan Dosen.</li>--}}
-{{--                            <li>Undang-Undang RI Nomor 12 Tahun 2012 Tentang Pendidikan Tinggi.</li>--}}
-{{--                            <li>Peraturan Pemerintah RI Nomor 4 Tahun 2014 Tentang Pengelolaan dan Penyelenggaraan--}}
-{{--                                Pendidikan.</li>--}}
-{{--                            <li>Akreditasi Program Studi S.1 (B) oleh BAN-PT Nomor: 4476/SK/BAN-PT/Ak-PNB/S/XI/2023--}}
-{{--                                tanggal 6 November 2023.</li>--}}
-{{--                        </ol>--}}
                         {!! $data->mengingat !!}
                     </td>
                 </tr>
@@ -373,8 +361,6 @@
                     <td style="width: 15%;">Mengingat</td>
                     <td>:&nbsp;</td>
                     <td>{{$data->memperhatikan}}</td>
-{{--                    <td>Hasil Rapat Ketua Program Studi Ilmu Hukum Bersama Dosen Pada Tanggal 03 September 2024 (Note To--}}
-{{--                        Ask).</td>--}}
                 </tr>
             </table>
         </div>
@@ -389,9 +375,12 @@
             <table style="width: 100%;">
                 <td style="width: 15%;">Menetapkan</td>
                 <td>:&nbsp;</td>
-                <td>KEPUTUSAN DEKAN FAKULTAS HUKUM UNIVERSITAS DOKTOR HUSNI INGRATUBUN (UNINGRAT) PAPUA TENTANG
-                    PENETAPAN
-                    DOSEN PENGUJI SKRIPSI PROGRAM STRATA SATU (S.1).</td>
+                @if($data->judul->mahasiswa->prodi->jenjang == 'S1' )
+                    <td>KEPUTUSAN DEKAN FAKULTAS HUKUM UNIVERSITAS DOKTOR HUSNI INGRATUBUN (UNINGRAT) PAPUA TENTANG
+                        PENETAPAN DOSEN PENGUJI SKRIPSI PROGRAM STRATA SATU (S.1).</td>
+                @elseif($data->judul->mahasiswa->prodi->jenjang == 'S2' )
+                    <td>KEPUTUSAN DEKAN FAKULTAS HUKUM UNIVERSITAS DOKTOR HUSNI INGRATUBUN (UNINGRAT) PAPUA TENTANG PENETAPAN DOSEN PENGUJI PROGRAM STRATA DUA (S.2).</td>
+                @endif
             </table>
         </div>
 
@@ -457,8 +446,8 @@
         <p style="padding-bottom: 4px; margin-top: 5px;">Dekan,</p>
         <br>
         <br>
-        <p>Assoc. Prof. Dr. Hj. Fitriyah Ingratubun, SH.,MH</p>
-        <p>Nrp. 0908084</p>
+        <p>{{$dekan->nama ?? '-'}}</p>
+        <p>Nrp. {{$dekan->nrp ?? '-'}}</p>
     </div>
 
     <div class="tembusan">
