@@ -20,7 +20,7 @@ class RedirectPanel
         if (auth()->check() && auth()->user()->role === 'admin' ) {
             return redirect()->to(Dashboard::getUrl(panel: 'admin'));
         } elseif (auth()->check() && auth()->user()->role === 'kaprodi'){
-            return redirect()->to(Dashboard::getUrl(panel: 'admin'));
+            return redirect()->to(Dashboard::getUrl(panel: 'kps'));
         } elseif (auth()->check() && auth()->user()->role === 'dekan'){
             return redirect()->to(Dashboard::getUrl(panel: 'admin'));
         } elseif (auth()->check() && auth()->user()->role === 'akademik'){

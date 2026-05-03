@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class OnlyAdmin
+class OnlyKps
 {
     /**
      * Handle an incoming request.
@@ -15,12 +15,9 @@ class OnlyAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $dataRole = ['admin', 'akademik', 'dekan'];
-
-        if (!auth()->check() || !in_array(auth()->user()->role, $dataRole)) {
+        if (auth()->check() && auth()->user()->role !== 'kaprodi') {
             abort(403, 'Anda tidak memiliki hak akses!');
         }
-
         return $next($request);
     }
 }
