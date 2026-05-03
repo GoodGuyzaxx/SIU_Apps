@@ -75,47 +75,47 @@ class BeritaAcara extends Page
                         ->noSearchResultsMessage('Data Tidak Ditemukan')
                         ->searchable()
                         ->reactive()
-                        ->afterStateUpdated(function ($state, callable $set) {
-                            if ($state) {
-                                $undangan = Undangan::with('judul')->find($state);
-                                if ($undangan && $undangan->judul) {
-                                    $judul = $undangan->judul;
-                                    $set('pembimbing_1', $judul->pembimbing_satu);
-                                    $set('pembimbing_2', $judul->pembimbing_dua);
-                                    $set('penguji_1', $judul->penguji_satu);
-                                    $set('penguji_2', $judul->penguji_dua);
-                                }
-                            } else {
-                                $set('pembimbing_1', null);
-                                $set('pembimbing_2', null);
-                                $set('penguji_1', null);
-                                $set('penguji_2', null);
-                            }
-                        })
+//                        ->afterStateUpdated(function ($state, callable $set) {
+//                            if ($state) {
+//                                $undangan = Undangan::with('judul')->find($state);
+//                                if ($undangan && $undangan->judul) {
+//                                    $judul = $undangan->judul;
+//                                    $set('pembimbing_1', $judul->pembimbing_satu);
+//                                    $set('pembimbing_2', $judul->pembimbing_dua);
+//                                    $set('penguji_1', $judul->penguji_satu);
+//                                    $set('penguji_2', $judul->penguji_dua);
+//                                }
+//                            } else {
+//                                $set('pembimbing_1', null);
+//                                $set('pembimbing_2', null);
+//                                $set('penguji_1', null);
+//                                $set('penguji_2', null);
+//                            }
+//                        })
                         ->statePath('id_judul'),
-                    Section::make('List Pembimbing dan Penguji')
-                    ->schema([
-                        Select::make('pembimbing_1')
-                            ->label('Pembimbing 1')
-                            ->options(Dosen::all()->pluck('nama', 'id'))
-                            ->searchable()
-                            ->statePath('pembimbing_1'),
-                        Select::make('pembimbing_2')
-                            ->label('Pembimbing 2')
-                            ->options(Dosen::all()->pluck('nama', 'id'))
-                            ->searchable()
-                            ->statePath('pembimbing_2'),
-                        Select::make('penguji_1')
-                            ->label('Penguji 1')
-                            ->options(Dosen::all()->pluck('nama', 'id'))
-                            ->searchable()
-                            ->statePath('penguji_1'),
-                        Select::make('penguji_2')
-                            ->label('Penguji 2')
-                            ->options(Dosen::all()->pluck('nama', 'id'))
-                            ->searchable()
-                            ->statePath('penguji_2'),
-                    ])
+//                    Section::make('List Pembimbing dan Penguji')
+//                    ->schema([
+//                        Select::make('pembimbing_1')
+//                            ->label('Pembimbing 1')
+//                            ->options(Dosen::all()->pluck('nama', 'id'))
+//                            ->searchable()
+//                            ->statePath('pembimbing_1'),
+//                        Select::make('pembimbing_2')
+//                            ->label('Pembimbing 2')
+//                            ->options(Dosen::all()->pluck('nama', 'id'))
+//                            ->searchable()
+//                            ->statePath('pembimbing_2'),
+//                        Select::make('penguji_1')
+//                            ->label('Penguji 1')
+//                            ->options(Dosen::all()->pluck('nama', 'id'))
+//                            ->searchable()
+//                            ->statePath('penguji_1'),
+//                        Select::make('penguji_2')
+//                            ->label('Penguji 2')
+//                            ->options(Dosen::all()->pluck('nama', 'id'))
+//                            ->searchable()
+//                            ->statePath('penguji_2'),
+//                    ])
                 ]),
             ]);
     }
@@ -123,13 +123,15 @@ class BeritaAcara extends Page
     public function cetak(): void {
         $data = $this->cetakForm->getState();
         // dd($data);
-        $this->redirect(route('beritaPDF', [
+        $url = route('beritaPDF', [
             'id' => $data['id_judul'],
             'jenis' => $data['jenis'],
             'pembimbing_1' => $data['pembimbing_1'] ?? null,
             'pembimbing_2' => $data['pembimbing_2'] ?? null,
             'penguji_1' => $data['penguji_1'] ?? null,
             'penguji_2' => $data['penguji_2'] ?? null,
-        ]));
+        ]);
+
+        $this->js("window.open('{$url}', '_blank')");
     }
 }
