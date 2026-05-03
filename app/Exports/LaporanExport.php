@@ -54,7 +54,7 @@ class LaporanExport
         $sheet       = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Laporan Skripsi');
 
-        // Lebar kolom (A–U = 21 kolom)
+        // Lebar kolom (A–X = 24 kolom)
         $sheet->getColumnDimension('A')->setWidth(6);    // No
         $sheet->getColumnDimension('B')->setWidth(15);   // NPM
         $sheet->getColumnDimension('C')->setWidth(28);   // Nama
@@ -66,20 +66,21 @@ class LaporanExport
         $sheet->getColumnDimension('I')->setWidth(35);   // Penguji 1
         $sheet->getColumnDimension('J')->setWidth(35);   // Penguji 2
         $sheet->getColumnDimension('K')->setWidth(60);   // Judul
-        $sheet->getColumnDimension('L')->setWidth(25);   // Konsentrasi
-        $sheet->getColumnDimension('M')->setWidth(22);   // Nomor SK Pembimbing
-        $sheet->getColumnDimension('N')->setWidth(22);   // Tanggal SK Pembimbing
-        $sheet->getColumnDimension('O')->setWidth(22);   // Nomor SK Penguji
-        $sheet->getColumnDimension('P')->setWidth(22);   // Tanggal SK Penguji
-        $sheet->getColumnDimension('Q')->setWidth(16);   // Nilai Proposal (Huruf)
-        $sheet->getColumnDimension('R')->setWidth(16);   // Nilai Proposal (Angka)
-        $sheet->getColumnDimension('S')->setWidth(22);   // Tanggal Ujian Proposal
-        $sheet->getColumnDimension('T')->setWidth(16);   // Nilai Hasil (Huruf)
-        $sheet->getColumnDimension('U')->setWidth(16);   // Nilai Hasil (Angka)
-        $sheet->getColumnDimension('V')->setWidth(22);   // Tanggal Ujian Hasil
-        $sheet->getColumnDimension('W')->setWidth(14);   // Status
+        $sheet->getColumnDimension('L')->setWidth(60);   // Rev Judul
+        $sheet->getColumnDimension('M')->setWidth(25);   // Konsentrasi
+        $sheet->getColumnDimension('N')->setWidth(22);   // Nomor SK Pembimbing
+        $sheet->getColumnDimension('O')->setWidth(22);   // Tanggal SK Pembimbing
+        $sheet->getColumnDimension('P')->setWidth(22);   // Nomor SK Penguji
+        $sheet->getColumnDimension('Q')->setWidth(22);   // Tanggal SK Penguji
+        $sheet->getColumnDimension('R')->setWidth(16);   // Nilai Proposal (Huruf)
+        $sheet->getColumnDimension('S')->setWidth(16);   // Nilai Proposal (Angka)
+        $sheet->getColumnDimension('T')->setWidth(22);   // Tanggal Ujian Proposal
+        $sheet->getColumnDimension('U')->setWidth(16);   // Nilai Hasil (Huruf)
+        $sheet->getColumnDimension('V')->setWidth(16);   // Nilai Hasil (Angka)
+        $sheet->getColumnDimension('W')->setWidth(22);   // Tanggal Ujian Hasil
+        $sheet->getColumnDimension('X')->setWidth(14);   // Status
 
-        $totalCols = 'W'; // kolom terakhir yang dipakai
+        $totalCols = 'X'; // kolom terakhir yang dipakai
 
         $row = 1;
         $row = $this->buildKopSurat($sheet, $row, $totalCols);
@@ -227,25 +228,26 @@ class LaporanExport
             'I' => 'Penguji 1',
             'J' => 'Penguji 2',
             'K' => 'Judul',
-            'L' => 'Konsentrasi',
-            'M' => 'No. SK Pembimbing',
-            'N' => 'Tanggal SK Pembimbing',
-            'O' => 'No. SK Penguji',
-            'P' => 'Tanggal SK Penguji',
-            'Q' => 'Nilai Proposal',
-            'R' => 'Nilai Proposal (Angka)',
-            'S' => 'Tanggal Ujian Proposal',
-            'T' => 'Nilai Hasil',
-            'U' => 'Nilai Hasil (Angka)',
-            'V' => 'Tanggal Ujian Hasil',
-            'W' => 'Status',
+            'L' => 'Rev Judul',
+            'M' => 'Konsentrasi',
+            'N' => 'No. SK Pembimbing',
+            'O' => 'Tanggal SK Pembimbing',
+            'P' => 'No. SK Penguji',
+            'Q' => 'Tanggal SK Penguji',
+            'R' => 'Nilai Proposal',
+            'S' => 'Nilai Proposal (Angka)',
+            'T' => 'Tanggal Ujian Proposal',
+            'U' => 'Nilai Hasil',
+            'V' => 'Nilai Hasil (Angka)',
+            'W' => 'Tanggal Ujian Hasil',
+            'X' => 'Status',
         ];
 
         foreach ($headers as $col => $label) {
             $sheet->setCellValue("{$col}{$row}", str_replace('\n', "\n", $label));
         }
 
-        $sheet->getStyle("A{$row}:W{$row}")->applyFromArray([
+        $sheet->getStyle("A{$row}:X{$row}")->applyFromArray([
             'font' => [
                 'bold'  => true,
                 'size'  => 10,
@@ -298,8 +300,9 @@ class LaporanExport
             $pengujiSatu    = $judul->pengujiSatu->nama    ?? '-';
             $pengujiDua     = $judul->pengujiDua->nama     ?? '-';
 
-            $judulSkripsi = $judul->judul ?? '-';
-            $konsentrasi  = $judul->minat ?? '-';
+            $judulSkripsi = $judul->judul     ?? '-';
+            $revJudul     = $judul->rev_judul  ?? '-';
+            $konsentrasi  = $judul->minat      ?? '-';
 
             // SK
             $skCreatedAt            = $judul->suratKeputusan?->created_at;
@@ -350,18 +353,19 @@ class LaporanExport
                 'I' => $pengujiSatu,
                 'J' => $pengujiDua,
                 'K' => $judulSkripsi,
-                'L' => $konsentrasi,
-                'M' => $noSKPembimbing,
-                'N' => $tanggalTerbitSk,
-                'O' => $noSKPenguji,
-                'P' => $tanggalTerbitSkPenguji,
-                'Q' => $nilaiProposalHuruf,
-                'R' => $nilaiProposalAngka,
-                'S' => $tanggalUjianProposal,
-                'T' => $nilaiHasilHuruf,
-                'U' => $nilaiHasilAngka,
-                'V' => $tanggalUjianHasil,
-                'W' => $status,
+                'L' => $revJudul,
+                'M' => $konsentrasi,
+                'N' => $noSKPembimbing,
+                'O' => $tanggalTerbitSk,
+                'P' => $noSKPenguji,
+                'Q' => $tanggalTerbitSkPenguji,
+                'R' => $nilaiProposalHuruf,
+                'S' => $nilaiProposalAngka,
+                'T' => $tanggalUjianProposal,
+                'U' => $nilaiHasilHuruf,
+                'V' => $nilaiHasilAngka,
+                'W' => $tanggalUjianHasil,
+                'X' => $status,
             ];
 
             foreach ($rowData as $col => $value) {
@@ -369,7 +373,7 @@ class LaporanExport
             }
 
             // ── Style baris ──
-            $sheet->getStyle("A{$row}:W{$row}")->applyFromArray([
+            $sheet->getStyle("A{$row}:X{$row}")->applyFromArray([
                 'font' => ['size' => 10, 'name' => 'Arial'],
                 'fill' => [
                     'fillType'   => Fill::FILL_SOLID,
@@ -393,13 +397,13 @@ class LaporanExport
                     ->setHorizontal(Alignment::HORIZONTAL_CENTER);
             }
             // Kolom nilai & angka tengah
-            foreach (['Q', 'R', 'T', 'U'] as $col) {
+            foreach (['R', 'S', 'U', 'V'] as $col) {
                 $sheet->getStyle("{$col}{$row}")->getAlignment()
                     ->setHorizontal(Alignment::HORIZONTAL_CENTER);
             }
 
             // Warna teks status (sesuai badge Filament)
-            $sheet->getStyle("W{$row}")->applyFromArray([
+            $sheet->getStyle("X{$row}")->applyFromArray([
                 'font' => ['bold' => true, 'color' => ['rgb' => $statusColor]],
             ]);
 
@@ -410,10 +414,10 @@ class LaporanExport
         }
 
         // Baris total / summary
-        $sheet->mergeCells("A{$row}:V{$row}");
+        $sheet->mergeCells("A{$row}:W{$row}");
         $sheet->setCellValue("A{$row}", 'Total');
-        $sheet->setCellValue("W{$row}", $this->data->count());
-        $sheet->getStyle("A{$row}:W{$row}")->applyFromArray([
+        $sheet->setCellValue("X{$row}", $this->data->count());
+        $sheet->getStyle("A{$row}:X{$row}")->applyFromArray([
             'fill' => [
                 'fillType'   => Fill::FILL_SOLID,
                 'startColor' => ['rgb' => '1F3864'],
