@@ -6,14 +6,20 @@ use App\Models\AccKesiapanUjian;
 use App\Models\Dosen;
 use App\Models\Judul;
 use App\Models\Mahasiswa;
+use App\Models\Prodi;
+use App\Models\SuratKeputusan;
 use App\Models\Undangan;
 use App\Models\UsulanJudul;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Auth;
 
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
+
 class StatsDashboard extends StatsOverviewWidget
 {
+    use InteractsWithPageFilters;
+
     protected static ?int $sort = 1;
 
     protected function getDescription(): string
@@ -27,23 +33,52 @@ class StatsDashboard extends StatsOverviewWidget
 
     protected function getStats(): array
     {
-        // ── Akademik ──────────────────────────────────────────────
-        $countPengajuan         = UsulanJudul::where('status', 'Pengajuan')->count();
-        $countPengajuanDiproses = UsulanJudul::whereNotIn('status', ['Pengajuan', 'Ditolak'])->count();
+        $prodiId = (isset($this->filters['prodi_id']) && $this->filters['prodi_id']) ? (int) $this->filters['prodi_id'] : null;
 
-        $countProposal = Judul::where('status', 'proposal')->count();
-        $countSkripsi  = Judul::where('status', 'hasil')->count();
-        $totalJudul    = Judul::count();
+        // ── Akademik ──────────────────────────────────────────────
+        $countPengajuan = UsulanJudul::where('status', 'Pengajuan')
+            ->when($prodiId, fn ($q) => $q->whereHas('mahasiswa', fn ($q) => $q->where('prodi_id', $prodiId)))
+            ->count();
+
+        $countPengajuanDiproses = UsulanJudul::whereNotIn('status', ['Pengajuan', 'Ditolak'])
+            ->when($prodiId, fn ($q) => $q->whereHas('mahasiswa', fn ($q) => $q->where('prodi_id', $prodiId)))
+            ->count();
+
+        $countProposal = Judul::where('status', 'proposal')
+            ->when($prodiId, fn ($q) => $q->whereHas('mahasiswa', fn ($q) => $q->where('prodi_id', $prodiId)))
+            ->count();
+
+        $countSkripsi = Judul::where('status', 'hasil')
+            ->when($prodiId, fn ($q) => $q->whereHas('mahasiswa', fn ($q) => $q->where('prodi_id', $prodiId)))
+            ->count();
+
+        $totalJudul = Judul::when($prodiId, fn ($q) => $q->whereHas('mahasiswa', fn ($q) => $q->where('prodi_id', $prodiId)))
+            ->count();
 
         // ── Undangan & ACC ────────────────────────────────────────
-        $countUndangan        = Undangan::count();
-        $countUndanganHariIni = Undangan::whereDate('tanggal_hari', today())->count();
-        $countAccPending      = AccKesiapanUjian::where('status', 'pending')->count();
-        $countAccDisetujui    = AccKesiapanUjian::where('status', 'disetujui')->count();
-        $countAccDitolak      = AccKesiapanUjian::where('status', 'ditolak')->count();
+        $countUndangan = Undangan::when($prodiId, fn ($q) => $q->whereHas(
+            'judul.mahasiswa', fn ($q) => $q->where('prodi_id', $prodiId)
+        ))->count();
+
+        $countUndanganHariIni = Undangan::whereDate('tanggal_hari', today())
+            ->when($prodiId, fn ($q) => $q->whereHas(
+                'judul.mahasiswa', fn ($q) => $q->where('prodi_id', $prodiId)
+            ))->count();
+
+        $accScope = fn ($q) => $q->when($prodiId, fn ($q) => $q->whereHas(
+            'undangan.judul.mahasiswa', fn ($q) => $q->where('prodi_id', $prodiId)
+        ));
+
+        $countAccPending   = AccKesiapanUjian::where('status', 'pending')->tap($accScope)->count();
+        $countAccDisetujui = AccKesiapanUjian::where('status', 'disetujui')->tap($accScope)->count();
+        $countAccDitolak   = AccKesiapanUjian::where('status', 'ditolak')->tap($accScope)->count();
+
+        $countSkMahasiswa = SuratKeputusan::when($prodiId, fn ($q) => $q->whereHas(
+            'judul.mahasiswa', fn ($q) => $q->where('prodi_id', $prodiId)
+        ))->count();
 
         // ── Data Master ───────────────────────────────────────────
-        $countMahasiswa = Mahasiswa::count();
+        $countMahasiswa = Mahasiswa::when($prodiId, fn ($q) => $q->where('prodi_id', $prodiId))->count();
         $countDosen     = Dosen::count();
 
         return [
@@ -78,6 +113,12 @@ class StatsDashboard extends StatsOverviewWidget
                 ->descriptionIcon('heroicon-m-bell-alert')
                 ->icon('heroicon-o-check-badge')
                 ->color($countAccPending > 0 ? 'danger' : 'success'),
+
+            Stat::make('SK Mahasiswa', $countSkMahasiswa)
+                ->description('Surat keputusan mahasiswa')
+                ->descriptionIcon('heroicon-m-document-text')
+                ->icon('heroicon-o-document-check')
+                ->color('success'),
 
             // ── Baris 3: Data Master ──────────────────────────────
             Stat::make('Total Mahasiswa', $countMahasiswa)

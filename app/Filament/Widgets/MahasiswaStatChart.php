@@ -4,9 +4,11 @@ namespace App\Filament\Widgets;
 
 use App\Models\Mahasiswa;
 use Filament\Widgets\ChartWidget;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
 
 class MahasiswaStatChart extends ChartWidget
 {
+    use InteractsWithPageFilters;
     protected ?string $heading = 'Sebaran Mahasiswa per Jenjang & Kelas';
 
     protected ?string $description = 'Distribusi mahasiswa aktif berdasarkan program studi';
@@ -17,10 +19,12 @@ class MahasiswaStatChart extends ChartWidget
 
     protected function getData(): array
     {
-        $s1Pagi     = Mahasiswa::where('jenjang', 'sarjana')->where('kelas', 'pagi')->count();
-        $s1Sore     = Mahasiswa::where('jenjang', 'sarjana')->where('kelas', 'sore')->count();
-        $magister   = Mahasiswa::where('jenjang', 'magister')->count();
-        $lainnya    = Mahasiswa::whereNotIn('jenjang', ['sarjana', 'magister'])->count();
+        $prodiId = (isset($this->filters['prodi_id']) && $this->filters['prodi_id']) ? (int) $this->filters['prodi_id'] : null;
+
+        $s1Pagi     = Mahasiswa::when($prodiId, fn($q) => $q->where('prodi_id', $prodiId))->where('jenjang', 'sarjana')->where('kelas', 'pagi')->count();
+        $s1Sore     = Mahasiswa::when($prodiId, fn($q) => $q->where('prodi_id', $prodiId))->where('jenjang', 'sarjana')->where('kelas', 'sore')->count();
+        $magister   = Mahasiswa::when($prodiId, fn($q) => $q->where('prodi_id', $prodiId))->where('jenjang', 'magister')->count();
+        $lainnya    = Mahasiswa::when($prodiId, fn($q) => $q->where('prodi_id', $prodiId))->whereNotIn('jenjang', ['sarjana', 'magister'])->count();
 
         return [
             'labels'   => ['S1 Kelas Pagi', 'S1 Kelas Sore', 'Magister (S2)', 'Lainnya'],
