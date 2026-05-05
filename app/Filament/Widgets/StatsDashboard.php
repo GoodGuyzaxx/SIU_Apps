@@ -115,7 +115,7 @@ class StatsDashboard extends StatsOverviewWidget
                 ->color($countAccPending > 0 ? 'danger' : 'success'),
 
             Stat::make('SK Mahasiswa', $countSkMahasiswa)
-                ->description('Surat keputusan mahasiswa')
+                ->description('Surat keputusan mahasiswa yang sudah terbit')
                 ->descriptionIcon('heroicon-m-document-text')
                 ->icon('heroicon-o-document-check')
                 ->color('success'),

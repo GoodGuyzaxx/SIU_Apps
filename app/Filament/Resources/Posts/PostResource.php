@@ -21,9 +21,13 @@ class PostResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Display & TV';
+    protected static string | UnitEnum | null $navigationGroup = 'Display Berita';
 
     protected static ?int $navigationSort = 11;
+    public static function canAccess(): bool
+    {
+        return in_array(auth()->user()?->role, ['admin', 'akademik']);
+    }
 
     public static function form(Schema $schema): Schema
     {
