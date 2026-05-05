@@ -28,7 +28,7 @@ class StatsDashboard extends StatsOverviewWidget
         $name = $user?->name ?? 'Admin';
         $now  = now()->locale('id')->isoFormat('dddd, D MMMM Y · HH:mm');
 
-        return "👋 Selamat datang, **{$name}** — {$now}";
+        return "👋 Selamat datang, {$name} — {$now}";
     }
 
     protected function getStats(): array
