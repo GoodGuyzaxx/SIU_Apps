@@ -27,7 +27,7 @@ class NilaiResource extends Resource
 
     protected static string | UnitEnum | null $navigationGroup = 'Akademik';
 
-    protected static ?int $navigationSort = 8;
+    protected static ?int $navigationSort = 7;
 
     public static function form(Schema $schema): Schema
     {
