@@ -11,10 +11,10 @@
 
 <div class="overlay">
     <div>
-        <div class="title">SIAKAD UNINGRAT Papua</div>
+        <div class="title">SIPJUTAS UNINGRAT Papua</div>
         <div class="subtitle">
             Platform akademik terpadu untuk mahasiswa, dosen, dan tenaga kependidikan.
-            Akses informasi akademik Program Sarjana & Pascasarjana dalam satu sistem.
+            Akses Pengjuan judul Tugas Akhir dan Skripsi/Tesis Program Sarjana & Pascasarjana dalam satu sistem.
         </div>
     </div>
 </div>

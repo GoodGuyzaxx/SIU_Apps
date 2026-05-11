@@ -1,320 +1,312 @@
 <x-filament-panels::page>
-    <div class="p-6">
-        {{-- Header Section --}}
-        <div class="mb-6">
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Status: <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
-                {{ $record->status }}
-            </span>
-            </p>
+<div class="space-y-6 pb-8">
+
+    {{-- ===== STATUS BANNER ===== --}}
+    @php
+        $statusColor = match($record->status) {
+            'Disetujui' => ['bg' => 'bg-success-50 dark:bg-success-950', 'border' => 'border-success-300 dark:border-success-700', 'icon_bg' => 'bg-success-100 dark:bg-success-900', 'icon' => 'text-success-600 dark:text-success-400', 'text' => 'text-success-800 dark:text-success-200', 'sub' => 'text-success-600 dark:text-success-400'],
+            'Ditolak'   => ['bg' => 'bg-danger-50 dark:bg-danger-950',   'border' => 'border-danger-300 dark:border-danger-700',   'icon_bg' => 'bg-danger-100 dark:bg-danger-900',   'icon' => 'text-danger-600 dark:text-danger-400',   'text' => 'text-danger-800 dark:text-danger-200',   'sub' => 'text-danger-600 dark:text-danger-400'],
+            default     => ['bg' => 'bg-warning-50 dark:bg-warning-950', 'border' => 'border-warning-300 dark:border-warning-700', 'icon_bg' => 'bg-warning-100 dark:bg-warning-900', 'icon' => 'text-warning-600 dark:text-warning-400', 'text' => 'text-warning-800 dark:text-warning-200', 'sub' => 'text-warning-600 dark:text-warning-400'],
+        };
+        $statusLabel = match($record->status) {
+            'Disetujui' => 'Pengajuan Disetujui',
+            'Ditolak'   => 'Pengajuan Ditolak',
+            default     => 'Menunggu Keputusan',
+        };
+        $statusSub = match($record->status) {
+            'Disetujui' => 'Judul skripsi mahasiswa ini telah disetujui dan data judul telah dibuat.',
+            'Ditolak'   => 'Pengajuan ini ditolak. Lihat catatan penolakan di bawah.',
+            default     => 'Pengajuan ini sedang menunggu review dari program studi.',
+        };
+    @endphp
+
+    <div class="rounded-xl border {{ $statusColor['border'] }} {{ $statusColor['bg'] }} px-5 py-4 flex items-start gap-4">
+        <div class="flex-shrink-0 rounded-full p-2 {{ $statusColor['icon_bg'] }}">
+            @if($record->status === 'Disetujui')
+                <x-heroicon-o-check-circle class="h-6 w-6 {{ $statusColor['icon'] }}" />
+            @elseif($record->status === 'Ditolak')
+                <x-heroicon-o-x-circle class="h-6 w-6 {{ $statusColor['icon'] }}" />
+            @else
+                <x-heroicon-o-clock class="h-6 w-6 {{ $statusColor['icon'] }}" />
+            @endif
         </div>
+        <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold {{ $statusColor['text'] }}">{{ $statusLabel }}</p>
+            <p class="mt-0.5 text-xs {{ $statusColor['sub'] }}">{{ $statusSub }}</p>
+        </div>
+        <span class="flex-shrink-0 text-xs font-medium px-2.5 py-1 rounded-full border {{ $statusColor['border'] }} {{ $statusColor['text'] }} {{ $statusColor['icon_bg'] }}">
+            {{ $record->status }}
+        </span>
+    </div>
 
-        {{-- Data Mahasiswa Card --}}
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden mb-6">
-            <div class="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-4">
-                <h3 class="text-lg font-semibold text-white flex items-center">
-                    <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    Data Mahasiswa
-                </h3>
+    {{-- ===== CATATAN PENOLAKAN (only when Ditolak) ===== --}}
+    @if($record->status === 'Ditolak' && $record->catatan)
+        <div class="rounded-xl border border-danger-200 dark:border-danger-800 bg-danger-50 dark:bg-danger-950 p-5">
+            <div class="flex items-center gap-2 mb-2">
+                <x-heroicon-o-exclamation-triangle class="h-4 w-4 text-danger-600 dark:text-danger-400" />
+                <h3 class="text-sm font-semibold text-danger-800 dark:text-danger-200">Catatan Penolakan</h3>
             </div>
-            <div class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {{-- Nama Mahasiswa --}}
-                    <div>
-                        <h4 class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
-                            Nama Lengkap
-                        </h4>
-                        <p class="text-base font-semibold text-gray-900 dark:text-white">
-                            {{ $record->mahasiswa->nama }}
-                        </p>
-                    </div>
+            <p class="text-sm text-danger-700 dark:text-danger-300 leading-relaxed">{{ $record->catatan }}</p>
+        </div>
+    @endif
 
-                    {{-- NPM --}}
+    {{-- ===== MAIN GRID ===== --}}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        {{-- LEFT: Data Mahasiswa --}}
+        <div class="lg:col-span-1 space-y-4">
+
+            <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">
+                <div class="px-5 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center gap-2">
+                    <x-heroicon-o-user-circle class="h-4 w-4 text-primary-500" />
+                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Data Mahasiswa</h3>
+                </div>
+                <div class="px-5 py-4 space-y-4">
                     <div>
-                        <h4 class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
-                            NPM
-                        </h4>
-                        <p class="text-base font-semibold text-gray-900 dark:text-white">
+                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">Nama Lengkap</p>
+                        <p class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">{{ $record->mahasiswa->nama }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">NPM</p>
+                        <span class="mt-1 inline-flex items-center px-2 py-0.5 rounded text-xs font-mono font-medium bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300">
                             {{ $record->mahasiswa->npm }}
-                        </p>
+                        </span>
                     </div>
-
-                    {{-- Nomor HP --}}
                     <div>
-                        <h4 class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
-                            Nomor HP
-                        </h4>
-                        <p class="text-base text-gray-900 dark:text-white flex items-center">
-                            <svg class="h-4 w-4 mr-2 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                            </svg>
+                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">Program Studi</p>
+                        <p class="mt-1 text-sm font-medium text-gray-700 dark:text-gray-300">{{ $record->mahasiswa->prodi->nama_prodi ?? '-' }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">Jenjang</p>
+                        <span class="mt-1 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-info-100 dark:bg-info-900 text-info-700 dark:text-info-300">
+                            {{ $record->mahasiswa->jenjang ?? '-' }}
+                        </span>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">Nomor HP</p>
+                        <p class="mt-1 text-sm text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
+                            <x-heroicon-o-phone class="h-3.5 w-3.5 text-green-500" />
                             {{ $record->mahasiswa->nomor_hp }}
                         </p>
                     </div>
-
-                    {{-- Agama --}}
                     <div>
-                        <h4 class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
-                            Agama
-                        </h4>
-                        <p class="text-base text-gray-900 dark:text-white">
-                            {{ $record->mahasiswa->agama }}
-                        </p>
+                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">Agama</p>
+                        <p class="mt-1 text-sm text-gray-700 dark:text-gray-300">{{ $record->mahasiswa->agama }}</p>
                     </div>
                 </div>
             </div>
+
+            {{-- Waktu --}}
+            <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">
+                <div class="px-5 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center gap-2">
+                    <x-heroicon-o-calendar-days class="h-4 w-4 text-primary-500" />
+                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Informasi Waktu</h3>
+                </div>
+                <div class="px-5 py-4 space-y-4">
+                    <div>
+                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">Tanggal Pengajuan</p>
+                        <p class="mt-1 text-sm text-gray-700 dark:text-gray-300">{{ \Carbon\Carbon::parse($record->created_at)->isoFormat('D MMMM YYYY, HH:mm') }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">Terakhir Diperbarui</p>
+                        <p class="mt-1 text-sm text-gray-700 dark:text-gray-300">{{ \Carbon\Carbon::parse($record->updated_at)->isoFormat('D MMMM YYYY, HH:mm') }}</p>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
+        {{-- RIGHT: Judul Proposals --}}
+        <div class="lg:col-span-2 space-y-4">
 
-        {{-- Main Content Card --}}
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
-            {{-- Informasi Pengajuan --}}
-            <div class="p-6 space-y-6">
-                {{-- Minat Kekhususan --}}
-                <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
-                    <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                        Minat Kekhususan
-                    </h3>
-                    <p class="text-lg font-semibold text-gray-900 dark:text-white">
-                        {{ $record->minat_kekuhusan }}
-                    </p>
+            {{-- Minat Kekhususan --}}
+            <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm px-5 py-4 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">Minat / Kekhususan</p>
+                    <p class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">{{ $record->minat_kekuhusan }}</p>
                 </div>
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-warning-100 dark:bg-warning-900 text-warning-700 dark:text-warning-300 border border-warning-200 dark:border-warning-700">
+                    Peminatan
+                </span>
+            </div>
 
-                {{-- Judul-judul yang Diajukan --}}
-                <div class="space-y-4">
-                    <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">
-                        Judul yang Diajukan
-                    </h3>
-
-                    {{-- Judul 1 --}}
-                    <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
-                        <div class="flex items-start">
-                        <span class="flex-shrink-0 inline-flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm font-medium">
-                            1
-                        </span>
-                            <p class="ml-3 text-sm text-gray-900 dark:text-white leading-relaxed">
-                                {{ $record->judul_satu }}
-                            </p>
-                        </div>
-                    </div>
-
-                    {{-- Judul 2 --}}
-                    <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
-                        <div class="flex items-start">
-                        <span class="flex-shrink-0 inline-flex items-center justify-center h-8 w-8 rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-sm font-medium">
-                            2
-                        </span>
-                            <p class="ml-3 text-sm text-gray-900 dark:text-white leading-relaxed">
-                                {{ $record->judul_dua }}
-                            </p>
-                        </div>
-                    </div>
-
-                    {{-- Judul 3 --}}
-                    <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
-                        <div class="flex items-start">
-                        <span class="flex-shrink-0 inline-flex items-center justify-center h-8 w-8 rounded-full bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 text-sm font-medium">
-                            3
-                        </span>
-                            <p class="ml-3 text-sm text-gray-900 dark:text-white leading-relaxed">
-                                {{ $record->judul_tiga }}
-                            </p>
-                        </div>
-                    </div>
+            {{-- Judul Cards --}}
+            <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">
+                <div class="px-5 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center gap-2">
+                    <x-heroicon-o-document-text class="h-4 w-4 text-primary-500" />
+                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Judul yang Diajukan</h3>
+                    <span class="ml-auto text-xs text-gray-400 dark:text-gray-500">3 pilihan</span>
                 </div>
-
-                {{-- Catatan (if exists) --}}
-                @if($record->catatan)
-                    <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
-                        <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                            Catatan
-                        </h3>
-                        <p class="text-sm text-gray-900 dark:text-white">
-                            {{ $record->catatan }}
-                        </p>
-                    </div>
-                @endif
-
-                {{-- Informasi Waktu --}}
-                <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                Tanggal Pengajuan
-                            </h3>
-                            <p class="mt-1 text-sm text-gray-900 dark:text-white">
-                                {{ \Carbon\Carbon::parse($record->created_at)->format('d F Y, H:i') }}
+                <div class="divide-y divide-gray-100 dark:divide-gray-800">
+                    @foreach([
+                        ['num' => 1, 'color' => 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300',   'judul' => $record->judul_satu],
+                        ['num' => 2, 'color' => 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300', 'judul' => $record->judul_dua],
+                        ['num' => 3, 'color' => 'bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300','judul' => $record->judul_tiga],
+                    ] as $item)
+                        <div class="px-5 py-4 flex items-start gap-4">
+                            <span class="flex-shrink-0 inline-flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold {{ $item['color'] }}">
+                                {{ $item['num'] }}
+                            </span>
+                            <p class="text-sm text-gray-800 dark:text-gray-200 leading-relaxed flex-1">
+                                {{ $item['judul'] ?? '-' }}
                             </p>
                         </div>
-                        <div>
-                            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                Terakhir Diperbarui
-                            </h3>
-                            <p class="mt-1 text-sm text-gray-900 dark:text-white">
-                                {{ \Carbon\Carbon::parse($record->updated_at)->format('d F Y, H:i') }}
-                            </p>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
 
-            {{-- Action Buttons --}}
-            <div class="bg-gray-50 dark:bg-gray-900 px-6 py-4">
-                <div class="flex flex-col sm:flex-row gap-3 justify-end">
-                    {{-- Edit Button --}}
-                    <button
-                        type="button"
-                        wire:click="editPengajuan({{ $record->id }})"
-                        class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                    >
-                        <svg class="h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                        Edit
-                    </button>
-
-                    {{-- Tolak Button --}}
-                    <a
-                        x-data
-                        x-on:click.prevent="$dispatch('open-modal', { id: 'customForm' })"
-                        id="customForm"
-                        class="inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
-                    >
-                        <svg class="h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                        Tolak
-                    </a>
-
-                    {{-- Setujui Button --}}
-                    <a
-                        x-data
-                        x-on:click.prevent="$dispatch('open-modal', { id: 'approveModal' })"
-                        class="inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
-                    >
-                        <svg class="h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        Setujui
-                    </a>
-
-{{--                    <a--}}
-{{--                        x-data--}}
-{{--                        x-on:click.prevent="$dispatch('open-modal', { id: 'approveModal' })"--}}
-{{--                        class="inline-flex items-center justify-center font-medium tracking-tight rounded-lg focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset bg-primary-600 hover:bg-primary-500 focus:bg-primary-700 focus:ring-offset-primary-700 h-9 px-4 text-white shadow focus:ring-white cursor-pointer">--}}
-{{--                        Open your custom modal--}}
-{{--                    </a>--}}
+            {{-- Catatan (non-rejection / general note) --}}
+            @if($record->catatan && $record->status !== 'Ditolak')
+                <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                    <div class="px-5 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center gap-2">
+                        <x-heroicon-o-chat-bubble-left-ellipsis class="h-4 w-4 text-gray-400" />
+                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Catatan</h3>
+                    </div>
+                    <div class="px-5 py-4">
+                        <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">{{ $record->catatan }}</p>
+                    </div>
                 </div>
-            </div>
+            @endif
+
         </div>
     </div>
 
-        <x-filament::modal id="customForm" width="5xl">
-            <x-slot name="heading">Catatan Alasan Penolakan Pengajuan Judul </x-slot>
+    {{-- ===== ACTION BAR (only when Pengajuan/pending) ===== --}}
+    @if($record->status === 'Pengajuan')
+        <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm px-5 py-4">
+            <div class="flex items-center justify-between flex-wrap gap-3">
+                <div>
+                    <p class="text-sm font-semibold text-gray-900 dark:text-white">Tindakan</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Setujui atau tolak pengajuan ini</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    {{-- Edit --}}
+                    <button
+                        type="button"
+                        wire:click="editPengajuan({{ $record->id }})"
+                        class="inline-flex items-center gap-1.5 px-3.5 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    >
+                        <x-heroicon-o-pencil-square class="h-4 w-4" />
+                        Edit
+                    </button>
 
-                {{$this->rejectForm}}
+                    {{-- Tolak --}}
+                    <button
+                        type="button"
+                        x-data
+                        x-on:click="$dispatch('open-modal', { id: 'customForm' })"
+                        class="inline-flex items-center gap-1.5 px-3.5 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-danger-600 hover:bg-danger-700 focus:outline-none focus:ring-2 focus:ring-danger-500 transition-colors"
+                    >
+                        <x-heroicon-o-x-circle class="h-4 w-4" />
+                        Tolak
+                    </button>
 
-            <x-filament::button
-                wire:click="reject"
-                color="danger"
-            >
-                Tolak
-            </x-filament::button>
-            <x-slot name="action">
-
-            </x-slot>
-        </x-filament::modal>
-
-    {{-- Setujui Pengajuan --}}
-    <x-filament::modal
-        id="approveModal"
-        width="2xl"
-        :visible="$this->approveModalOpen ?? null"
-        :close-by-clicking-away="true"
-        :close-by-pressing-escape="true"
-        x-on:close="$wire.closeApproveModal?.()"
-    >
-        <x-slot name="heading">
-            <div class="flex items-center gap-2">
-                <x-filament::icon icon="heroicon-o-check-badge" class="h-5 w-5 text-success-600" />
-                <span>Setujui Pengajuan Judul</span>
+                    {{-- Setujui --}}
+                    <button
+                        type="button"
+                        x-data
+                        x-on:click="$dispatch('open-modal', { id: 'approveModal' })"
+                        class="inline-flex items-center gap-1.5 px-3.5 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-success-600 hover:bg-success-700 focus:outline-none focus:ring-2 focus:ring-success-500 transition-colors"
+                    >
+                        <x-heroicon-o-check-circle class="h-4 w-4" />
+                        Setujui
+                    </button>
+                </div>
             </div>
-        </x-slot>
-
-        <div class="space-y-4">
-            <p class="text-sm text-gray-500">
-                Pilih judul yang disetujui, lalu lengkapi informasi tambahan jika diperlukan.
-            </p>
-
-            {{-- Pilih Judul --}}
-            <x-filament::input.wrapper>
-                <x-filament::input.select wire:model="judul" required>
-                    <option value="">— Pilih Judul —</option>
-                    <option value="{{ $this->record->judul_satu }}">{{ $this->record->judul_satu }}</option>
-                    <option value="{{ $this->record->judul_dua }}">{{ $this->record->judul_dua }}</option>
-                    <option value="{{ $this->record->judul_tiga }}">{{ $this->record->judul_tiga }}</option>
-                </x-filament::input.select>
-
-                @error('judul')
-                <p class="text-danger-600 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </x-filament::input.wrapper>
-
-            {{-- Schema form persetujuan (mis. pilih dosen, catatan, dsb.) --}}
-            <form wire:submit.prevent="approve" class="space-y-4">
-                {{ $this->approveForm }}
-            </form>
         </div>
+    @endif
 
-        <x-slot name="footerActions">
-            <x-filament::button
-                color="gray"
-                x-on:click="$dispatch('close-modal', { id: 'approveModal' })"
-            >
-                Batal
-            </x-filament::button>
+</div>
 
-            <x-filament::button
-                color="success"
-                wire:click="approve"
-                wire:target="approve"
-                wire:loading.attr="disabled"
-                icon="heroicon-o-check"
-            >
-                Terima
-            </x-filament::button>
-        </x-slot>
-    </x-filament::modal>
+{{-- ===== MODAL: TOLAK ===== --}}
+<x-filament::modal id="customForm" width="2xl">
+    <x-slot name="heading">
+        <div class="flex items-center gap-2">
+            <x-filament::icon icon="heroicon-o-x-circle" class="h-5 w-5 text-danger-600" />
+            <span>Tolak Pengajuan Judul</span>
+        </div>
+    </x-slot>
 
+    <div class="space-y-3">
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+            Berikan alasan penolakan yang jelas agar mahasiswa dapat memperbaiki pengajuannya.
+        </p>
+        {{ $this->rejectForm }}
+    </div>
 
-    {{--    <x-filament::modal id="customFormApprove">--}}
-{{--        <x-slot name="heading">Catatan Alasan Penolakan Pengajuan Judul </x-slot>--}}
+    <x-slot name="footerActions">
+        <x-filament::button
+            color="gray"
+            x-on:click="$dispatch('close-modal', { id: 'customForm' })"
+        >
+            Batal
+        </x-filament::button>
+        <x-filament::button
+            color="danger"
+            wire:click="reject"
+            icon="heroicon-o-x-circle"
+        >
+            Tolak Pengajuan
+        </x-filament::button>
+    </x-slot>
+</x-filament::modal>
 
-{{--        <x-filament::input.wrapper>--}}
-{{--            <x-filament::input.select wire:model="judul">--}}
-{{--                <option value="-">Pilih Judul Terlebih Dahulu</option>--}}
-{{--                <option value="{{$this->record->judul_satu}}">{{$this->record->judul_satu}}</option>--}}
-{{--                <option value="{{$this->record->judul_dua}}">{{$this->record->judul_dua}}</option>--}}
-{{--                <option value="{{$this->record->judul_tiga}}">{{$this->record->judul_tiga}}</option>--}}
-{{--            </x-filament::input.select>--}}
-{{--        </x-filament::input.wrapper>--}}
+{{-- ===== MODAL: SETUJUI ===== --}}
+<x-filament::modal
+    id="approveModal"
+    width="2xl"
+    :visible="$this->approveModalOpen ?? null"
+    :close-by-clicking-away="true"
+    :close-by-pressing-escape="true"
+    x-on:close="$wire.closeApproveModal?.()"
+>
+    <x-slot name="heading">
+        <div class="flex items-center gap-2">
+            <x-filament::icon icon="heroicon-o-check-badge" class="h-5 w-5 text-success-600" />
+            <span>Setujui Pengajuan Judul</span>
+        </div>
+    </x-slot>
 
-{{--        {{$this->approveForm}}--}}
+    <div class="space-y-4">
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+            Pilih judul yang disetujui, lalu lengkapi informasi pembimbing dan penguji.
+        </p>
 
-{{--        <x-filament::button--}}
-{{--            wire:click="approve"--}}
-{{--            color="success"--}}
-{{--        >--}}
-{{--            Terima--}}
-{{--        </x-filament::button>--}}
-{{--        <x-slot name="action">--}}
+        <x-filament::input.wrapper label="Pilih Judul yang Disetujui">
+            <x-filament::input.select wire:model="judul" required>
+                <option value="">— Pilih Judul —</option>
+                <option value="{{ $this->record->judul_satu }}">Pilihan 1: {{ \Str::limit($this->record->judul_satu, 80) }}</option>
+                <option value="{{ $this->record->judul_dua }}">Pilihan 2: {{ \Str::limit($this->record->judul_dua, 80) }}</option>
+                <option value="{{ $this->record->judul_tiga }}">Pilihan 3: {{ \Str::limit($this->record->judul_tiga, 80) }}</option>
+            </x-filament::input.select>
+        </x-filament::input.wrapper>
 
-{{--        </x-slot>--}}
-{{--    </x-filament::modal>--}}
+        @error('judul')
+            <p class="text-danger-600 text-sm">{{ $message }}</p>
+        @enderror
 
+        <form wire:submit.prevent="approve" class="space-y-4">
+            {{ $this->approveForm }}
+        </form>
+    </div>
 
-
+    <x-slot name="footerActions">
+        <x-filament::button
+            color="gray"
+            x-on:click="$dispatch('close-modal', { id: 'approveModal' })"
+        >
+            Batal
+        </x-filament::button>
+        <x-filament::button
+            color="success"
+            wire:click="approve"
+            wire:target="approve"
+            wire:loading.attr="disabled"
+            icon="heroicon-o-check"
+        >
+            Setujui & Simpan
+        </x-filament::button>
+    </x-slot>
+</x-filament::modal>
 
 </x-filament-panels::page>
