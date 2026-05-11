@@ -40,7 +40,7 @@ class StatsDashboard extends StatsOverviewWidget
             ->when($prodiId, fn ($q) => $q->whereHas('mahasiswa', fn ($q) => $q->where('prodi_id', $prodiId)))
             ->count();
 
-        $countPengajuanDiproses = UsulanJudul::whereNotIn('status', ['Pengajuan', 'Ditolak'])
+        $countPengajuanDiproses = UsulanJudul::where('status', 'Ditolak')
             ->when($prodiId, fn ($q) => $q->whereHas('mahasiswa', fn ($q) => $q->where('prodi_id', $prodiId)))
             ->count();
 
@@ -89,11 +89,11 @@ class StatsDashboard extends StatsOverviewWidget
                 ->icon('heroicon-o-document-text')
                 ->color('warning'),
 
-            Stat::make('Pengajuan Diproses', $countPengajuanDiproses)
+            Stat::make('Pengajuan Ditolak', $countPengajuanDiproses)
                 ->description('Sudah melewati seleksi awal')
-                ->descriptionIcon('heroicon-m-arrow-path')
+                ->descriptionIcon('heroicon-m-x-mark')
                 ->icon('heroicon-o-document-check')
-                ->color('info'),
+                ->color('danger'),
 
             Stat::make('Total Judul Terdaftar', $totalJudul)
                 ->description("Proposal: {$countProposal} · Skripsi: {$countSkripsi}")
