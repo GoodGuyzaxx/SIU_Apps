@@ -100,8 +100,48 @@
 
                 {{-- Data Rows --}}
                 <div class="mt-[clamp(0.25rem,0.4vh,0.4rem)] flex-1 scroll-container px-[clamp(0.6rem,1vw,1.25rem)] pb-[clamp(0.4rem,0.6vh,0.6rem)]"
-                    data-autoscroll="true" data-speed="30" data-pause="3000">
-                    <div class="scroll-track" style="color: var(--color-text-primary);">
+                    x-data="{
+                        speed: 35,
+                        pauseMs: 3000,
+                        offset: 0,
+                        paused: false,
+                        lastTime: null,
+                        animId: null,
+                        init() {
+                            this.$nextTick(() => {
+                                const run = (ts) => {
+                                    const track = this.$refs.track;
+                                    const el = this.$el;
+                                    const maxOffset = track.scrollHeight - el.clientHeight;
+                                    if (!this.paused && maxOffset > 10) {
+                                        if (this.lastTime !== null) {
+                                            this.offset += this.speed * (ts - this.lastTime) / 1000;
+                                        }
+                                        if (this.offset >= maxOffset) {
+                                            this.offset = maxOffset;
+                                            track.style.transform = 'translateY(-' + this.offset + 'px)';
+                                            this.paused = true;
+                                            this.lastTime = null;
+                                            setTimeout(() => {
+                                                this.offset = 0;
+                                                track.style.transform = 'translateY(0)';
+                                                this.paused = false;
+                                            }, this.pauseMs);
+                                            this.animId = requestAnimationFrame(run);
+                                            return;
+                                        }
+                                        track.style.transform = 'translateY(-' + this.offset + 'px)';
+                                    }
+                                    this.lastTime = ts;
+                                    this.animId = requestAnimationFrame(run);
+                                };
+                                this.animId = requestAnimationFrame(run);
+                            });
+                        }
+                    }"
+                    @mouseenter="paused = true"
+                    @mouseleave="paused = false">
+                    <div x-ref="track" style="color: var(--color-text-primary);">
                         @if($post)
                             <div class="prose max-w-none p-4">
                                 {!! $post->body !!}
@@ -126,9 +166,9 @@
                             <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
                         </svg>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <span class="tv-heading text-white">Galeri</span>
-                    </div>
+{{--                    <div class="flex items-center gap-2">--}}
+{{--                        <span class="tv-heading text-white">Galeri</span>--}}
+{{--                    </div>--}}
                 </header>
 
                 <div class="flex-1 w-full h-full relative" x-data="{
