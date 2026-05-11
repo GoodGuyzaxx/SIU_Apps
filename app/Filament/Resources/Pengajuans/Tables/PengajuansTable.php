@@ -6,10 +6,8 @@ use App\Filament\Resources\Pengajuans\Pages\DetailPengajuan;
 use App\Models\UsulanJudul;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
-use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class PengajuansTable
@@ -20,60 +18,83 @@ class PengajuansTable
             ->recordUrl(null)
             ->recordAction(null)
             ->columns([
-                //
+                TextColumn::make('index')
+                    ->label('No')
+                    ->rowIndex()
+                    ->alignCenter()
+                    ->width('60px'),
+
                 TextColumn::make('mahasiswa.nama')
                     ->label('Nama Mahasiswa')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->weight('semibold')
+                    ->icon('heroicon-o-user-circle')
+                    ->description(fn ($record) => $record->mahasiswa?->npm ?? '-'),
 
-                TextColumn::make("mahasiswa.npm")
-                    ->label('NPM')
+                TextColumn::make('mahasiswa.prodi.nama_prodi')
+                    ->label('Program Studi')
+                    ->searchable()
+                    ->sortable()
+                    ->badge()
+                    ->color('info')
+                    ->icon('heroicon-o-academic-cap'),
+
+                TextColumn::make('minat_kekuhusan')
+                    ->label('Minat / Peminatan')
                     ->searchable()
                     ->badge()
-                    ->color('primary'),
+                    ->color('warning'),
+
+                TextColumn::make('judul_satu')
+                    ->label('Judul Utama (Pilihan 1)')
+                    ->searchable()
+                    ->limit(60)
+                    ->tooltip(fn ($record) => $record->judul_satu)
+                    ->wrap(),
 
                 TextColumn::make('status')
-                    ->label('Status Pengajuan')
+                    ->label('Status')
                     ->badge()
+                    ->alignCenter()
                     ->color(fn (string $state): string => match ($state) {
+                        'Disetujui' => 'success',
+                        'Ditolak'   => 'danger',
                         'Pengajuan' => 'warning',
-                        'Diterima' => 'success',
-                        'Ditolak' => 'danger',
-                        default => 'gray',
-                    }),
+                        default     => 'gray',
+                    })
+                    ->icon(fn (string $state): string => match ($state) {
+                        'Disetujui' => 'heroicon-o-check-circle',
+                        'Ditolak'   => 'heroicon-o-x-circle',
+                        'Pengajuan' => 'heroicon-o-clock',
+                        default     => 'heroicon-o-question-mark-circle',
+                    })
+                    ->sortable(),
 
                 TextColumn::make('created_at')
-                    ->label('Dibuat')
-                    ->since()
+                    ->label('Tanggal Pengajuan')
+                    ->dateTime('d M Y, H:i')
                     ->sortable()
+                    ->since()
+                    ->tooltip(fn ($record) => $record->created_at?->format('d M Y, H:i'))
+                    ->color('gray'),
             ])
-            ->emptyStateHeading('Data Tidak Ditemukan')
             ->defaultSort('created_at', 'desc')
-
-            ->filters([
-                //
-                SelectFilter::make('status')
-                ->label('Status Pengajuan')
-                ->default('Pengajuan')
-                ->options([
-                    'Pengajuan' => 'Pengajuan',
-                    'Disetujui' => 'Disetujui',
-                    'Ditolak' => 'Ditolak',
-                ])
-            ])
+            ->striped()
+            ->paginated([10, 25, 50])
+            ->emptyStateIcon('heroicon-o-document-text')
+            ->emptyStateHeading('Data Tidak Ditemukan')
+            ->emptyStateDescription('Belum ada pengajuan judul yang masuk.')
             ->recordActions([
-                Action::make("Detail")
+                Action::make('Detail')
                     ->label('Detail')
                     ->icon('heroicon-o-eye')
-                    ->url(fn(UsulanJudul $record) => DetailPengajuan::getUrl([$record->id]))
-
-
+                    ->url(fn (UsulanJudul $record) => DetailPengajuan::getUrl([$record->id])),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
             ]);
-
     }
 }
