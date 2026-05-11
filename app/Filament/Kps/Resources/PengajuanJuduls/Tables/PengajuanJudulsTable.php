@@ -7,7 +7,6 @@ use App\Models\UsulanJudul;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class PengajuanJudulsTable
@@ -84,18 +83,6 @@ class PengajuanJudulsTable
                     ->since()
                     ->tooltip(fn ($record) => $record->created_at?->format('d M Y, H:i'))
                     ->color('gray'),
-            ])
-
-            ->filters([
-                SelectFilter::make('status')
-                    ->label('Filter Status')
-                    ->default('Pengajuan')
-                    ->options([
-                        'Pengajuan'  => 'Menunggu Review',
-                        'Disetujui'  => 'Disetujui',
-                        'Ditolak'    => 'Ditolak',
-                    ])
-                    ->placeholder('Semua Status'),
             ])
 
             ->recordActions([
