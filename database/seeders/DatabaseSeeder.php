@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             ProdiSeeder::class,
             UserSeeder::class,
+            ConfigDokumen::class,
             DosenSeeder::class,
             // Jalankan setelah ProdiSeeder & DosenSeeder tersedia
             // php artisan db:seed --class=DummyDataSeeder
