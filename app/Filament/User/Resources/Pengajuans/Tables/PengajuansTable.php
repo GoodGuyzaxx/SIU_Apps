@@ -8,81 +8,84 @@ use App\Models\UsulanJudul;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class PengajuansTable
 {
-
     public static function configure(Table $table): Table
     {
         $mahasiswa = Mahasiswa::where('id_user', auth()->id())->first();
 
         return $table
             ->columns([
-                TextColumn::make('mahasiswa.nama')
-                    ->label('Nama Mahasiswa')
-                    ->searchable()
-                    ->sortable(),
+                TextColumn::make('index')
+                    ->label('No')
+                    ->rowIndex()
+                    ->alignCenter()
+                    ->width('60px'),
 
-                TextColumn::make("mahasiswa.npm")
-                    ->label('NPM')
+                TextColumn::make('minat_kekuhusan')
+                    ->label('Minat / Peminatan')
                     ->searchable()
                     ->badge()
-                    ->color('primary'),
+                    ->color('warning'),
+
+                TextColumn::make('judul_satu')
+                    ->label('Judul Utama (Pilihan 1)')
+                    ->searchable()
+                    ->limit(60)
+                    ->tooltip(fn ($record) => $record->judul_satu)
+                    ->wrap(),
 
                 TextColumn::make('status')
-                    ->label('Status Pengajuan')
+                    ->label('Status')
                     ->badge()
+                    ->alignCenter()
                     ->color(fn (string $state): string => match ($state) {
+                        'Disetujui' => 'success',
+                        'Ditolak'   => 'danger',
                         'Pengajuan' => 'warning',
-                        'Diterima' => 'success',
-                        'Ditolak' => 'danger',
-                        default => 'gray',
+                        default     => 'gray',
+                    })
+                    ->icon(fn (string $state): string => match ($state) {
+                        'Disetujui' => 'heroicon-o-check-circle',
+                        'Ditolak'   => 'heroicon-o-x-circle',
+                        'Pengajuan' => 'heroicon-o-clock',
+                        default     => 'heroicon-o-question-mark-circle',
                     }),
 
                 TextColumn::make('created_at')
-                    ->label('Dibuat')
+                    ->label('Tanggal Pengajuan')
+                    ->dateTime('d M Y')
+                    ->sortable()
                     ->since()
-                    ->sortable(),
+                    ->tooltip(fn ($record) => $record->created_at?->format('d M Y, H:i'))
+                    ->color('gray'),
             ])
-            ->filters([
-                // Filters yang bisa diubah user (opsional)
-                SelectFilter::make('status')
-                    ->label('Status')
-                    ->options([
-                        'Pengajuan' => 'Pengajuan',
-                        'Diterima' => 'Diterima',
-                        'Ditolak' => 'Ditolak',
-                    ]),
-            ])
-            // PERMANENT FILTER
             ->modifyQueryUsing(function ($query) use ($mahasiswa) {
                 if ($mahasiswa) {
                     return $query->where('id_mahasiswa', $mahasiswa->id);
                 }
                 return $query->whereRaw('1 = 0');
             })
-            // Header untuk menunjukkan filter aktif
             ->heading('Pengajuan Judul Saya')
-            ->description($mahasiswa ?
-                "Menampilkan pengajuan untuk: {$mahasiswa->nama} (NPM: {$mahasiswa->npm})" :
-                "Tidak ada data mahasiswa"
+            ->description($mahasiswa
+                ? "Menampilkan pengajuan untuk: {$mahasiswa->nama} (NPM: {$mahasiswa->npm})"
+                : 'Tidak ada data mahasiswa'
             )
             ->defaultSort('created_at', 'desc')
+            ->striped()
             ->recordActions([
-            Action::make('Detail')
-                ->label('Detail')
-                ->color('success')
-                ->icon('heroicon-o-eye')
-                ->url(fn (UsulanJudul $record) => DetailPengajuan::getUrl([$record->id])),
+                Action::make('Detail')
+                    ->label('Detail')
+                    ->color('success')
+                    ->icon('heroicon-o-eye')
+                    ->url(fn (UsulanJudul $record) => DetailPengajuan::getUrl([$record->id])),
                 DeleteAction::make()
                     ->requiresConfirmation(),
             ])
             ->emptyStateHeading('Belum Ada Pengajuan')
             ->emptyStateDescription('Anda belum membuat pengajuan judul skripsi.')
-            ->emptyStateActions([
-
-            ]);
+            ->emptyStateActions([]);
     }
 }
