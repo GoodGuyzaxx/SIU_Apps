@@ -21,6 +21,7 @@ class GalleryForm
                     ->disk('public')
                     ->moveFiles()
                     ->directory('galleries')
+                    ->openable()
                     ->required(),
             ]);
     }
