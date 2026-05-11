@@ -105,36 +105,41 @@ class UndanganController extends Controller
             'penguji_2' => request()->query('penguji_2') ? Dosen::find(request()->query('penguji_2')) : null,
         ];
 
-        if ($jenis != 'proposal') {
+        $browserConfig = function (Browsershot $browsershot) {
+            $browsershot
+                ->noSandbox()
+                ->addChromiumArguments([
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--ignore-certificate-errors',
+                    '--disable-web-security'
+                ]);
+        };
+
+        $nama = $data->judul->mahasiswa->nama;
+        $npm  = $data->judul->mahasiswa->npm;
+
+        if ($jenis === 'sidang') {
             return pdf()
-                ->withBrowsershot(function (Browsershot $browsershot){
-                    $browsershot
-                        ->noSandbox()
-                        ->addChromiumArguments([
-                            '--no-sandbox',
-                            '--disable-setuid-sandbox',
-                            '--ignore-certificate-errors',
-                            '--disable-web-security'
-                        ]);
-                })
-                ->view('pdf.hasil.berita_acara_hasil_pdf', compact('data', 'dosenList','kaprodi'))
+                ->withBrowsershot($browserConfig)
+                ->view('pdf.sidang.berita_acara_sidang_pdf', compact('data', 'dosenList', 'kaprodi'))
                 ->format(Format::A4)
-                ->name('Berita Acara Hasil '.$data->judul->mahasiswa->nama.' '.$data->judul->mahasiswa->npm.'.pdf');
+                ->name('Berita Acara Sidang Akhir '.$nama.' '.$npm.'.pdf');
         }
+
+        if ($jenis === 'hasil') {
+            return pdf()
+                ->withBrowsershot($browserConfig)
+                ->view('pdf.hasil.berita_acara_hasil_pdf', compact('data', 'dosenList', 'kaprodi'))
+                ->format(Format::A4)
+                ->name('Berita Acara Hasil '.$nama.' '.$npm.'.pdf');
+        }
+
         return pdf()
-            ->withBrowsershot(function (Browsershot $browsershot){
-                $browsershot
-                    ->noSandbox()
-                    ->addChromiumArguments([
-                        '--no-sandbox',
-                        '--disable-setuid-sandbox',
-                        '--ignore-certificate-errors',
-                        '--disable-web-security'
-                    ]);
-            })
-            ->view('pdf.proposal.berita_acara_proposal_pdf', compact('data', 'dosenList','kaprodi'))
+            ->withBrowsershot($browserConfig)
+            ->view('pdf.proposal.berita_acara_proposal_pdf', compact('data', 'dosenList', 'kaprodi'))
             ->format(Format::A4)
-            ->name('Berita Acara Proposal '.$data->judul->mahasiswa->nama.' '.$data->judul->mahasiswa->npm.'.pdf');
+            ->name('Berita Acara Proposal '.$nama.' '.$npm.'.pdf');
     }
 
 }
