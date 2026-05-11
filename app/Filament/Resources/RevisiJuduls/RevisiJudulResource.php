@@ -30,7 +30,7 @@ class RevisiJudulResource extends Resource
 
     protected static ?string $breadcrumb = 'Revisi Judul';
 
-    protected static ?int $navigationSort = 7;
+    protected static ?int $navigationSort = 8;
 
     public static function form(Schema $schema): Schema
     {

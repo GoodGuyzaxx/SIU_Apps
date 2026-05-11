@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\RevisiJuduls\Pages;
 
 use App\Filament\Resources\RevisiJuduls\RevisiJudulResource;
-use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditRevisiJudul extends EditRecord
@@ -12,8 +11,14 @@ class EditRevisiJudul extends EditRecord
 
     protected function getHeaderActions(): array
     {
-        return [
-            DeleteAction::make(),
-        ];
+        return [];
+    }
+
+    protected function afterSave(): void
+    {
+        // Jika rev_judul sudah diisi, ubah status_rev_judul menjadi 'sudah_revisi'
+        if (!empty($this->record->rev_judul)) {
+            $this->record->update(['status_rev_judul' => 'sudah_revisi']);
+        }
     }
 }
