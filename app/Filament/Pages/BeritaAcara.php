@@ -58,7 +58,8 @@ class BeritaAcara extends Page
                         ->native(false)
                         ->options([
                             'proposal' => 'Proposal',
-                            'hasil' => 'Seminar Hasil',
+                            'hasil' => 'Seminar Hasil/Tutup',
+                            'sidang' => 'Sidang Akhir/Tesis'
                         ])
                         ->required()
                     ->statePath('jenis'),
@@ -66,10 +67,11 @@ class BeritaAcara extends Page
                         ->label('Mahasiswa')
                         ->options(Undangan::with('judul.mahasiswa')->get()->mapWithKeys(function ($undangan) {
                             if ($undangan->judul && $undangan->judul->mahasiswa) {
-                                return [$undangan->id => $undangan->judul->judul . ' - ' . $undangan->judul->mahasiswa->nama . ' - ' . $undangan->judul->mahasiswa->npm];
+                                return [$undangan->id =>$undangan->judul->mahasiswa->nama . ' - ' . $undangan->judul->mahasiswa->npm];
                             }
                             return [];
                         }))
+
                         ->required()
                         ->loadingMessage('Sedang Mencari')
                         ->noSearchResultsMessage('Data Tidak Ditemukan')
