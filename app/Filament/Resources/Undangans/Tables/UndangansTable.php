@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Undangans\Tables;
 
 use App\Models\AccKesiapanUjian;
+use App\Models\Prodi;
 use App\Models\Undangan;
 use App\Services\WhatsappService;
 use Filament\Actions\Action;
@@ -13,7 +14,9 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class UndangansTable
 {
@@ -66,8 +69,20 @@ class UndangansTable
 
         ])
             ->filters([
-            //
+            SelectFilter::make('prodi_id')
+                ->label('Program Studi')
+                ->native(false)
+                ->options(Prodi::query()->pluck('nama_prodi', 'id'))
+                ->query(function (Builder $query, array $data): Builder {
+                    if (empty($data['value'])) {
+                        return $query;
+                    }
+                    return $query->whereHas('judul.mahasiswa', function (Builder $q) use ($data) {
+                        $q->where('prodi_id', $data['value']);
+                    });
+                }),
         ])
+            ->defaultSort('created_at', 'desc')
             ->recordActions([
 
             Action::make('Tanda Tangan')
@@ -99,52 +114,28 @@ class UndangansTable
             Action::make('Print')
             ->icon('heroicon-o-printer')
             ->color('success')
-            ->url(fn(Undangan $record) => route('undangan.pdf', $record->id))
-            ->openUrlInNewTab(true),
+            ->modalHeading('Preview Undangan')
+            ->modalContent(fn (Undangan $record) => view('filament.modals.pdf-preview', [
+                'url' => route('undangan.pdf', $record->id),
+            ]))
+            ->modalWidth('7xl')
+            ->modalSubmitAction(false)
+            ->modalCancelActionLabel('Tutup'),
             Action::make('Print Dengan Tanda Tangan')
             ->icon('heroicon-o-printer')
             ->color('success')
             ->hidden(function (Undangan $record): bool {
             return $record->signed == '-';
         })
-            ->url(fn(Undangan $record) => route('undangan.ttd.pdf', $record->id))
-            ->openUrlInNewTab(),
-            Action::make('Kirim Ulang ACC')
-            ->icon('heroicon-o-paper-airplane')
-            ->color('warning')
-            ->requiresConfirmation()
-            ->modalDescription('Kirim ulang permintaan ACC kesiapan ujian ke semua dosen yang belum merespon via WhatsApp?')
-            ->modalSubmitActionLabel('Ya, Kirim Ulang')
-            ->visible(function (Undangan $record): bool {
-            return $record->status_ujian === 'menunggu_acc';
-        })
-            ->action(function (Undangan $record): void {
-            $accList = AccKesiapanUjian::where('id_undangan', $record->id)
-                ->where('status', 'pending')
-                ->get();
+            ->modalHeading('Preview Undangan (Tanda Tangan)')
+            ->modalContent(fn (Undangan $record) => view('filament.modals.pdf-preview', [
+                'url' => route('undangan.ttd.pdf', $record->id),
+            ]))
+            ->modalWidth('7xl')
+            ->modalSubmitAction(false)
+            ->modalCancelActionLabel('Tutup'),
 
-            $waService = new WhatsappService();
-            $sentCount = 0;
 
-            foreach ($accList as $acc) {
-                if ($waService->sendAccKesiapanRequest($acc)) {
-                    $sentCount++;
-                }
-            }
-
-            if ($sentCount > 0) {
-                Notification::make()
-                    ->title("ACC Dikirim Ulang ke {$sentCount} Dosen")
-                    ->success()
-                    ->send();
-            } else {
-                Notification::make()
-                    ->title('Gagal Mengirim ACC')
-                    ->body('Tidak ada dosen pending atau pengiriman gagal.')
-                    ->danger()
-                    ->send();
-            }
-        }),
             ActionGroup::make([
                 ViewAction::make(),
                 EditAction::make(),

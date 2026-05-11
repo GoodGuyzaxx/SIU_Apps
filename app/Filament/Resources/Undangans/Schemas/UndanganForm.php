@@ -74,7 +74,9 @@ class UndanganForm
                 TextInput::make('nomor')
                 ->label('Nomor Surat')
                 ->numeric()
-                ->placeholder('Contoh 001')
+                ->placeholder('001')
+                ->prefix('B/')
+                ->suffix('/ KPSIH-FH / UND / ' . now()->year)
                 ->minValue(0)
                 ->required(),
 
@@ -84,11 +86,12 @@ class UndanganForm
                 ->native(false)
                 ->options([
                     'Undangan Ujian Proposal' => 'Undangan Ujian Proposal',
-                    'Undangan Ujian Skripsi' => 'Undangan Ujian Hasil'
+                    'Undangan Ujian Skripsi' => 'Undangan Ujian Hasil',
+                    'Undangan Sidang Akhir' => 'Undangan Sidang Akhir/Tesis'
                 ])
 
             ])
-            ->columns(2),
+            ->columns(1),
 
             // Section 3: Jadwal Ujian
             Section::make('Jadwal Ujian Dan Status Ujian')

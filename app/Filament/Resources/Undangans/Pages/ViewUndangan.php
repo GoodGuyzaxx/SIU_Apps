@@ -8,9 +8,9 @@ use App\Services\WhatsappService;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Actions as SchemaActions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
-use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -27,7 +27,61 @@ class ViewUndangan extends ViewRecord
             Action::make('Print')
                 ->icon('heroicon-o-printer')
                 ->color('success')
-                ->url(fn () => route('undangan.pdf', $dataId)),
+                ->modalHeading('Preview Undangan')
+                ->modalContent(fn () => view('filament.modals.pdf-preview', [
+                    'url' => route('undangan.pdf', $dataId),
+                ]))
+                ->modalWidth('7xl')
+                ->modalSubmitAction(false)
+                ->modalCancelActionLabel('Tutup'),
+            Action::make('Kirim Undangan ke WhatsApp')
+                ->icon('heroicon-o-chat-bubble-left-right')
+                ->color('primary')
+                ->requiresConfirmation()
+                ->modalHeading('Kirim Undangan via WhatsApp')
+                ->modalDescription('Kirim permintaan ACC kesiapan ujian ke semua dosen dan notifikasi upload softcopy ke mahasiswa via WhatsApp?')
+                ->modalSubmitActionLabel('Ya, Kirim Sekarang')
+                ->visible(fn () => $this->record->status_ujian === 'menunggu_acc')
+                ->action(function (): void {
+                    $accList = AccKesiapanUjian::where('id_undangan', $this->record->id)
+                        ->get();
+
+                    $waService = new WhatsappService();
+                    $sentCount = 0;
+                    $failCount = 0;
+
+                    foreach ($accList as $acc) {
+                        if ($waService->sendAccKesiapanRequest($acc)) {
+                            $sentCount++;
+                        } else {
+                            $failCount++;
+                        }
+                    }
+
+                    $softcopySent = $waService->sendSoftcopyRequestToMahasiswa($this->record);
+
+                    if ($sentCount > 0 && $failCount === 0) {
+                        Notification::make()
+                            ->title('Undangan Berhasil Dikirim')
+                            ->body("Permintaan ACC telah dikirim ke {$sentCount} dosen."
+                                . ($softcopySent ? ' Mahasiswa juga telah dinotifikasi untuk upload softcopy.' : ''))
+                            ->success()
+                            ->send();
+                    } elseif ($sentCount > 0 && $failCount > 0) {
+                        Notification::make()
+                            ->title('Undangan Sebagian Terkirim')
+                            ->body("ACC terkirim ke {$sentCount} dosen, gagal {$failCount} dosen."
+                                . ($softcopySent ? ' Mahasiswa telah dinotifikasi.' : ''))
+                            ->warning()
+                            ->send();
+                    } else {
+                        Notification::make()
+                            ->title('Gagal Mengirim Undangan')
+                            ->body('Semua pengiriman ACC gagal. Periksa koneksi WhatsApp Gateway.')
+                            ->danger()
+                            ->send();
+                    }
+                }),
             Action::make('Kirim Ulang Pesan Ke Dosen')
                 ->icon('heroicon-o-paper-airplane')
                 ->color('warning')
@@ -88,6 +142,36 @@ class ViewUndangan extends ViewRecord
                     }
                 }),
         ];
+    }
+
+    public function kirimWaPerDosen(int $accId): void
+    {
+        $acc = AccKesiapanUjian::with('dosen')->find($accId);
+
+        if (!$acc) {
+            Notification::make()
+                ->title('Data tidak ditemukan')
+                ->danger()
+                ->send();
+            return;
+        }
+
+        $waService = new WhatsappService();
+        $result = $waService->sendAccKesiapanRequest($acc);
+
+        if ($result) {
+            Notification::make()
+                ->title('Pesan Terkirim')
+                ->body("Permintaan ACC kesiapan ujian berhasil dikirim ke {$acc->dosen->nama} via WhatsApp.")
+                ->success()
+                ->send();
+        } else {
+            Notification::make()
+                ->title('Gagal Mengirim Pesan')
+                ->body("Pengiriman ke {$acc->dosen->nama} gagal. Pastikan nomor HP dosen sudah terdaftar.")
+                ->danger()
+                ->send();
+        }
     }
 
     public function infolist(Schema $schema): Schema
@@ -154,6 +238,9 @@ class ViewUndangan extends ViewRecord
                     default => 'gray',
                 };
 
+                $namaDosen = $acc->dosen->nama ?? '-';
+                $accId = $acc->id;
+
                 $itemComponents = [
                     TextEntry::make("acc_role_{$index}")
                         ->label('Peran')
@@ -161,7 +248,7 @@ class ViewUndangan extends ViewRecord
 
                     TextEntry::make("acc_nama_{$index}")
                         ->label('Nama Dosen')
-                        ->default($acc->dosen->nama ?? '-'),
+                        ->default($namaDosen),
 
                     TextEntry::make("acc_status_{$index}")
                         ->label('Status ACC')
@@ -184,7 +271,23 @@ class ViewUndangan extends ViewRecord
                 $itemComponents[] = TextEntry::make("acc_link_{$index}")
                     ->label('Link ACC')
                     ->default(route('acc.kesiapan.form', ['token' => $acc->token]))
-                    ->copyable();
+                    ->copyable()
+                    ->columnSpanFull();
+
+                // Tombol kirim WA individual per dosen
+                $itemComponents[] = SchemaActions::make([
+                    Action::make("kirim_wa_dosen_{$index}")
+                        ->label('Kirim WA ke Dosen Ini')
+                        ->icon('heroicon-o-paper-airplane')
+                        ->color('primary')
+                        ->requiresConfirmation()
+                        ->modalHeading("Kirim WA ke {$namaDosen}")
+                        ->modalDescription("Kirim permintaan ACC kesiapan ujian ke {$namaDosen} via WhatsApp?")
+                        ->modalSubmitActionLabel('Ya, Kirim')
+                        ->action(function () use ($accId): void {
+                            $this->kirimWaPerDosen($accId);
+                        }),
+                ])->columnSpanFull();
 
                 $accComponents[] = Section::make("Dosen {$roleLabel}")
                     ->schema($itemComponents)
