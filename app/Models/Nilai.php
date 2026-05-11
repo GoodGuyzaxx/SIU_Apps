@@ -58,6 +58,15 @@ class Nilai extends Model
         if ($judul->status !== $newStatus) {
             $judul->update(['status' => $newStatus]);
         }
+
+        // Jika nilai proposal sudah diinput, ubah status_rev_judul menjadi 'ya'
+        $nilaiProposalTerisi = !empty($this->nilai_proposal)
+            || !empty($this->nilai_proposal_angka)
+            || !empty($this->tanggal_ujian_proposal);
+
+        if ($nilaiProposalTerisi && $judul->status_rev_judul !== 'ya') {
+            $judul->update(['status_rev_judul' => 'ya']);
+        }
     }
 
     protected static function booted(): void
