@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('tahun_akademik_id')->nullable()->constrained('tahun_akademik');
             $table->string('minat');
             $table->text('judul');
+            $table->string('status_rev_judul')->nullable()->default('tidak');
             $table->text('rev_judul')->nullable();
             $table->foreignId('pembimbing_satu')->nullable()->constrained('dosen');
             $table->foreignId('pembimbing_dua')->nullable()->constrained('dosen');
