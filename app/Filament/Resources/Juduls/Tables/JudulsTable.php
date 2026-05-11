@@ -2,115 +2,117 @@
 
 namespace App\Filament\Resources\Juduls\Tables;
 
-use App\Models\Judul;
-use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\TextInput;
-use Filament\Notifications\Notification;
-use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Utilities\Set;
-use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class JudulsTable
 {
     public static function configure(Table $table): Table
     {
-
         return $table
             ->columns([
-                TextColumn::make('mahasiswa.nama')
-                    ->sortable()
-                    ->searchable(),
-                TextColumn::make('mahasiswa.npm')
-                    ->sortable()
-                    ->searchable(),
-                TextColumn::make('judul')
-                    ->limit(50)
-                    ->tooltip(fn (string $state): string => $state)
-                    ->searchable(),
-                TextColumn::make('pembimbingSatu.nama')
-                    ->searchable(),
-                TextColumn::make('pembimbingDua.nama')
-                    ->searchable(),
-                SelectColumn::make('status')
-                    ->native(false)
-                    ->sortable()
-                    ->options([
-                        'pengajuan' => 'Pengajuan',
-                        'proposal' => 'Proposal',
-                        'hasil' => 'Hasil'
-                    ]),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                SelectFilter::make('status')
-                ->label('Status Judul')
-                ->options([
-                    'pengajuan' => 'Pengajuan',
-                    'proposal' => 'Proposal',
-                    'hasil' => 'Hasil'
-                ])
-            ])
-            ->recordActions([
-                Action::make('nilai')
-                ->label('Input Nilai')
-                ->color('success')
-                ->icon('heroicon-s-pencil')
-                ->fillForm(fn (Judul $record): array => $record->nilai?->toArray() ?? [])
-                ->schema([
-                    Grid::make(2)
-                    ->schema([
-                        TextInput::make('nilai_proposal')
-                            ->label('Nilai Proposal'),
-                        DatePicker::make('tanggal_ujian_proposal')
-                            ->label('Tanggal Ujian Proposal')
-                            ->date()
-                            ->native(false)
-                            ->suffixAction(
-                                Action::make('clear')
-                                    ->icon('heroicon-m-x-mark')
-                                    ->action(fn (Set $set) => $set('tanggal_ujian_proposal', null))
-                            )
-                            ->native(false),
-                        TextInput::make('nilai_hasil')
-                            ->label('Nilai Hasil'),
-                        DatePicker::make('tanggal_ujian_hasil')
-                            ->label('Tanggal Ujian Hasil')
-                            ->date()
-                            ->suffixAction(
-                                Action::make('clear')
-                                    ->icon('heroicon-m-x-mark')
-                                    ->action(fn (Set $set) => $set('tanggal_ujian_hasil', null))
-                            )
+                TextColumn::make('index')
+                    ->label('No')
+                    ->rowIndex()
+                    ->alignCenter()
+                    ->width('60px'),
 
-                            ->native(false),
-                    ]),
-                ])
-                ->action(function (array $data, Judul $record): void {
-                    $nilai = $record->nilai;
-                    if ($nilai) {
-                        $nilai->update($data);
-                    }
-                    Notification::make()
-                        ->title('Nilai Berhasil Di input')
-                        ->success()
-                        ->send();
-                }),
+                TextColumn::make('mahasiswa.nama')
+                    ->label('Mahasiswa')
+                    ->searchable()
+                    ->sortable()
+                    ->weight('semibold')
+                    ->icon('heroicon-o-user-circle')
+                    ->description(fn ($record) => $record->mahasiswa?->npm ?? '-'),
+
+                TextColumn::make('mahasiswa.prodi.nama_prodi')
+                    ->label('Program Studi')
+                    ->searchable()
+                    ->sortable()
+                    ->badge()
+                    ->color('info')
+                    ->icon('heroicon-o-academic-cap')
+                    ->toggleable(),
+
+                TextColumn::make('minat')
+                    ->label('Minat')
+                    ->badge()
+                    ->color('warning')
+                    ->searchable(),
+
+                TextColumn::make('judul')
+                    ->label('Judul Skripsi')
+                    ->searchable()
+                    ->limit(55)
+                    ->tooltip(fn ($record) => $record->judul)
+                    ->wrap(),
+
+                TextColumn::make('pembimbingSatu.nama')
+                    ->label('Pembimbing')
+                    ->searchable()
+                    ->icon('heroicon-o-user')
+                    ->description(fn ($record) => $record->pembimbingDua?->nama ?? '-')
+                    ->toggleable(),
+
+                TextColumn::make('pengujiSatu.nama')
+                    ->label('Penguji')
+                    ->searchable()
+                    ->icon('heroicon-o-user')
+                    ->description(fn ($record) => $record->pengujiDua?->nama ?? '-')
+                    ->toggleable(),
+
+                TextColumn::make('tahunAkademik.tahun')
+                    ->label('T.A')
+                    ->badge()
+                    ->color('gray')
+                    ->sortable()
+                    ->toggleable(),
+
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->alignCenter()
+                    ->color(fn (string $state): string => match ($state) {
+                        'proposal' => 'info',
+                        'hasil'    => 'success',
+                        'sidang'   => 'warning',
+                        default    => 'gray',
+                    })
+                    ->icon(fn (string $state): string => match ($state) {
+                        'proposal' => 'heroicon-o-document-text',
+                        'hasil'    => 'heroicon-o-check-circle',
+                        'sidang'   => 'heroicon-o-academic-cap',
+                        default    => 'heroicon-o-clock',
+                    })
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'pengajuan' => 'Pengajuan',
+                        'proposal'  => 'Proposal',
+                        'hasil'     => 'Hasil',
+                        'sidang'    => 'Sidang',
+                        default     => ucfirst($state),
+                    })
+                    ->sortable(),
+
+                TextColumn::make('created_at')
+                    ->label('Dibuat')
+                    ->dateTime('d M Y')
+                    ->sortable()
+                    ->since()
+                    ->tooltip(fn ($record) => $record->created_at?->format('d M Y, H:i'))
+                    ->color('gray')
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->defaultSort('created_at', 'desc')
+            ->striped()
+            ->paginated([10, 25, 50])
+            ->emptyStateIcon('heroicon-o-document-text')
+            ->emptyStateHeading('Belum Ada Data Judul')
+            ->emptyStateDescription('Belum ada judul skripsi yang terdaftar.')
+            ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
             ])
