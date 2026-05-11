@@ -73,16 +73,26 @@ class SuratKeputusansTable
                 Action::make('Print')
                     ->icon('heroicon-o-printer')
                     ->color('success')
-                    ->url(fn (SuratKeputusan $record) => route('skPDF', $record->id))
-                    ->openUrlInNewTab(),
+                    ->modalHeading('Preview Surat Keputusan')
+                    ->modalContent(fn (SuratKeputusan $record) => view('filament.modals.pdf-preview', [
+                        'url' => route('skPDF', $record->id),
+                    ]))
+                    ->modalWidth('7xl')
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Tutup'),
                 Action::make('Print Dengan Tanda Tangan')
                     ->icon('heroicon-o-printer')
                     ->color('success')
                     ->hidden(function (SuratKeputusan $record): bool {
                         return $record->signed == '-';
                     })
-                    ->url(fn (SuratKeputusan $record) => route('skttdPDF', $record->id))
-                    ->openUrlInNewTab(),
+                    ->modalHeading('Preview Surat Keputusan (Tanda Tangan)')
+                    ->modalContent(fn (SuratKeputusan $record) => view('filament.modals.pdf-preview', [
+                        'url' => route('skttdPDF', $record->id),
+                    ]))
+                    ->modalWidth('7xl')
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Tutup'),
                 ActionGroup::make([
                     ViewAction::make(),
                     DeleteAction::make(),
